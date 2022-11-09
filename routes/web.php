@@ -21,7 +21,7 @@ Route::prefix('view')->group(function () {
     Route::controller(PenggunaController::class)->prefix('pengguna')->group(function () {
         Route::get('/', 'viewGetAll')->name('pengguna.viewGetAll');
         Route::get('id', 'viewGetById')->name('pengguna.viewGetById');
-        Route::post('create', 'viewCreate')->name('pengguna.viewCreate');
-        Route::post('update', 'viewUpdate')->name('pengguna.viewUpdate');
+        Route::get('create', 'viewCreate')->name('pengguna.viewCreate');
+        Route::get('update', 'viewUpdate')->name('pengguna.viewUpdate');
     });
 });

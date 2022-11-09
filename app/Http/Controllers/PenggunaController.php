@@ -3,24 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengguna;
+use App\Models\Peran;
 use App\Models\RolePengguna;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables as DaTables;
 
 class PenggunaController extends Controller
 {
     private $request;
     private $mPengguna;
     private $mRolePengguna;
+    private $mPeran;
 
     public function __construct()
     {
         $this->request = app(Request::class);
         $this->mPengguna = app(Pengguna::class);
         $this->mRolePengguna = app(RolePengguna::class);
+        $this->mPeran = app(Peran::class);
     }
 
     public function apiGetAll()
@@ -49,14 +53,7 @@ class PenggunaController extends Controller
                 ORDER BY
                     pga.nm_pengguna ASC
             ");
-
-            return [
-                'status' => true,
-                'latency' => AppLatency(),
-                'message' => 'OK',
-                'error' => null,
-                'response' => $apiGetAll
-            ];
+            return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
@@ -390,7 +387,10 @@ class PenggunaController extends Controller
             'title' => 'Manajemen Akses',
             'site_active' => 'manakses',
         ];
-        return view('pages.pengguna.viewGetAll', compact('info'));
+        $data = [
+            'peran' => $this->mPeran->whereNull('deleted_at')->orderBy('id_peran', 'asc')->get()
+        ];
+        return view('pages.pengguna.viewGetAll', compact('info', 'data'));
     }
 
     public function viewGetById()
