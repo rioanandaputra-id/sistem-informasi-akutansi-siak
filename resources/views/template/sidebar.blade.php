@@ -28,10 +28,16 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
-                <li class="nav-item menu-open">
-                    <a href="#" class="nav-link active">
+                <li class="nav-item">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ $info['site_active'] == 'dashboard' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dahsboard</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('pengguna.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'manakses' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>Man. Akses</p>
                     </a>
                 </li>
             </ul>
