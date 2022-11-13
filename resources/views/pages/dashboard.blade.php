@@ -1,4 +1,4 @@
-@extends('template.adminlte')
+@extends('layouts.adminlteMaster')
 @push('css')
 @endpush
 @push('js')
@@ -8,4 +8,5 @@
 @endsection
 
 @section('content')
+
 @endsection
