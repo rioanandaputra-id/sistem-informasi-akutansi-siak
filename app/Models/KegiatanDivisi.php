@@ -15,6 +15,7 @@ class KegiatanDivisi extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'id_kegiatan_divisi',
         'id_divisi',
         'id_kegiatan',
         'a_verif_rba',

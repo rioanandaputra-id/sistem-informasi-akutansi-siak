@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\MisiController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\VisiController;
@@ -44,5 +45,15 @@ Route::middleware('auth')->group(function () {
         Route::get('viewGetAll', 'viewGetAll')->name('program.viewGetAll');
         Route::get('viewCreate', 'viewCreate')->name('program.viewCreate');
         Route::get('viewUpdate', 'viewUpdate')->name('program.viewUpdate');
+    });
+    Route::controller(KegiatanController::class)->prefix('kegiatan')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kegiatan.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kegiatan.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kegiatan.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kegiatan.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kegiatan.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kegiatan.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kegiatan.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kegiatan.viewUpdate');
     });
 });

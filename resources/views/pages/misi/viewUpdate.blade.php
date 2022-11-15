@@ -35,13 +35,13 @@
                                     <input type="text" class="form-control" id="nm_misi" name="nm_misi" value="{{ $vsi->nm_misi }}">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="periode">Tahun Periode: <i class="text-danger">*</i></label>
+                                    <label for="periode">Periode Misi: <i class="text-danger">*</i></label>
                                     <input type="number" class="form-control" id="periode" name="periode" value="{{ $vsi->periode }}">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label for="a_aktif">Status: <i class="text-danger">*</i></label>
+                                    <label for="a_aktif">Status Misi: <i class="text-danger">*</i></label>
                                     <select name="a_aktif" id="a_aktif" class="form-control">
                                         <option value="">-</option>
                                         <option value="1" {{ ($vsi->a_aktif == 1) ? 'selected' : '' }}>Status 1</option>

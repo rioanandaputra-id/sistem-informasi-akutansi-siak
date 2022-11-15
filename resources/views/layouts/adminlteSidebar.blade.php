@@ -62,7 +62,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
+                        <a href="{{ route('kegiatan.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Kegiatan</p>
                         </a>

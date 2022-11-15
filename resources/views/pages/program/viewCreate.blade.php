@@ -27,6 +27,22 @@
                         <form action="{{ route('program.apiCreate') }}" method="POST">
                             @csrf
                             <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="id_misi">Nama Misi: <i class="text-danger">*</i></label>
+                                    <select name="id_misi" id="id_misi" class="form-control @error('id_misi') is-invalid @enderror">
+                                        <option value="">-</option>
+                                        @foreach ($misi as $msi)
+                                            <option value="{{ $msi->id_misi }}" {{ (old('id_misi') == $msi->id_misi) ? 'selected' : ''}}>{{  $msi->nm_misi }} ({{  $msi->periode }})</option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_misi')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="nm_program">Nama Program: <i class="text-danger">*</i></label>
                                     <input type="hidden" value="1" name="no_api">
@@ -38,8 +54,8 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="periode">Tahun Periode: <i class="text-danger">*</i></label>
-                                    <input type="number" class="form-control @error('periode') is-invalid @enderror" value="{{ old('periode') }}" id="periode" name="periode">
+                                    <label for="periode">Periode Program: <i class="text-danger">*</i></label>
+                                    <input type="number" value="{{ date('Y') }}" class="form-control @error('periode') is-invalid @enderror" value="{{ old('periode') }}" id="periode" name="periode">
                                     @error('periode')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -49,23 +65,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label for="id_misi">Nama Misi: <i class="text-danger">*</i></label>
-                                    <select name="id_misi" id="id_misi" class="form-control @error('id_misi') is-invalid @enderror">
-                                        <option value="">-</option>
-                                        @foreach ($misi as $msi)
-                                            <option value="{{ $msi->id_misi }}" {{ (old('id_misi') == $msi->id_misi) ? 'selected' : ''}}>{{  $msi->nm_misi }} | {{  $msi->periode }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('id_misi')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <label for="a_aktif">Status: <i class="text-danger">*</i></label>
+                                    <label for="a_aktif">Status Program: <i class="text-danger">*</i></label>
                                     <select name="a_aktif" id="a_aktif" class="form-control @error('a_aktif') is-invalid @enderror">
                                         <option value="">-</option>
                                         <option value="1" {{ (old('a_aktif') == 1) ? 'selected' : ''}}>Aktif</option>

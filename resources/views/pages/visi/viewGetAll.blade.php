@@ -94,11 +94,11 @@
                 }, {
                     data: 'periode',
                     name: 'periode',
-                    title: 'Periode',
+                    title: 'Periode Visi',
                 }, {
                     data: 'a_aktif',
                     name: 'a_aktif',
-                    title: 'Status',
+                    title: 'Status Visi',
                 }, ]
             });
 

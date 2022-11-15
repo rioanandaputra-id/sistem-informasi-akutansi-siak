@@ -21,7 +21,7 @@
                     <div class="row mb-2">
                         <div class="col">
                             <div class="float-left">
-                                <a href="{{ route('misi.viewCreate') }}" type="button" class="btn btn-info">
+                                <a href="{{ route('kegiatan.viewCreate') }}" type="button" class="btn btn-info">
                                     <i class="fas fa-plus-circle"></i>
                                 </a>
                                 <button id="refresh" type="button" class="btn btn-info"><i
@@ -32,13 +32,13 @@
                                         class="fas fa-check-circle"></i></button> --}}
                             </div>
                             <div class="float-right text-bold">
-                                Daftar Misi
+                                Daftar Kegiatan
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <table class="table table-striped teble-bordered" id="tbMisi" style="width: 100%">
+                            <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
                                 <thead class="bg-info"></thead>
                             </table>
                         </div>
@@ -64,7 +64,7 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('#tbMisi').DataTable({
+            $('#tbkegiatan').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
@@ -73,32 +73,39 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('misi.apiGetAll') }}',
+                    url: '{{ route('kegiatan.apiGetAll') }}',
                     type: 'GET'
                 },
                 columns: [{
-                    data: 'id_misi',
-                    name: 'id_misi',
+                    data: 'id_kegiatan',
+                    name: 'id_kegiatan',
                     title: '<input type="checkbox" id="ckAll" />',
                     width: '5px',
                     render: function(data, type, row) {
                         return `<input type="checkbox" class="ckItem" value="${data}" />`;
                     }
                 }, {
-                    data: 'nm_misi',
-                    name: 'nm_misi',
-                    title: 'Nama Misi',
+                    data: 'nm_kegiatan',
+                    name: 'nm_kegiatan',
+                    title: 'Nama kegiatan',
                     render: function(data, type, row, meta) {
-                        return `<a href="{!! route('misi.viewUpdate') !!}?id_misi=${row.id_misi}">${data}</a>`;
+                        return `<a href="{!! route('kegiatan.viewUpdate') !!}?id_kegiatan=${row.id_kegiatan}">${data}</a>`;
                     }
                 }, {
-                    data: 'periode',
-                    name: 'periode',
-                    title: 'Periode Misi',
+                    data: 'nm_program',
+                    name: 'nm_program',
+                    title: 'Nama Program',
+                    render: function(data, type, row, meta) {
+                        return `<a href="{!! route('program.viewUpdate') !!}?id_program=${row.id_program}">${data}</a>`;
+                    }
+                }, {
+                    data: 'periode_program',
+                    name: 'periode_program',
+                    title: 'Periode program',
                 }, {
                     data: 'a_aktif',
                     name: 'a_aktif',
-                    title: 'Status Misi',
+                    title: 'Status Kegiatan',
                 }, ]
             });
 
@@ -111,7 +118,7 @@
             });
 
             $("#refresh").click(function() {
-                $('#tbMisi').DataTable().ajax.reload();
+                $('#tbkegiatan').DataTable().ajax.reload();
             });
 
             $("#delete").click(function() {
@@ -129,11 +136,11 @@
                     if (willDelete.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "{!! route('misi.apiDelete') !!}",
+                            url: "{!! route('kegiatan.apiDelete') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
                                 no_api: 0,
-                                id_misi: getId()
+                                id_kegiatan: getId()
                             }
                         }).done(function(res) {
                             Swal.fire({
@@ -143,7 +150,7 @@
                                 showConfirmButton: false,
                                 timer: 1000,
                             });
-                            $('#tbMisi').DataTable().ajax.reload();
+                            $('#tbkegiatan').DataTable().ajax.reload();
                             $("#delete").prop("disabled", false);
                         }).fail(function(res) {
                             Swal.fire({
@@ -152,18 +159,18 @@
                                 title: 'Data Gagal Dihapus!',
                                 showConfirmButton: true,
                             });
-                            $('#tbMisi').DataTable().ajax.reload();
+                            $('#tbkegiatan').DataTable().ajax.reload();
                             $("#delete").prop("disabled", false);
                         });
                     } else {
-                        $('#tbMisi').DataTable().ajax.reload();
+                        $('#tbkegiatan').DataTable().ajax.reload();
                         $("#delete").prop("disabled", false);
                     }
                 });
             });
 
             $("#confirm").click(function() {
-                $('#tbMisi').DataTable().ajax.reload();
+                $('#tbkegiatan').DataTable().ajax.reload();
             });
         });
 

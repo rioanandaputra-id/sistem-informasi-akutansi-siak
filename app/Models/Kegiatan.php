@@ -15,6 +15,7 @@ class Kegiatan extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'id_kegiatan',
         'id_program',
         'nm_kegiatan',
         'a_aktif',

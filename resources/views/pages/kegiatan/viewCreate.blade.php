@@ -24,22 +24,38 @@
                 </div>
                 <div class="card-body">
                     <div class="bg-light p-3">
-                        <form action="{{ route('visi.apiCreate') }}" method="POST">
+                        <form action="{{ route('kegiatan.apiCreate') }}" method="POST">
                             @csrf
                             <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="id_program">Nama Program: <i class="text-danger">*</i></label>
+                                    <select name="id_program" id="id_program" class="form-control @error('id_program') is-invalid @enderror">
+                                        <option value="">-</option>
+                                        @foreach ($program as $pgm)
+                                            <option value="{{ $pgm->id_program }}" {{ (old('id_program') == $pgm->id_program) ? 'selected' : ''}}>Program: {{  $pgm->nm_program }} ({{  $pgm->periode_program }}) | Misi: {{  $pgm->nm_misi }} ({{  $pgm->periode_misi }})</option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_program')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="nm_visi">Nama Visi: <i class="text-danger">*</i></label>
+                                    <label for="nm_kegiatan">Nama Kegiatan: <i class="text-danger">*</i></label>
                                     <input type="hidden" value="1" name="no_api">
-                                    <input type="text" class="form-control @error('nm_visi') is-invalid @enderror" value="{{ old('nm_visi') }}" id="nm_visi" name="nm_visi">
-                                    @error('nm_visi')
+                                    <input type="text" class="form-control @error('nm_kegiatan') is-invalid @enderror" value="{{ old('nm_kegiatan') }}" id="nm_kegiatan" name="nm_kegiatan">
+                                    @error('nm_kegiatan')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="periode">Periode Visi: <i class="text-danger">*</i></label>
-                                    <input type="number" value="{{ date('Y') }}" class="form-control @error('periode') is-invalid @enderror" value="{{ old('periode') }}" id="periode" name="periode">
+                                    <label for="periode">Periode Kegiatan: <i class="text-danger">*</i></label>
+                                    <input type="number" class="form-control @error('periode') is-invalid @enderror" value="{{ old('periode') }}" id="periode" name="periode">
                                     @error('periode')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -49,7 +65,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label for="a_aktif">Status Visi: <i class="text-danger">*</i></label>
+                                    <label for="a_aktif">Status Kegiatan: <i class="text-danger">*</i></label>
                                     <select name="a_aktif" id="a_aktif" class="form-control @error('a_aktif') is-invalid @enderror">
                                         <option value="">-</option>
                                         <option value="1" {{ (old('a_aktif') == 1) ? 'selected' : ''}}>Aktif</option>
@@ -64,7 +80,7 @@
                             </div>
                             <div class="card-footer mt-4">
                                 <button type="submit" class="btn noborder btn-info mr-2">Tambah Data</button>
-                                <a href="{{ route('visi.viewGetAll') }}" type="button" class="btn noborder btn-info">Kembali <i
+                                <a href="{{ route('program.viewGetAll') }}" type="button" class="btn noborder btn-info">Kembali <i
                                         class="fas fa-chevron-circle-left"></i></a>
                                 <div class="float-right">
                                     <strong><i class="text-danger">*</i> Bidang harus diisi..</strong>

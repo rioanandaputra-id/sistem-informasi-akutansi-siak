@@ -38,8 +38,8 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="periode">Tahun Periode: <i class="text-danger">*</i></label>
-                                    <input type="number" class="form-control @error('periode') is-invalid @enderror" value="{{ old('periode') }}" id="periode" name="periode">
+                                    <label for="periode">Periode Misi: <i class="text-danger">*</i></label>
+                                    <input type="number" value="{{ date('Y') }}" class="form-control @error('periode') is-invalid @enderror" value="{{ old('periode') }}" id="periode" name="periode">
                                     @error('periode')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -49,7 +49,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label for="a_aktif">Status: <i class="text-danger">*</i></label>
+                                    <label for="a_aktif">Status Misi: <i class="text-danger">*</i></label>
                                     <select name="a_aktif" id="a_aktif" class="form-control @error('a_aktif') is-invalid @enderror">
                                         <option value="">-</option>
                                         <option value="1" {{ (old('a_aktif') == 1) ? 'selected' : ''}}>Aktif</option>

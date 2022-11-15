@@ -33,7 +33,10 @@ class ProgramController extends Controller
                     pgm.id_misi,
                     pgm.nm_program,
                     pgm.periode AS periode_program,
-                    pgm.a_aktif,
+                    CASE
+                        WHEN pgm.a_aktif = '1' THEN 'Aktif'
+                        ELSE 'Non Aktif'
+                    END AS a_aktif,
                     pgm.created_at,
                     pgm.updated_at,
                     pgm.deleted_at,
@@ -49,7 +52,17 @@ class ProgramController extends Controller
                 ORDER BY
                     pgm.periode DESC
             ");
-            return DaTables::of($apiGetAll)->make(true);
+            if ($this->request->ajax()) {
+                return DaTables::of($apiGetAll)->make(true);
+            } else {
+                return [
+                    'status' => true,
+                    'latency' => AppLatency(),
+                    'message' => 'Created',
+                    'error' => null,
+                    'response' => $apiGetAll
+                ];
+            }
         } catch (QueryException $e) {
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
             return [

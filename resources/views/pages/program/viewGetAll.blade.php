@@ -109,7 +109,7 @@
                 }, {
                     data: 'a_aktif',
                     name: 'a_aktif',
-                    title: 'Status',
+                    title: 'Status Program',
                 }, ]
             });
 
