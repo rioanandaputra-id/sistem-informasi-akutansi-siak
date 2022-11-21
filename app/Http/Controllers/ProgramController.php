@@ -27,6 +27,7 @@ class ProgramController extends Controller
     public function apiGetAll()
     {
         try {
+            $id_misi = ($this->request->id_misi) ? " AND  pgm.id_misi = '".$this->request->id_misi."'" : "";
             $apiGetAll = DB::select("
                 SELECT
                     pgm.id_program,
@@ -49,6 +50,7 @@ class ProgramController extends Controller
                     AND msi.deleted_at IS NULL AND msi.a_aktif = '1'
                 WHERE
                     pgm.deleted_at IS NULL
+                    ".$id_misi."
                 ORDER BY
                     pgm.periode DESC
             ");
@@ -58,7 +60,7 @@ class ProgramController extends Controller
                 return [
                     'status' => true,
                     'latency' => AppLatency(),
-                    'message' => 'Created',
+                    'message' => 'OK',
                     'error' => null,
                     'response' => $apiGetAll
                 ];
@@ -394,7 +396,8 @@ class ProgramController extends Controller
             'title' => 'Program',
             'site_active' => 'Program',
         ];
-        return view('pages.program.viewGetAll', compact('info'));
+        $misi = $this->mMisi->apiGetAll()['response'] ?? [];
+        return view('pages.program.viewGetAll', compact('info', 'misi'));
     }
 
     public function viewCreate()

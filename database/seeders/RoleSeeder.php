@@ -12,7 +12,7 @@ class RoleSeeder extends Seeder
         Role::insert([
             [
                 'id_role' => 1,
-                'role_name' => 'Kepala PMI Wilayah/Kuasa',
+                'role_name' => 'Kepala PMI Wilayah',
                 'created_at' => now(),
             ],
             [
@@ -22,12 +22,12 @@ class RoleSeeder extends Seeder
             ],
             [
                 'id_role' => 3,
-                'role_name' => 'Koordinator TIM RBA',
+                'role_name' => 'TIM RBA',
                 'created_at' => now(),
             ],
             [
                 'id_role' => 4,
-                'role_name' => 'Kepala Departemen/Ka Bagian',
+                'role_name' => 'Kepala Bagian',
                 'created_at' => now(),
             ],
             [
@@ -42,12 +42,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'id_role' => 7,
-                'role_name' => 'Bendahara Kegiatan/Panitia Pelaksana',
-                'created_at' => now(),
-            ],
-            [
-                'id_role' => 99,
-                'role_name' => 'Developer',
+                'role_name' => 'Bendahara Kegiatan',
                 'created_at' => now(),
             ],
         ]);

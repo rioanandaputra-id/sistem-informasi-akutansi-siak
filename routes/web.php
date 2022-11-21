@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KegiatanController;
+use App\Http\Controllers\KegiatanDivisiController;
 use App\Http\Controllers\MisiController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\VisiController;
@@ -55,5 +56,15 @@ Route::middleware('auth')->group(function () {
         Route::get('viewGetAll', 'viewGetAll')->name('kegiatan.viewGetAll');
         Route::get('viewCreate', 'viewCreate')->name('kegiatan.viewCreate');
         Route::get('viewUpdate', 'viewUpdate')->name('kegiatan.viewUpdate');
+    });
+    Route::controller(KegiatanDivisiController::class)->prefix('kegiatanDivisi')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kegiatanDivisi.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kegiatanDivisi.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kegiatanDivisi.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kegiatanDivisi.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kegiatanDivisi.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kegiatanDivisi.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kegiatanDivisi.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kegiatanDivisi.viewUpdate');
     });
 });

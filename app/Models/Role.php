@@ -14,6 +14,7 @@ class Role extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'id_role',
         'role_name',
         'created_at',
         'updated_at',

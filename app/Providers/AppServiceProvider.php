@@ -15,29 +15,26 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        Gate::define('kepalapmikuasa', function (User $user) {
-            return $user->id_role == 1;
+        Gate::define('kepalawilayah', function (User $user) {
+            return userRole($user->id_user)[0]->id_role == 1;
         });
         Gate::define('kepalauud', function (User $user) {
-            return $user->id_role == 2;
+            return userRole($user->id_user)[0]->id_role == 2;
         });
-        Gate::define('kordinatortimrba', function (User $user) {
-            return $user->id_role == 3;
+        Gate::define('timrba', function (User $user) {
+            return userRole($user->id_user)[0]->id_role == 3;
         });
-        Gate::define('kepaladepartemenkabagian', function (User $user) {
-            return $user->id_role == 4;
+        Gate::define('kepalabagian', function (User $user) {
+            return userRole($user->id_user)[0]->id_role == 4;
         });
-        Gate::define('bendaharapenerimaan', function (User $user) {
-            return $user->id_role == 5;
+        Gate::define('bendpenerimaan', function (User $user) {
+            return userRole($user->id_user)[0]->id_role == 5;
         });
-        Gate::define('bendaharapengeluaran', function (User $user) {
-            return $user->id_role == 6;
+        Gate::define('bendpengeluaran', function (User $user) {
+            return userRole($user->id_user)[0]->id_role == 6;
         });
-        Gate::define('bendaharakegiatanpanitiapelaksana', function (User $user) {
-            return $user->id_role == 7;
-        });
-        Gate::define('developer', function (User $user) {
-            return $user->id_role == 99;
+        Gate::define('bendkegiatan', function (User $user) {
+            return userRole($user->id_user)[0]->id_role == 7;
         });
     }
 }

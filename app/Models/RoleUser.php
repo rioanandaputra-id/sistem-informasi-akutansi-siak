@@ -4,19 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Divisi extends Model
+class RoleUser extends Model
 {
-    protected $table = 'divisi';
-    protected $primaryKey = 'id_divisi';
-    public $keyType = 'string';
+    protected $table = 'role_users';
+    protected $primaryKey = 'id_role_user';
 
     public $timestamps = true;
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
-        'id_divisi',
-        'nm_divisi',
+        'id_role_user',
+        'id_role',
+        'id_user',
+        'a_active',
         'created_at',
         'updated_at',
         'deleted_at',

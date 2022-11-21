@@ -107,7 +107,7 @@ class KegiatanDivisiController extends Controller
                     AND div.deleted_at IS NULL
                 WHERE
                     kgd.deleted_at IS NULL
-                    AND kgd.id_kegiatan_divisi = '".$id_kegiatan_divisi."'
+                    AND kgd.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
                 LIMIT
                     1
             ");
@@ -145,11 +145,7 @@ class KegiatanDivisiController extends Controller
             DB::beginTransaction();
             $no_api = $noApi ?? $this->request->no_api;
             $rules = [
-                'id_divisi' => 'required|uuid',
-                'id_kegiatan' => 'required|uuid',
-                // 'a_verif_rba' => 'required',
-                // 'id_verif_rba' => 'required',
-                // 'catatan' => 'required',
+                'id_kegiatan' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -166,25 +162,35 @@ class KegiatanDivisiController extends Controller
                 }
             }
 
-            $id_kegiatan_divisi = guid();
-            $id_divisi = $this->request->id_divisi;
+            $id_divisi = Auth::user()->id_divisi;
             $id_kegiatan = $this->request->id_kegiatan;
-            $a_verif_rba = $this->request->a_verif_rba;
-            $id_verif_rba = $this->request->id_verif_rba;
-            $catatan = $this->request->catatan;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
 
-            $this->mKegiatanDivisi->create([
-                'id_kegiatan_divisi' => $id_kegiatan_divisi,
-                'id_divisi' => $id_divisi,
-                'id_kegiatan' => $id_kegiatan,
-                'a_verif_rba' => $a_verif_rba,
-                'id_verif_rba' => $id_verif_rba,
-                'catatan' => $catatan,
-                'created_at' => $created_at,
-                'id_updater' => $id_updater,
-            ]);
+            if (is_array($id_kegiatan)) {
+                foreach ($id_kegiatan as $v) {
+                    $exists = $this->mKegiatanDivisi->where('id_divisi', $id_divisi)->where('id_kegiatan', $v)->exists();
+                    if (!$exists) {
+                        $this->mKegiatanDivisi->create([
+                            'id_kegiatan_divisi' => guid(),
+                            'id_divisi' => $id_divisi,
+                            'id_kegiatan' => $v,
+                            'a_verif_rba' => 1,
+                            'created_at' => $created_at,
+                            'id_updater' => $id_updater,
+                        ]);
+                    }
+                }
+            } else {
+                $this->mKegiatanDivisi->create([
+                    'id_kegiatan_divisi' => guid(),
+                    'id_divisi' => $id_divisi,
+                    'id_kegiatan' => $id_kegiatan,
+                    'a_verif_rba' => 1,
+                    'created_at' => $created_at,
+                    'id_updater' => $id_updater,
+                ]);
+            }
 
             DB::commit();
             if ($no_api) {
@@ -195,7 +201,7 @@ class KegiatanDivisiController extends Controller
                     'latency' => AppLatency(),
                     'message' => 'Created',
                     'error' => null,
-                    'response' => ['id_kegiatan_divisi' => $id_kegiatan_divisi]
+                    'response' => ['id_kegiatan' => $id_kegiatan]
                 ];
             }
         } catch (QueryException $e) {

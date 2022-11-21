@@ -10,7 +10,7 @@
             </div>
             <div class="info">
                 <span class="text-light d-block">{{ Auth::user()->full_name }}</span>
-                <span class="text-primary text-sm">{{ userRole(Auth::user()->id_role) }}</span>
+                <span class="text-primary text-sm">{{ userRole(Auth::user()->id_user)[0]->role_name }}</span>
             </div>
         </div>
         <div class="form-inline">
@@ -34,7 +34,7 @@
                         <p>Dahsboard</p>
                     </a>
                 </li>
-                @can('kepalapmikuasa')
+                @can('kepalawilayah')
                     <li class="nav-item">
                         <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
@@ -75,7 +75,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('kordinatortimrba')
+                @can('timrba')
                     <li class="nav-item">
                         <a href="#" class="nav-link {{ $info['site_active'] == '-' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
@@ -83,7 +83,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('kepaladepartemenkabagian')
+                @can('kepalabagian')
                     <li class="nav-item {{ $info['site_active'] == 'Kegiatan' ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
@@ -94,7 +94,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item {{ $info['site_active'] == 'Pengajuan Kegiatan Baru' ? 'active' : '' }}">
-                                <a href="#" class="nav-link">
+                                <a href="{{ route('kegiatan.viewGetAll') }}" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Pengajuan Kegiatan Baru</p>
                                 </a>
@@ -114,7 +114,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('bendaharapenerimaan')
+                @can('bendpenerimaan')
                     <li class="nav-item">
                         <a href="#" class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
@@ -122,7 +122,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('bendaharapengeluaran')
+                @can('bendpengeluaran')
                     <li class="nav-item">
                         <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan Rutin' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
@@ -159,7 +159,7 @@
                         </ul>
                     </li>
                 @endcan
-                @can('bendaharakegiatanpanitiapelaksana')
+                @can('bendkegiatan')
                     <li class="nav-item">
                         <a href="#" class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
@@ -173,14 +173,14 @@
                         </a>
                     </li>
                 @endcan
-                @can('developer')
+                {{-- @can('developer')
                     <li class="nav-item">
                         <a href="#" class="nav-link {{ $info['site_active'] == 'manakses' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-users"></i>
                             <p>Man. Akses</p>
                         </a>
                     </li>
-                @endcan
+                @endcan --}}
             </ul>
         </nav>
     </div>

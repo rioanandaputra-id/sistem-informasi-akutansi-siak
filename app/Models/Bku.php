@@ -15,7 +15,8 @@ class Bku extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
-        'id_bagian',
+        'id_bku',
+        'id_divisi',
         'id_laksana_kegiatan',
         'tanggal',
         'id_akun',

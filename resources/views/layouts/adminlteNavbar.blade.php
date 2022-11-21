@@ -4,6 +4,7 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
     </ul>
+    <span class="text-bold">{{ userDivisi(Auth::user()->id_divisi)[0]->nm_divisi }}</span>
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">

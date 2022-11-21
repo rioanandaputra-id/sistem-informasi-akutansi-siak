@@ -27,6 +27,7 @@ class KegiatanController extends Controller
     public function apiGetAll()
     {
         try {
+            $id_program = ($this->request->id_program) ? " AND  kgt.id_program = '".$this->request->id_program."'" : "";
             $apiGetAll = DB::select("
                 SELECT
                     kgt.id_kegiatan,
@@ -45,9 +46,11 @@ class KegiatanController extends Controller
                     kegiatan AS kgt
                     JOIN program AS pgm ON pgm.id_program = kgt.id_program
                     AND pgm.deleted_at IS NULL AND pgm.a_aktif = '1'
-                    WHERE kgt.deleted_at IS NULL
+                WHERE kgt.deleted_at IS NULL
                     AND kgt.a_aktif = '1'
-                    ORDER BY pgm.periode DESC
+                    ".$id_program."
+                ORDER BY
+                    pgm.periode DESC
             ");
             return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
@@ -374,7 +377,8 @@ class KegiatanController extends Controller
             'title' => 'Kegiatan',
             'site_active' => 'Kegiatan',
         ];
-        return view('pages.kegiatan.viewGetAll', compact('info'));
+        $program = $this->mProgram->apiGetAll()['response'] ?? [];
+        return view('pages.kegiatan.viewGetAll', compact('info', 'program'));
     }
 
     public function viewCreate()

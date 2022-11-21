@@ -1,0 +1,14 @@
+KEPALA WILAYAH 1
+TIM RBA 1
+
+KEPALA UUD (CABANG)
+
+DIVISI LAIN
+ - Kepala Bagian
+ - Bendahara kegiatan
+
+DIVISI KEUANGAN
+ - Kepala Bagian
+ - Bendahara kegiatan
+ - Bendahara pengeluaran
+ - Bendahara penerimaan

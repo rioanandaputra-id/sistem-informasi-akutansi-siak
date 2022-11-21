@@ -27,27 +27,49 @@ class LaksanaKegiatanController extends Controller
         try {
             $apiGetAll = DB::select("
                 SELECT
-                    kgd.id_kegiatan_divisi,
-                    kgd.id_divisi,
-                    kgd.id_kegiatan,
-                    kgd.a_verif_rba,
-                    kgd.id_verif_rba,
-                    kgd.catatan,
-                    kgd.created_at,
-                    kgd.updated_at,
-                    kgd.id_updated,
+                    lkgt.id_laksana_kegiatan,
+                    lkgt.id_kegiatan_divisi,
+                    kdiv.id_kegiatan_divisi,
+                    kdiv.id_divisi,
+                    kdiv.id_kegiatan,
+                    kgt.id_program,
+                    pgm.id_misi,
+                    kdiv.id_verif_rba,
+                    lkgt.tgl_ajuan,
+                    lkgt.a_verif_kabag_keuangan,
+                    lkgt.id_verif_kabag_keuangan,
+                    lkgt.tgl_verif_kabag_keuangan,
+                    lkgt.catatan,
+                    lkgt.waktu_pelaksanaan,
+                    lkgt.waktu_selesai,
+                    lkgt.tahun,
+                    kdiv.a_verif_rba,
+                    kdiv.catatan,
+                    div.nm_divisi,
                     kgt.nm_kegiatan,
-                    div.nm_divisi
+                    kgt.a_aktif,
+                    pgm.nm_program,
+                    pgm.periode,
+                    pgm.a_aktif,
+                    msi.nm_misi,
+                    msi.periode,
+                    msi.a_aktif,
+                    lkgt.created_at,
+                    lkgt.updated_at,
+                    lkgt.deleted_at,
+                    lkgt.id_updater
                 FROM
-                    kegiatan_divisi AS kgd
-                    JOIN kegiatan AS kgt ON kgt.id_kegiatan = kgd.id_kegiatan
-                    AND kgt.deleted_at IS NULL
-                    AND kgt.a_aktif = '1'
-                    JOIN divisi AS div ON div.id_divisi = kgd.id_divisi
+                    laksana_kegiatan AS lkgt
+                    JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                    AND kdiv.deleted_at IS NULL
+                    JOIN divisi AS div ON div.id_divisi = kdiv.id_divisi
                     AND div.deleted_at IS NULL
-                WHERE
-                    kgd.deleted_at IS NULL
-                    ORDER BY kgt.nm_kegiatan ASC
+                    JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
+                    AND kgt.deleted_at IS NULL
+                    JOIN program AS pgm ON pgm.id_program = kgt.id_program
+                    AND pgm.deleted_at IS NULL
+                    JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                    AND msi.deleted_at IS NULL
             ");
             if ($this->request->ajax()) {
                 return DaTables::of($apiGetAll)->make(true);
@@ -84,30 +106,55 @@ class LaksanaKegiatanController extends Controller
     public function apiGetById($idLaksanaKegiatan = null)
     {
         try {
-            $id_kegiatan_divisi = $idLaksanaKegiatan ?? $this->request->id_kegiatan_divisi;
+            $id_laksana_kegiatan = $idLaksanaKegiatan ?? $this->request->id_laksana_kegiatan;
             $apiGetById = DB::select("
                 SELECT
-                    kgd.id_kegiatan_divisi,
-                    kgd.id_divisi,
-                    kgd.id_kegiatan,
-                    kgd.a_verif_rba,
-                    kgd.id_verif_rba,
-                    kgd.catatan,
-                    kgd.created_at,
-                    kgd.updated_at,
-                    kgd.id_updated,
+                    lkgt.id_laksana_kegiatan,
+                    lkgt.id_kegiatan_divisi,
+                    kdiv.id_kegiatan_divisi,
+                    kdiv.id_divisi,
+                    kdiv.id_kegiatan,
+                    kgt.id_program,
+                    pgm.id_misi,
+                    kdiv.id_verif_rba,
+                    lkgt.tgl_ajuan,
+                    lkgt.a_verif_kabag_keuangan,
+                    lkgt.id_verif_kabag_keuangan,
+                    lkgt.tgl_verif_kabag_keuangan,
+                    lkgt.catatan,
+                    lkgt.waktu_pelaksanaan,
+                    lkgt.waktu_selesai,
+                    lkgt.tahun,
+                    kdiv.a_verif_rba,
+                    kdiv.catatan,
+                    div.nm_divisi,
                     kgt.nm_kegiatan,
-                    div.nm_divisi
+                    kgt.a_aktif,
+                    pgm.nm_program,
+                    pgm.periode,
+                    pgm.a_aktif,
+                    msi.nm_misi,
+                    msi.periode,
+                    msi.a_aktif,
+                    lkgt.created_at,
+                    lkgt.updated_at,
+                    lkgt.deleted_at,
+                    lkgt.id_updater
                 FROM
-                    kegiatan_divisi AS kgd
-                    JOIN kegiatan AS kgt ON kgt.id_kegiatan = kgd.id_kegiatan
-                    AND kgt.deleted_at IS NULL
-                    AND kgt.a_aktif = '1'
-                    JOIN divisi AS div ON div.id_divisi = kgd.id_divisi
+                    laksana_kegiatan AS lkgt
+                    JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                    AND kdiv.deleted_at IS NULL
+                    JOIN divisi AS div ON div.id_divisi = kdiv.id_divisi
                     AND div.deleted_at IS NULL
+                    JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
+                    AND kgt.deleted_at IS NULL
+                    JOIN program AS pgm ON pgm.id_program = kgt.id_program
+                    AND pgm.deleted_at IS NULL
+                    JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                    AND msi.deleted_at IS NULL
                 WHERE
-                    kgd.deleted_at IS NULL
-                    AND kgd.id_kegiatan_divisi = '".$id_kegiatan_divisi."'
+                    lkgt.deleted_at IS NULL
+                    AND lkgt.id_laksana_kegiatan = '".$id_laksana_kegiatan."'
                 LIMIT
                     1
             ");
@@ -145,11 +192,14 @@ class LaksanaKegiatanController extends Controller
             DB::beginTransaction();
             $no_api = $noApi ?? $this->request->no_api;
             $rules = [
-                'id_divisi' => 'required|uuid',
-                'id_kegiatan' => 'required|uuid',
-                // 'a_verif_rba' => 'required',
-                // 'id_verif_rba' => 'required',
-                // 'catatan' => 'required',
+                'tgl_ajuan' => 'required',
+                'a_verif_kabag_keuangan' => 'required',
+                'id_verif_kabag_keuangan' => 'required',
+                'tgl_verif_kabag_keuangan' => 'required',
+                'catatan' => 'required',
+                'waktu_pelaksanaan' => 'required',
+                'waktu_selesai' => 'required',
+                'tahun' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -167,21 +217,27 @@ class LaksanaKegiatanController extends Controller
             }
 
             $id_kegiatan_divisi = guid();
-            $id_divisi = $this->request->id_divisi;
-            $id_kegiatan = $this->request->id_kegiatan;
-            $a_verif_rba = $this->request->a_verif_rba;
-            $id_verif_rba = $this->request->id_verif_rba;
+            $tgl_ajuan = $this->request->tgl_ajuan;
+            $a_verif_kabag_keuangan = $this->request->a_verif_kabag_keuangan;
+            $id_verif_kabag_keuangan = $this->request->id_verif_kabag_keuangan;
+            $tgl_verif_kabag_keuangan = $this->request->tgl_verif_kabag_keuangan;
             $catatan = $this->request->catatan;
+            $waktu_pelaksanaan = $this->request->waktu_pelaksanaan;
+            $waktu_selesai = $this->request->waktu_selesai;
+            $tahun = $this->request->tahun;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
 
             $this->mLaksanaKegiatan->create([
                 'id_kegiatan_divisi' => $id_kegiatan_divisi,
-                'id_divisi' => $id_divisi,
-                'id_kegiatan' => $id_kegiatan,
-                'a_verif_rba' => $a_verif_rba,
-                'id_verif_rba' => $id_verif_rba,
+                'tgl_ajuan' => $tgl_ajuan,
+                'a_verif_kabag_keuangan' => $a_verif_kabag_keuangan,
+                'id_verif_kabag_keuangan' => $id_verif_kabag_keuangan,
+                'tgl_verif_kabag_keuangan' => $tgl_verif_kabag_keuangan,
                 'catatan' => $catatan,
+                'waktu_pelaksanaan' => $waktu_pelaksanaan,
+                'waktu_selesai' => $waktu_selesai,
+                'tahun' => $tahun,
                 'created_at' => $created_at,
                 'id_updater' => $id_updater,
             ]);
@@ -236,11 +292,14 @@ class LaksanaKegiatanController extends Controller
             $no_api = $noApi ?? $this->request->no_api;
             $rules = [
                 'id_kegiatan_divisi' => 'required',
-                'id_divisi' => 'required',
-                'id_kegiatan' => 'required',
-                // 'a_verif_rba' => 'required',
-                // 'id_verif_rba' => 'required',
-                // 'catatan' => 'required',
+                'tgl_ajuan' => 'required',
+                'a_verif_kabag_keuangan' => 'required',
+                'id_verif_kabag_keuangan' => 'required',
+                'tgl_verif_kabag_keuangan' => 'required',
+                'catatan' => 'required',
+                'waktu_pelaksanaan' => 'required',
+                'waktu_selesai' => 'required',
+                'tahun' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -257,21 +316,27 @@ class LaksanaKegiatanController extends Controller
                 }
             }
 
-            $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
-            $id_divisi = $this->request->id_divisi;
-            $id_kegiatan = $this->request->id_kegiatan;
-            $a_verif_rba = $this->request->a_verif_rba;
-            $id_verif_rba = $this->request->id_verif_rba;
+            $id_kegiatan_divisi = guid();
+            $tgl_ajuan = $this->request->tgl_ajuan;
+            $a_verif_kabag_keuangan = $this->request->a_verif_kabag_keuangan;
+            $id_verif_kabag_keuangan = $this->request->id_verif_kabag_keuangan;
+            $tgl_verif_kabag_keuangan = $this->request->tgl_verif_kabag_keuangan;
             $catatan = $this->request->catatan;
+            $waktu_pelaksanaan = $this->request->waktu_pelaksanaan;
+            $waktu_selesai = $this->request->waktu_selesai;
+            $tahun = $this->request->tahun;
             $updated_at = now();
             $id_updater = Auth::user()->id_user;
 
             $this->mLaksanaKegiatan->where('id_kegiatan_divisi', $id_kegiatan_divisi)->update([
-                'id_divisi' => $id_divisi,
-                'id_kegiatan' => $id_kegiatan,
-                'a_verif_rba' => $a_verif_rba,
-                'id_verif_rba' => $id_verif_rba,
+                'tgl_ajuan' => $tgl_ajuan,
+                'a_verif_kabag_keuangan' => $a_verif_kabag_keuangan,
+                'id_verif_kabag_keuangan' => $id_verif_kabag_keuangan,
+                'tgl_verif_kabag_keuangan' => $tgl_verif_kabag_keuangan,
                 'catatan' => $catatan,
+                'waktu_pelaksanaan' => $waktu_pelaksanaan,
+                'waktu_selesai' => $waktu_selesai,
+                'tahun' => $tahun,
                 'updated_at' => $updated_at,
                 'id_updater' => $id_updater,
             ]);
@@ -325,7 +390,7 @@ class LaksanaKegiatanController extends Controller
             DB::beginTransaction();
             $no_api = $noApi ?? $this->request->no_api;
             $rules = [
-                'id_kegiatan_divisi.*' => 'required|uuid',
+                'id_laksana_kegiatan.*' => 'required|uuid',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -342,11 +407,11 @@ class LaksanaKegiatanController extends Controller
                 }
             }
 
-            $id_kegiatan_divisi = $idLaksanaKegiatan ?? $this->request->id_kegiatan_divisi;
+            $id_laksana_kegiatan = $idLaksanaKegiatan ?? $this->request->id_laksana_kegiatan;
             $deleted_at = now();
             $id_updater = Auth::user()->id_user;
 
-            $this->mLaksanaKegiatan->whereIn('id_kegiatan_divisi', $id_kegiatan_divisi)->update([
+            $this->mLaksanaKegiatan->whereIn('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
                 'deleted_at' => $deleted_at,
                 'id_updater' => $id_updater,
             ]);
@@ -360,7 +425,7 @@ class LaksanaKegiatanController extends Controller
                     'latency' => AppLatency(),
                     'message' => 'Deleted',
                     'error' => null,
-                    'response' => ['id_kegiatan_divisi' => $id_kegiatan_divisi]
+                    'response' => ['id_laksana_kegiatan' => $id_laksana_kegiatan]
                 ];
             }
         } catch (QueryException $e) {

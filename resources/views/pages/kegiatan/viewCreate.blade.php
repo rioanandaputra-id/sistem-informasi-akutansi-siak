@@ -43,7 +43,7 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
                                     <label for="nm_kegiatan">Nama Kegiatan: <i class="text-danger">*</i></label>
                                     <input type="hidden" value="1" name="no_api">
                                     <input type="text" class="form-control @error('nm_kegiatan') is-invalid @enderror" value="{{ old('nm_kegiatan') }}" id="nm_kegiatan" name="nm_kegiatan">
@@ -53,15 +53,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label for="periode">Periode Kegiatan: <i class="text-danger">*</i></label>
-                                    <input type="number" class="form-control @error('periode') is-invalid @enderror" value="{{ old('periode') }}" id="periode" name="periode">
-                                    @error('periode')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">

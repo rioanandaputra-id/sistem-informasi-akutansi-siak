@@ -87,18 +87,18 @@
                 }, {
                     data: 'nm_visi',
                     name: 'nm_visi',
-                    title: 'Nama Visi',
+                    title: 'Nama',
                     render: function(data, type, row, meta) {
                         return `<a href="{!! route('visi.viewUpdate') !!}?id_visi=${row.id_visi}">${data}</a>`;
                     }
                 }, {
                     data: 'periode',
                     name: 'periode',
-                    title: 'Periode Visi',
+                    title: 'Periode',
                 }, {
                     data: 'a_aktif',
                     name: 'a_aktif',
-                    title: 'Status Visi',
+                    title: 'Status',
                 }, ]
             });
 

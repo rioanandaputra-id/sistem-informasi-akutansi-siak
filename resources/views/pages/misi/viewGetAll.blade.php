@@ -87,18 +87,18 @@
                 }, {
                     data: 'nm_misi',
                     name: 'nm_misi',
-                    title: 'Nama Misi',
+                    title: 'Nama',
                     render: function(data, type, row, meta) {
                         return `<a href="{!! route('misi.viewUpdate') !!}?id_misi=${row.id_misi}">${data}</a>`;
                     }
                 }, {
                     data: 'periode',
                     name: 'periode',
-                    title: 'Periode Misi',
+                    title: 'Periode',
                 }, {
                     data: 'a_aktif',
                     name: 'a_aktif',
-                    title: 'Status Misi',
+                    title: 'Status',
                 }, ]
             });
 

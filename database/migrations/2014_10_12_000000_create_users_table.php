@@ -10,8 +10,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id_user')->primary();
-            $table->foreignId('id_role');
-            $table->tinyInteger('a_active')->default(0);
+            $table->foreignUuid('id_divisi');
             $table->string('full_name', 255);
             $table->char('gender', 1);
             $table->string('username', 100)->unique();

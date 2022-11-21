@@ -10,7 +10,23 @@
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
                         <div class="row mb-3">
-                            <label for="id_role" class="mb-2">{{ __('Jenis Akun') }}: <i class="text-danger">*</i></label>
+                            <label for="id_divisi" class="mb-2">{{ __('Divisi') }}: <i class="text-danger">*</i></label>
+                            <div class="col-md-12">
+                                <select name="id_divisi" id="id_divisi" class="form-control @error('id_divisi') is-invalid @enderror" required autofocus>
+                                    <option value=""></option>
+                                        @foreach ($divisis as $d)
+                                            <option {{ (old('id_divisi') == $d->id_divisi) ? 'selected' : '' }} value="{{ $d->id_divisi }}">{{ $d->nm_divisi }}</option>
+                                        @endforeach
+                                </select>
+                                @error('id_divisi')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="id_role" class="mb-2">{{ __('Role') }}: <i class="text-danger">*</i></label>
                             <div class="col-md-12">
                                 <select name="id_role" id="id_role" class="form-control @error('id_role') is-invalid @enderror" required autofocus>
                                     <option value=""></option>
