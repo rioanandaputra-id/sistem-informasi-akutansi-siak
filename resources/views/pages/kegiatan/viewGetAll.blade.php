@@ -77,9 +77,6 @@
     <script src="{{ asset('adminlte320/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('adminlte320/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
-
-
-
     <script>
         $(document).ready(function() {
             tbkegiatan();
@@ -186,7 +183,9 @@
                 });
             });
         });
+    </script>
 
+    <script>
         function getId() {
             let id = [];
             $('.ckItem:checked').each(function() {

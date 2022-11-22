@@ -44,25 +44,29 @@
                 @endcan
                 @can('kepalauud')
                     <li class="nav-item">
-                        <a href="{{ route('visi.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'Visi' ? 'active' : '' }}">
+                        <a href="{{ route('visi.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'Visi' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Visi</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('misi.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'Misi' ? 'active' : '' }}">
+                        <a href="{{ route('misi.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'Misi' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Misi</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('program.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'Program' ? 'active' : '' }}">
+                        <a href="{{ route('program.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'Program' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Program</p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('kegiatan.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
+                        <a href="{{ route('kegiatan.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Kegiatan</p>
                         </a>
@@ -77,9 +81,10 @@
                 @endcan
                 @can('timrba')
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $info['site_active'] == '-' ? 'active' : '' }}">
+                        <a href="{{ route('kegiatanDivisi.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
-                            <p>-</p>
+                            <p>Pengajuan Kegiatan Baru</p>
                         </a>
                     </li>
                 @endcan
@@ -116,7 +121,8 @@
                 @endcan
                 @can('bendpenerimaan')
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
+                        <a href="#"
+                            class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Verifikasi Kegiatan</p>
                         </a>
@@ -130,7 +136,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
+                        <a href="#"
+                            class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Verifikasi Kegiatan</p>
                         </a>
@@ -161,7 +168,8 @@
                 @endcan
                 @can('bendkegiatan')
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
+                        <a href="#"
+                            class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Verifikasi Kegiatan</p>
                         </a>
@@ -173,14 +181,6 @@
                         </a>
                     </li>
                 @endcan
-                {{-- @can('developer')
-                    <li class="nav-item">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'manakses' ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-users"></i>
-                            <p>Man. Akses</p>
-                        </a>
-                    </li>
-                @endcan --}}
             </ul>
         </nav>
     </div>

@@ -14,11 +14,13 @@ use Illuminate\Support\Facades\Validator;
 class KegiatanDivisiController extends Controller
 {
     private $request;
+    private $mProgram;
     private $mKegiatanDivisi;
 
     public function __construct()
     {
         $this->request = app(Request::class);
+        $this->mProgram = app(ProgramController::class);
         $this->mKegiatanDivisi = app(KegiatanDivisi::class);
     }
 
@@ -35,7 +37,7 @@ class KegiatanDivisiController extends Controller
                     kgd.catatan,
                     kgd.created_at,
                     kgd.updated_at,
-                    kgd.id_updated,
+                    kgd.id_updater,
                     kgt.nm_kegiatan,
                     div.nm_divisi
                 FROM
@@ -55,7 +57,7 @@ class KegiatanDivisiController extends Controller
                 return [
                     'status' => true,
                     'latency' => AppLatency(),
-                    'message' => 'Created',
+                    'message' => 'OK',
                     'error' => null,
                     'response' => $apiGetAll
                 ];
@@ -95,7 +97,7 @@ class KegiatanDivisiController extends Controller
                     kgd.catatan,
                     kgd.created_at,
                     kgd.updated_at,
-                    kgd.id_updated,
+                    kgd.id_updater,
                     kgt.nm_kegiatan,
                     div.nm_divisi
                 FROM
@@ -398,5 +400,15 @@ class KegiatanDivisiController extends Controller
                 ];
             }
         }
+    }
+
+    public function viewGetAll()
+    {
+        $info = [
+            'title' => 'Kegiatan',
+            'site_active' => 'Kegiatan',
+        ];
+        $program = $this->mProgram->apiGetAll()['response'] ?? [];
+        return view('pages.kegiatanDivisi.viewGetAll', compact('info', 'program'));
     }
 }
