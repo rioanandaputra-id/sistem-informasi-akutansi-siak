@@ -12,9 +12,9 @@ return new class extends Migration
             $table->uuid('id_laksana_kegiatan')->primary();
             $table->foreignUuid('id_kegiatan_divisi');
             $table->dateTime('tgl_ajuan');
-            $table->char('a_verif_kabag_keuangan', 1)->nullable();
-            $table->foreignUuid('id_verif_kabag_keuangan')->nullable();
-            $table->dateTime('tgl_verif_kabag_keuangan')->nullable();
+            $table->char('a_verif_bend_kegiatan', 1)->nullable();
+            $table->foreignUuid('id_verif_bend_kegiatan')->nullable();
+            $table->dateTime('tgl_verif_bend_kegiatan')->nullable();
             $table->text('catatan')->nullable();
             $table->dateTime('waktu_pelaksanaan');
             $table->dateTime('waktu_selesai');
