@@ -22,13 +22,11 @@
                         <div class="col">
                             <div class="float-left">
                                 <div class="input-group">
-                                    @can('timrba')
                                     <select id="status" class="form-control mr-2">
                                         <option value="1">Belum Diverifikasi</option>
                                         <option value="2">Disetujui</option>
                                         <option value="3">Tidak Disetujui</option>
                                     </select>
-                                    @endcan
                                     <select class="form-control" id="program" style="min-width: 620px">
                                         @foreach ($program as $pro)
                                             <option value="{{ $pro->id_program }}">
@@ -41,10 +39,8 @@
                                 <div class="input-group">
                                     <button id="refresh" type="button" class="btn btn-info noborder">
                                         <i class="fas fa-sync"></i> Refresh</button>
-                                        @can('timrba')
                                             <button id="selected" type="button" class="btn btn-info noborder ml-2">
                                             <i class="fas fa-sign-in-alt"></i> Konfirmasi</button>
-                                        @endcan
                                 </div>
                             </div>
                         </div>
@@ -126,11 +122,11 @@
             $("#btnSelectedMdl").click(function() {
                 $.ajax({
                     type: 'POST',
-                    url: "{{ route('kegiatanDivisi.apiUpdate') }}",
+                    url: '{{ route('kepalawilayah.KegiatanMonitoring.apiUpdate') }}',
                     data: {
                         _token: "{!! csrf_token() !!}",
-                        id_kegiatan_divisi: getId(),
-                        a_verif_rba: $('#a_verif_rbaSelectedMdl').val(),
+                        id_rba: getId(),
+                        a_verif_wilayah: $('#a_verif_rbaSelectedMdl').val(),
                         catatan: $('#catatanSelectedMdl').val(),
                     },
                     beforeSend: function() {
@@ -202,16 +198,16 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kegiatanDivisi.apiGetAll') }}',
+                    url: '{{ route('kepalawilayah.KegiatanMonitoring.apiGetAll') }}',
                     type: 'GET',
                     data: {
                         id_program: $('#program').val(),
-                        a_verif_rba: $('#status').val(),
+                        a_verif_wilayah: $('#status').val(),
                     }
                 },
                 columns: [{
-                        data: 'id_kegiatan_divisi',
-                        name: 'id_kegiatan_divisi',
+                        data: 'id_rba',
+                        name: 'id_rba',
                         title: '<input type="checkbox" id="ckAll" />',
                         width: '5px',
                         render: function(data, type, row) {
@@ -228,8 +224,8 @@
                         title: 'Divisi',
                     },
                     {
-                        data: 'a_verif_rba',
-                        name: 'a_verif_rba',
+                        data: 'a_verif_wilayah',
+                        name: 'a_verif_wilayah',
                         title: 'Status',
                     },
                 ]

@@ -18,26 +18,30 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-2">
+                    <div class="row mb-4">
                         <div class="col">
                             <div class="float-left">
-                                <a href="{{ route('misi.viewCreate') }}" type="button" class="btn btn-info noborder">
-                                    <i class="fas fa-plus-circle"></i> Tambah
-                                </a>
-                                <button id="refresh" type="button" class="btn btn-info noborder"><i
-                                        class="fas fa-sync"></i> Refresh</button>
-                                <button id="delete" type="button" class="btn btn-info noborder"><i
-                                        class="fas fa-trash"></i> Hapus</button>
+                                <select class="form-control" id="misi" style="min-width: 750px">
+                                    @foreach ($misi as $mi)
+                                        <option value="{{ $mi->id_misi }}">{{ $mi->periode . ' - ' . $mi->nm_misi }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="float-right text-bold">
-                                Daftar Misi
+                                <a href="{{ route('program.viewCreate') }}" type="button" class="btn btn-info noborder">
+                                    <i class="fas fa-plus-circle"></i> Tambah
+                                </a>
+                                <button id="refresh" type="button" class="btn btn-info noborder"><i class="fas fa-sync"></i>
+                                    Refresh</button>
+                                <button id="delete" type="button" class="btn btn-info noborder"><i class="fas fa-trash"></i>
+                                    Hapus</button>
                             </div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col">
-                            <table class="table table-striped teble-bordered" id="tbMisi" style="width: 100%">
+                            <table class="table table-striped teble-bordered" id="tbProgram" style="width: 100%">
                                 <thead class="bg-info"></thead>
                             </table>
                         </div>
@@ -63,43 +67,7 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $('#tbMisi').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                searching: true,
-                paging: true,
-                info: true,
-                ordering: false,
-                ajax: {
-                    url: '{{ route('misi.apiGetAll') }}',
-                    type: 'GET'
-                },
-                columns: [{
-                    data: 'id_misi',
-                    name: 'id_misi',
-                    title: '<input type="checkbox" id="ckAll" />',
-                    width: '5px',
-                    render: function(data, type, row) {
-                        return `<input type="checkbox" class="ckItem" value="${data}" />`;
-                    }
-                }, {
-                    data: 'nm_misi',
-                    name: 'nm_misi',
-                    title: 'Nama',
-                    render: function(data, type, row, meta) {
-                        return `<a href="{!! route('misi.viewUpdate') !!}?id_misi=${row.id_misi}">${data}</a>`;
-                    }
-                }, {
-                    data: 'periode',
-                    name: 'periode',
-                    title: 'Periode',
-                }, {
-                    data: 'a_aktif',
-                    name: 'a_aktif',
-                    title: 'Status',
-                }, ]
-            });
+            tbProgram();
 
             $("#ckAll").change(function() {
                 if (this.checked) {
@@ -110,7 +78,12 @@
             });
 
             $("#refresh").click(function() {
-                $('#tbMisi').DataTable().ajax.reload();
+                $('#tbProgram').DataTable().ajax.reload();
+            });
+
+            $('#misi').on('change', function() {
+                $('#tbProgram').DataTable().clear().destroy();
+                tbProgram();
             });
 
             $("#delete").click(function() {
@@ -128,11 +101,11 @@
                     if (willDelete.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "{!! route('misi.apiDelete') !!}",
+                            url: "{!! route('program.apiDelete') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
                                 no_api: 0,
-                                id_misi: getId()
+                                id_program: getId()
                             }
                         }).done(function(res) {
                             Swal.fire({
@@ -142,7 +115,7 @@
                                 showConfirmButton: false,
                                 timer: 1000,
                             });
-                            $('#tbMisi').DataTable().ajax.reload();
+                            $('#tbProgram').DataTable().ajax.reload();
                             $("#delete").prop("disabled", false);
                         }).fail(function(res) {
                             Swal.fire({
@@ -151,18 +124,18 @@
                                 title: 'Data Gagal Dihapus!',
                                 showConfirmButton: true,
                             });
-                            $('#tbMisi').DataTable().ajax.reload();
+                            $('#tbProgram').DataTable().ajax.reload();
                             $("#delete").prop("disabled", false);
                         });
                     } else {
-                        $('#tbMisi').DataTable().ajax.reload();
+                        $('#tbProgram').DataTable().ajax.reload();
                         $("#delete").prop("disabled", false);
                     }
                 });
             });
 
             $("#confirm").click(function() {
-                $('#tbMisi').DataTable().ajax.reload();
+                $('#tbProgram').DataTable().ajax.reload();
             });
         });
 
@@ -172,6 +145,49 @@
                 id.push($(this).val());
             });
             return id;
+        }
+
+        function tbProgram() {
+            $('#tbProgram').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                searching: true,
+                paging: true,
+                info: true,
+                ordering: false,
+                ajax: {
+                    url: '{{ route('program.apiGetAll') }}',
+                    type: 'GET',
+                    data: {
+                        id_misi: $('#misi').val()
+                    }
+                },
+                columns: [{
+                    data: 'id_program',
+                    name: 'id_program',
+                    title: '<input type="checkbox" id="ckAll" />',
+                    width: '5px',
+                    render: function(data, type, row) {
+                        return `<input type="checkbox" class="ckItem" value="${data}" />`;
+                    }
+                }, {
+                    data: 'nm_program',
+                    name: 'nm_program',
+                    title: 'Nama',
+                    render: function(data, type, row, meta) {
+                        return `<a href="{!! route('program.viewUpdate') !!}?id_program=${row.id_program}">${data}</a>`;
+                    }
+                }, {
+                    data: 'periode_program',
+                    name: 'periode_program',
+                    title: 'Periode',
+                }, {
+                    data: 'a_aktif',
+                    name: 'a_aktif',
+                    title: 'Status',
+                }, ]
+            });
         }
     </script>
 @endpush

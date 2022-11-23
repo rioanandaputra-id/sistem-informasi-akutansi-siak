@@ -29,16 +29,16 @@
                 data-accordion="false">
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
-                        class="nav-link {{ $info['site_active'] == 'Dahsboard' ? 'active' : '' }}">
+                        class="nav-link {{ $info['site_active'] == 'Dashboard' ? 'active' : '' }}">
                         <i class="nav-icon fas fas fa-list"></i>
-                        <p>Dahsboard</p>
+                        <p>Dashboard</p>
                     </a>
                 </li>
                 @can('kepalawilayah')
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
+                        <a href="{{ route('kepalawilayah.KegiatanMonitoring.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'MonitoringKegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
-                            <p>Kegiatan</p>
+                            <p>Monitoring Kegiatan</p>
                         </a>
                     </li>
                 @endcan
@@ -72,8 +72,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#"
-                            class="nav-link {{ $info['site_active'] == 'Monitoring Kegiatan' ? 'active' : '' }}">
+                        <a href="{{ route('kepalauud.KegiatanMonitoring.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'MonitoringKegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Monitoring Kegiatan</p>
                         </a>
@@ -82,15 +82,15 @@
                 @can('timrba')
                     <li class="nav-item">
                         <a href="{{ route('kegiatanDivisi.viewGetAll') }}"
-                            class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
+                            class="nav-link {{ $info['site_active'] == 'KegiatanDivisi' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
-                            <p>Pengajuan Kegiatan Baru</p>
+                            <p>Kegiatan</p>
                         </a>
                     </li>
                 @endcan
                 @can('kepalabagian')
-                    <li class="nav-item {{ $info['site_active'] == 'Kegiatan' ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
+                    <li class="nav-item {{ $info['site_active'] == 'Kegiatan' || $info['site_active'] == 'KegiatanDivisi' ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan' || $info['site_active'] == 'KegiatanDivisi' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>
                                 Kegiatan
@@ -98,14 +98,14 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item {{ $info['site_active'] == 'Pengajuan Kegiatan Baru' ? 'active' : '' }}">
-                                <a href="{{ route('kegiatan.viewGetAll') }}" class="nav-link">
+                            <li class="nav-item">
+                                <a href="{{ route('kegiatan.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Pengajuan Kegiatan Baru</p>
                                 </a>
                             </li>
-                            <li class="nav-item {{ $info['site_active'] == 'Monitoring Kegiatan' ? 'active' : '' }}">
-                                <a href="#" class="nav-link">
+                            <li class="nav-item">
+                                <a href="{{ route('kegiatanDivisi.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'KegiatanDivisi' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Monitoring Kegiatan</p>
                                 </a>

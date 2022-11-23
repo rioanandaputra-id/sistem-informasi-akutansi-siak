@@ -22,13 +22,11 @@
                         <div class="col">
                             <div class="float-left">
                                 <div class="input-group">
-                                    @can('timrba')
                                     <select id="status" class="form-control mr-2">
                                         <option value="1">Belum Diverifikasi</option>
                                         <option value="2">Disetujui</option>
                                         <option value="3">Tidak Disetujui</option>
                                     </select>
-                                    @endcan
                                     <select class="form-control" id="program" style="min-width: 620px">
                                         @foreach ($program as $pro)
                                             <option value="{{ $pro->id_program }}">
@@ -41,10 +39,8 @@
                                 <div class="input-group">
                                     <button id="refresh" type="button" class="btn btn-info noborder">
                                         <i class="fas fa-sync"></i> Refresh</button>
-                                        @can('timrba')
                                             <button id="selected" type="button" class="btn btn-info noborder ml-2">
                                             <i class="fas fa-sign-in-alt"></i> Konfirmasi</button>
-                                        @endcan
                                 </div>
                             </div>
                         </div>
@@ -126,7 +122,7 @@
             $("#btnSelectedMdl").click(function() {
                 $.ajax({
                     type: 'POST',
-                    url: "{{ route('kegiatanDivisi.apiUpdate') }}",
+                    url: "{{ route('kepalauud.KegiatanMonitoring.apiUpdate') }}",
                     data: {
                         _token: "{!! csrf_token() !!}",
                         id_kegiatan_divisi: getId(),
@@ -189,6 +185,7 @@
             $('.ckItem:checked').each(function() {
                 id.push($(this).val());
             });
+            console.log(id);
             return id;
         }
 
@@ -202,7 +199,7 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kegiatanDivisi.apiGetAll') }}',
+                    url: '{{ route('kepalauud.KegiatanMonitoring.apiGetAll') }}',
                     type: 'GET',
                     data: {
                         id_program: $('#program').val(),

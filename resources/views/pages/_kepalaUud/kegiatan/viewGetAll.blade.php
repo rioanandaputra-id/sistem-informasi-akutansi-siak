@@ -21,7 +21,7 @@
                     <div class="row mb-3">
                         <div class="col">
                             <div class="float-left">
-                                <select class="form-control" id="program" style="min-width: 700px">
+                                <select class="form-control" id="program" style="min-width: 750px">
                                     @foreach ($program as $pro)
                                         <option value="{{ $pro->id_program }}">
                                             {{ $pro->periode_program . ' - ' . $pro->nm_program }}</option>

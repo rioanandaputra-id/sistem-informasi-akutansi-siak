@@ -33,9 +33,9 @@ class KegiatanController extends Controller
                     kgt.id_kegiatan,
                     kgt.id_program,
                     kgt.nm_kegiatan,
-                    CASE
-                        WHEN kgt.a_aktif = '1' THEN 'Aktif'
-                        ELSE 'Non Aktif'
+                CASE
+                        WHEN kgt.a_aktif = '1' THEN
+                        'Aktif' ELSE'Non Aktif'
                     END AS a_aktif,
                     pgm.nm_program,
                     pgm.periode AS periode_program,
@@ -45,12 +45,15 @@ class KegiatanController extends Controller
                 FROM
                     kegiatan AS kgt
                     JOIN program AS pgm ON pgm.id_program = kgt.id_program
-                    AND pgm.deleted_at IS NULL AND pgm.a_aktif = '1'
-                WHERE kgt.deleted_at IS NULL
+                    AND pgm.deleted_at IS NULL
+                    AND pgm.a_aktif = '1'
+                WHERE
+                    kgt.deleted_at IS NULL
                     AND kgt.a_aktif = '1'
                     ".$id_program."
-                ORDER BY
-                    pgm.periode DESC
+                    AND kgt.id_kegiatan NOT IN(SELECT id_kegiatan FROM kegiatan_divisi WHERE id_divisi = '".Auth::user()->id_divisi."')
+                    ORDER BY
+                        pgm.periode DESC
             ");
             return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {

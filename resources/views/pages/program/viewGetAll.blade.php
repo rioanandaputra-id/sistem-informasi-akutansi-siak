@@ -21,29 +21,24 @@
                     <div class="row mb-4">
                         <div class="col">
                             <div class="float-left">
-                                <a href="{{ route('program.viewCreate') }}" type="button" class="btn btn-info">
-                                    <i class="fas fa-plus-circle"></i>
-                                </a>
-                                <button id="refresh" type="button" class="btn btn-info"><i
-                                        class="fas fa-sync"></i></button>
-                                <button id="delete" type="button" class="btn btn-info"><i
-                                        class="fas fa-trash"></i></button>
+                                <select class="form-control" id="misi" style="min-width: 700px">
+                                    @foreach ($misi as $mi)
+                                        <option value="{{ $mi->id_misi }}">{{ $mi->periode . ' - ' . $mi->nm_misi }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="float-right text-bold">
-                                <div class="input-group">
-                                    <select name="id_misi" class="form-control" id="id_misi">
-                                        @foreach ($misi as $mi)
-                                            <option value="{{ $mi->id_misi }}">{{ $mi->periode .' - '. $mi->nm_misi }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-info" type="submit" id="filter"><i
-                                            class="fas fa-search"></i></button>
-                                    </div>
-                                </div>
+                                <a href="{{ route('program.viewCreate') }}" type="button" class="btn btn-info noborder">
+                                    <i class="fas fa-plus-circle"></i> Tambah
+                                </a>
+                                <button id="refresh" type="button" class="btn btn-info noborder"><i class="fas fa-sync"></i>
+                                    Refresh</button>
+                                <button id="delete" type="button" class="btn btn-info noborder"><i class="fas fa-trash"></i>
+                                    Hapus</button>
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="row">
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbProgram" style="width: 100%">
@@ -86,7 +81,7 @@
                 $('#tbProgram').DataTable().ajax.reload();
             });
 
-            $("#filter").click(function() {
+            $('#misi').on('change', function() {
                 $('#tbProgram').DataTable().clear().destroy();
                 tbProgram();
             });
@@ -152,7 +147,7 @@
             return id;
         }
 
-        function tbProgram(){
+        function tbProgram() {
             $('#tbProgram').DataTable({
                 processing: true,
                 serverSide: true,
@@ -165,7 +160,7 @@
                     url: '{{ route('program.apiGetAll') }}',
                     type: 'GET',
                     data: {
-                        id_misi: $('#id_misi').val()
+                        id_misi: $('#misi').val()
                     }
                 },
                 columns: [{

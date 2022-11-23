@@ -3,6 +3,8 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KegiatanDivisiController;
+use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegiatanMonitoringController;
+use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
 use App\Http\Controllers\MisiController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\VisiController;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes();
-Route::get('/', function() {
+Route::get('/', function () {
     return view('auth.login');
 });
 Route::middleware('auth')->group(function () {
@@ -66,5 +68,20 @@ Route::middleware('auth')->group(function () {
         Route::get('viewGetAll', 'viewGetAll')->name('kegiatanDivisi.viewGetAll');
         Route::get('viewCreate', 'viewCreate')->name('kegiatanDivisi.viewCreate');
         Route::get('viewUpdate', 'viewUpdate')->name('kegiatanDivisi.viewUpdate');
+    });
+
+
+    // =====================================KEPALA UUD========================================
+    Route::controller(KepalaUudKegiatanMonitoringController::class)->prefix('kepalauud/KegiatanMonitoring')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.KegiatanMonitoring.apiGetAll');
+        Route::post('apiCreate', 'apiCreate')->name('kepalauud.KegiatanMonitoring.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.KegiatanMonitoring.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.KegiatanMonitoring.viewGetAll');
+    });
+    // =====================================KEPALA WILAYAH========================================
+    Route::controller(KepalaWilayahKegiatanMonitoringController::class)->prefix('kepalawilayah/KegiatanMonitoring')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalawilayah.KegiatanMonitoring.apiGetAll');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalawilayah.KegiatanMonitoring.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalawilayah.KegiatanMonitoring.viewGetAll');
     });
 });

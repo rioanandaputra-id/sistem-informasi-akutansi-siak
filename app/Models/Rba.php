@@ -15,6 +15,7 @@ class Rba extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'id_rba',
         'tgl_buat',
         'tgl_submit',
         'catatan',
@@ -28,6 +29,6 @@ class Rba extends Model
         'created_at',
         'updated_at',
         'deleted_at',
-        'id_updated',
+        'id_updater',
     ];
 }
