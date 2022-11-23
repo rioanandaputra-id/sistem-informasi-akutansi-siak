@@ -146,10 +146,6 @@
                 });
             });
 
-            $("#confirm").click(function() {
-                $('#tbkegiatan').DataTable().ajax.reload();
-            });
-
             $("#selected").click(function() {
                 $.ajax({
                     type: 'POST',

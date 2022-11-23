@@ -237,93 +237,73 @@ class KegiatanDivisiController extends Controller
         }
     }
 
-    public function apiUpdate($noApi = null)
+    public function apiUpdate()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
-            $rules = [
-                'id_kegiatan_divisi' => 'required',
-                'id_divisi' => 'required',
-                'id_kegiatan' => 'required',
-                // 'a_verif_rba' => 'required',
-                // 'id_verif_rba' => 'required',
-                // 'catatan' => 'required',
-            ];
+            $rules = ['id_kegiatan_divisi.*' => 'required'];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
-            }
-
-            $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
-            $id_divisi = $this->request->id_divisi;
-            $id_kegiatan = $this->request->id_kegiatan;
-            $a_verif_rba = $this->request->a_verif_rba;
-            $id_verif_rba = $this->request->id_verif_rba;
-            $catatan = $this->request->catatan;
-            $updated_at = now();
-            $id_updater = Auth::user()->id_user;
-
-            $this->mKegiatanDivisi->where('id_kegiatan_divisi', $id_kegiatan_divisi)->update([
-                'id_divisi' => $id_divisi,
-                'id_kegiatan' => $id_kegiatan,
-                'a_verif_rba' => $a_verif_rba,
-                'id_verif_rba' => $id_verif_rba,
-                'catatan' => $catatan,
-                'updated_at' => $updated_at,
-                'id_updater' => $id_updater,
-            ]);
-
-            DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Diubah!');
-            } else {
                 return [
-                    'status' => true,
+                    'status' => false,
                     'latency' => AppLatency(),
-                    'message' => 'Updated',
-                    'error' => null,
-                    'response' => ['id_kegiatan_divisi' => $id_kegiatan_divisi]
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
                 ];
             }
+            $id_kegiatan_divisi = $idKegiatanDivisi ?? $this->request->id_kegiatan_divisi;
+            $a_verif_rba = $this->request->a_verif_rba;
+            $id_verif_rba = Auth::user()->id_user;
+            $catatan = $this->request->catatan;
+            $updated_at = now();
+            if (is_array($id_kegiatan_divisi)) {
+                foreach ($id_kegiatan_divisi as $v) {
+                    $this->mKegiatanDivisi->where('id_kegiatan_divisi', $v)->update([
+                        'a_verif_rba' => $a_verif_rba,
+                        'id_verif_rba' => $id_verif_rba,
+                        'a_verif_rba' => 2,
+                        'catatan' => $catatan,
+                        'updated_at' => $updated_at,
+                    ]);
+                }
+            } else {
+                $this->mKegiatanDivisi->where('id_kegiatan_divisi', $id_kegiatan_divisi)->update([
+                    'a_verif_rba' => $a_verif_rba,
+                    'id_verif_rba' => $id_verif_rba,
+                    'a_verif_rba' => 2,
+                    'catatan' => $catatan,
+                    'updated_at' => $updated_at,
+                ]);
+            }
+            DB::commit();
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Updated',
+                'error' => null,
+                'response' => ['id_kegiatan_divisi' => $id_kegiatan_divisi]
+            ];
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
         }
     }
 

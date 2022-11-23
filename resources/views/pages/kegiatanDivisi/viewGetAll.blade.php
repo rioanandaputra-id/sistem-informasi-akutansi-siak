@@ -23,7 +23,7 @@
                             <div class="float-left">
                                 <button id="refresh" type="button" class="btn btn-info">
                                     <i class="fas fa-sync"></i></button>
-                                <button id="confirm" type="button" class="btn btn-info">
+                                <button id="selected" type="button" class="btn btn-info">
                                     <i class="fas fa-sign-in-alt"></i></button>
                             </div>
                             <div class="float-right text-bold">
@@ -99,8 +99,37 @@
                 tbkegiatandivisi();
             });
 
-            $("#confirm").click(function() {
-                console.log(getId());
+            $("#selected").click(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('kegiatanDivisi.apiUpdate') }}",
+                    data: {
+                        _token: "{!! csrf_token() !!}",
+                        id_kegiatan: getId()
+                    },
+                    beforeSend: function() {
+                        $('#selected').prop("disabled", true);
+                    },
+                }).done(function(res) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Pengajuan Kegiatan Baru Berhasil',
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+                    $('#selected').prop("disabled", false);
+                }).fail(function(res) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Pengajuan Kegiatan Baru Gagal',
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+                    console.log(res);
+                    $('#selected').prop("disabled", false);
+                });
             });
         });
     </script>
@@ -131,8 +160,8 @@
                     }
                 },
                 columns: [{
-                        data: 'id_kegiatan',
-                        name: 'id_kegiatan',
+                        data: 'id_kegiatan_divisi',
+                        name: 'id_kegiatan_divisi',
                         title: '<input type="checkbox" id="ckAll" />',
                         width: '5px',
                         render: function(data, type, row) {
