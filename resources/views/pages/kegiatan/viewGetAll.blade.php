@@ -259,7 +259,7 @@
                     }, {
                         data: 'nm_kegiatan',
                         name: 'nm_kegiatan',
-                        title: 'Nama',
+                        title: 'Kegiatan',
                         render: function(data, type, row, meta) {
                             return `<a href="{!! route('kegiatan.viewUpdate') !!}?id_kegiatan=${row.id_kegiatan}">${data}</a>`;
                         }

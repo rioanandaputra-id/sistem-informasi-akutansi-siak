@@ -15,6 +15,8 @@ class Akun extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'id_akun',
+        'no_akun_induk',
         'no_akun',
         'nm_akun',
         'keterangan',
@@ -22,5 +24,6 @@ class Akun extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'id_updater',
     ];
 }

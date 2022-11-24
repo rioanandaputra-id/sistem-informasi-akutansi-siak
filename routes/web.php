@@ -3,13 +3,14 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KegiatanDivisiController;
-use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegiatanMonitoringController;
-use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
 use App\Http\Controllers\MisiController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\VisiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KepalaBagian\KegiatanMonitoringController as KepalaBagianKegiatanMonitoringController;
+use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegiatanMonitoringController;
+use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
 
 Auth::routes();
 Route::get('/', function () {
@@ -83,5 +84,14 @@ Route::middleware('auth')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalawilayah.KegiatanMonitoring.apiGetAll');
         Route::post('apiUpdate', 'apiUpdate')->name('kepalawilayah.KegiatanMonitoring.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalawilayah.KegiatanMonitoring.viewGetAll');
+    });
+    // =====================================KEPALA BAGIAN========================================
+    Route::controller(KepalaBagianKegiatanMonitoringController::class)->prefix('kepalabagian/KegiatanMonitoring')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.KegiatanMonitoring.apiGetAll');
+        Route::post('apiCreateDetailRba', 'apiCreateDetailRba')->name('kepalabagian.KegiatanMonitoring.apiCreateDetailRba');
+        Route::post('apiDeleteDetailRba', 'apiDeleteDetailRba')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailRba');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalabagian.KegiatanMonitoring.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.KegiatanMonitoring.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('kepalabagian.KegiatanMonitoring.viewDetail');
     });
 });

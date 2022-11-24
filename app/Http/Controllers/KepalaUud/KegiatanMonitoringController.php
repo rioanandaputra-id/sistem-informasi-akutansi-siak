@@ -229,6 +229,6 @@ class KegiatanMonitoringController extends Controller
             'site_active' => 'MonitoringKegiatan',
         ];
         $program = $this->mProgram->apiGetAll()['response'] ?? [];
-        return view('pages._kepalaUud.KegiatanMonitoring.viewGetAll', compact('info', 'program'));
+        return view('pages._kepalaUud.kegiatanMonitoring.viewGetAll', compact('info', 'program'));
     }
 }

@@ -89,8 +89,8 @@
                     </li>
                 @endcan
                 @can('kepalabagian')
-                    <li class="nav-item {{ $info['site_active'] == 'Kegiatan' || $info['site_active'] == 'KegiatanDivisi' ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan' || $info['site_active'] == 'KegiatanDivisi' ? 'active' : '' }}">
+                    <li class="nav-item {{ $info['site_active'] == 'Kegiatan' || $info['site_active'] == 'MonitoringKegiatan' ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $info['site_active'] == 'Kegiatan' || $info['site_active'] == 'MonitoringKegiatan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>
                                 Kegiatan
@@ -105,7 +105,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('kegiatanDivisi.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'KegiatanDivisi' ? 'active' : '' }}">
+                                <a href="{{ route('kepalabagian.KegiatanMonitoring.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'MonitoringKegiatan' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Monitoring Kegiatan</p>
                                 </a>
