@@ -83,9 +83,9 @@ class KegiatanMonitoringController extends Controller
         return DaTables::of($apiGetAll)->make(true);
     }
 
-    public function apiGetById($idRba = null)
+    public function apiGetById($idKegiatanDivisi = null)
     {
-        $id_rba = $idRba ?? $this->request->id_rba;
+        $id_kegiatan_divisi = $idKegiatanDivisi ?? $this->request->id_kegiatan_divisi;
         $id_divisi = (Auth::user()->id_divisi) ? " AND  kdiv.id_divisi = '" . Auth::user()->id_divisi . "'" : "";
         $apiGetById = DB::select("
             SELECT
@@ -131,7 +131,7 @@ class KegiatanMonitoringController extends Controller
                 AND rba.deleted_at IS NULL
             WHERE
                 kdiv.deleted_at IS NULL
-                AND rba.id_rba = '" . $id_rba . "'
+                AND kdiv.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
                 " . $id_divisi . "
         ");
         return $apiGetById;
@@ -350,12 +350,12 @@ class KegiatanMonitoringController extends Controller
 
     public function viewDetail()
     {
-        $id_rba = $this->request->id_rba;
+        $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
         $info = [
             'title' => 'Detail Monitoring Kegiatan',
             'site_active' => 'MonitoringKegiatan',
         ];
-        $kegiatan = $this->apiGetById($id_rba);
+        $kegiatan = $this->apiGetById($id_kegiatan_divisi);
         $detailRba = DB::select("
             SELECT
                 drba.id_detail_rba,
@@ -382,13 +382,54 @@ class KegiatanMonitoringController extends Controller
                 akn.keterangan
             FROM
                 detail_rba AS drba
+                JOIN rba as rba ON rba.id_rba = drba.id_rba
+                AND rba.deleted_at IS NULL AND rba.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
                 JOIN akun AS akn ON akn.id_akun = drba.id_akun
                 AND akn.deleted_at IS NULL
             WHERE
                 drba.deleted_at IS NULL
-                AND drba.id_rba = '" . $id_rba . "'
+        ");
+        $detailLaksKegiatan = DB::select("
+            SELECT
+                dkgt.id_detail_laksana_kegiatan,
+                dkgt.id_laksana_kegiatan,
+                dkgt.id_detail_rba,
+                dkgt.jumlah,
+                dkgt.total,
+                dkgt.created_at,
+                dkgt.updated_at,
+                dkgt.deleted_at,
+                dkgt.id_updater,
+                lkgt.id_kegiatan_divisi,
+                lkgt.tgl_ajuan,
+                CASE
+                    lkgt.a_verif_bend_kegiatan
+                    WHEN '2' THEN 'Disetujui Bend. Kegiatan'
+                    WHEN '3' THEN 'Tidak Disetujui Bend. Kegiatan'
+                    ELSE 'Belum Diverifikasi Bend. Kegiatan'
+                END AS a_verif_bend_kegiatan,
+                lkgt.id_verif_bend_kegiatan,
+                lkgt.tgl_verif_bend_kegiatan,
+                lkgt.catatan,
+                lkgt.waktu_pelaksanaan,
+                lkgt.waktu_selesai,
+                lkgt.tahun,
+                akn.id_akun,
+                akn.no_akun,
+                akn.nm_akun
+            FROM
+                detail_laksana_kegiatan AS dkgt
+                JOIN laksana_kegiatan AS lkgt ON lkgt.id_laksana_kegiatan = dkgt.id_laksana_kegiatan
+                AND lkgt.deleted_at IS NULL
+                JOIN detail_rba AS drba ON drba.id_rba = dkgt.id_detail_rba
+                AND drba.deleted_at IS NULL
+                JOIN akun AS akn ON akn.id_akun = drba.id_akun
+                AND akn.deleted_at IS NULL
+            WHERE
+                dkgt.deleted_at IS NULL
+                AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
         ");
         $akun = DB::select("SELECT * FROM akun WHERE no_akun_induk = '5'");
-        return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun'));
+        return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'detailLaksKegiatan'));
     }
 }

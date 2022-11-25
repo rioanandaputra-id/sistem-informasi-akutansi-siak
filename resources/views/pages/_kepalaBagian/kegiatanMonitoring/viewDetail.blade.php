@@ -4,7 +4,8 @@
 
 @section('content')
     @php
-        $lockBtn = 'disabled';
+        // $lockBtn = 'disabled';
+        $lockBtn = '';
         $IdRba = '';
     @endphp
     <div class="row">
@@ -38,7 +39,7 @@
                             </div>
                             @foreach ($kegiatan as $kgt)
                                 @php
-                                    $lockBtn = $kgt->rba_a_verif_wilayah == 'Disetujui Kepala Wilayah' ? '' : 'disabled';
+                                    // $lockBtn = $kgt->rba_a_verif_wilayah == 'Disetujui Kepala Wilayah' ? '' : 'disabled';
                                     $IdRba = $kgt->id_rba;
                                 @endphp
                                 <table>
@@ -146,33 +147,117 @@
                                 </div>
                             </div>
                             <table class="table table-striped teble-bordered" id="tbDetailRba" style="width: 100%">
-                                <thead class="bg-info">
+                                <thead class="bg-success">
                                     <tr>
                                         <th><input type="checkbox" id="ckAll"></th>
                                         <th>Akun</th>
-                                        <th>Vol</th>
                                         <th>Satuan</th>
                                         <th>Indikator</th>
+                                        <th>Volume</th>
                                         <th>Tarif</th>
                                         <th>Total</th>
-                                        <th>Status</th>
+                                        {{-- <th>Status</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $tbDetailRbaTotal = 0;
+                                    @endphp
                                     @foreach ($detailRba as $drba)
                                         <tr>
                                             <th><input class="ckItem" type="checkbox" value="{{ $drba->id_detail_rba }}">
                                             </th>
                                             <td>{{ $drba->no_akun }} - {{ $drba->nm_akun }}</td>
-                                            <td>{{ $drba->vol }}</td>
                                             <td>{{ $drba->satuan }}</td>
                                             <td>{{ $drba->indikator }}</td>
+                                            <td>{{ $drba->vol }}</td>
                                             <td>{{ $drba->tarif }}</td>
                                             <td>{{ $drba->total }}</td>
-                                            <td>{{ $drba->a_setuju }}</td>
+                                            {{-- <td>{{ $drba->a_setuju }}</td> --}}
                                         </tr>
+                                        @php
+                                            $tbDetailRbaTotal += $drba->total;
+                                        @endphp
                                     @endforeach
                                 </tbody>
+                                <tfoot class="bg-success">
+                                    <tr>
+                                        <th></th>
+                                        <th colspan="5">Total</th>
+                                        <th>{{ $tbDetailRbaTotal }}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mt-4">
+                        <div class="col">
+                            <div class="row bg-purple p-2 mb-4">
+                                <div class="col">
+                                    <div class="float-left">
+                                        <b>DETAIL PELAKSANAAN KEGIATAN</b>
+                                    </div>
+                                    <div class="float-right">
+                                        <button {{ $lockBtn }} id="addDetailLaksKegiatan"
+                                            class="btn btn-sm noborder btn-light"><i class="fas fa-plus-circle"></i>
+                                            Tambah</button>
+                                        <button {{ $lockBtn }} id="deleteDetailLaksKegiatan"
+                                            class="btn btn-sm noborder btn-light ml-2"><i class="fas fa-trash"></i>
+                                            Hapus</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped teble-bordered" id="tbDetailLaksKegiatan" style="width: 100%">
+                                <thead class="bg-purple">
+                                    <tr>
+                                        <th><input type="checkbox" id="ckAll"></th>
+                                        <th>Akun</th>
+                                        <th>Tgl. Ajuan</th>
+                                        <th>Tgl. Verif</th>
+                                        <th>Catatan</th>
+                                        <th>Wkt. Laks</th>
+                                        <th>Wkt. Selesai</th>
+                                        <th>Tahun</th>
+                                        <th>Status</th>
+                                        <th>Jumlah</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $tbDetailLaksKegiatanTotal = 0;
+                                    @endphp
+                                    @foreach ($detailLaksKegiatan as $dlk)
+                                        <tr>
+                                            <th><input class="ckItem" type="checkbox"
+                                                    value="{{ $dlk->id_detail_laksana_kegiatan }}">
+                                            </th>
+                                            <td>{{ $dlk->no_akun }} - {{ $dlk->nm_akun }}</td>
+                                            <td>{{ $dlk->tgl_ajuan }}</td>
+                                            <td>{{ $dlk->tgl_verif_bend_kegiatan }}</td>
+                                            <td>{{ $dlk->catatan }}</td>
+                                            <td>{{ $dlk->waktu_pelaksanaan }}</td>
+                                            <td>{{ $dlk->waktu_selesai }}</td>
+                                            <td>{{ $dlk->tahun }}</td>
+                                            <td>{{ $dlk->a_verif_bend_kegiatan }}</td>
+                                            <td>{{ $dlk->jumlah }}</td>
+                                            <td>{{ $dlk->total }}</td>
+                                        </tr>
+                                        @php
+                                            if ($dlk->a_verif_bend_kegiatan != "Tidak Disetujui Bend. Kegiatan") {
+                                                $tbDetailLaksKegiatanTotal += $dlk->total;
+                                            }
+                                        @endphp
+                                    @endforeach
+                                </tbody>
+                                <tfoot class="bg-purple">
+                                    <tr>
+                                        <th></th>
+                                        <th colspan="9">Total</th>
+                                        <th>{{ $tbDetailLaksKegiatanTotal }}</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -194,8 +279,9 @@
                     <form id="formaddDetailRbaMdl">
                         <div class="row mb-2">
                             <div class="col">
+                                <label for="id_akunaddDetailRbaMdl">Akun: <i class="text-red">*</i></label>
                                 <select id="id_akunaddDetailRbaMdl" class="form-control">
-                                    <option value="">-- Akun --</option>
+                                    <option value="">---</option>
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
                                         </option>
@@ -203,30 +289,98 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Vol" id="voladdDetailRbaMdl">
+                                <label for="satuanaddDetailRbaMdl">Satuan: <i class="text-red">*</i></label>
+                                <input type="text" class="form-control" id="satuanaddDetailRbaMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
-                                <input type="text" class="form-control" placeholder="Satuan" id="satuanaddDetailRbaMdl">
+                                <label for="indikatoraddDetailRbaMdl">Indikator: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="indikatoraddDetailRbaMdl">
                             </div>
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Indikator"
-                                    id="indikatoraddDetailRbaMdl">
+                                <label for="voladdDetailRbaMdl">Volume: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="voladdDetailRbaMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Tarif" id="tarifaddDetailRbaMdl">
+                                <label for="tarifaddDetailRbaMdl">Tarif: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="tarifaddDetailRbaMdl">
                             </div>
                             <div class="col">
-                                <input type="number" class="form-control" placeholder="Total" id="totaladdDetailRbaMdl">
+                                <label for="totaladdDetailRbaMdl">Total: <i class="text-red">*</i></label>
+                                <input type="number" readonly class="form-control" id="totaladdDetailRbaMdl"
+                                    value="0">
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnaddDetailRbaMdl" class="btn btn-primary">Tambah</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addDetailLaksKegiatanMdl" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Detail Pelaksanaan Kegiatan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2 bg-warning">
+                        <div class="col">
+                            Sisa Anggaran Yang Dapat Anda Ajukan : {{ $tbDetailRbaTotal - $tbDetailLaksKegiatanTotal}}
+                        </div>
+                    </div>
+                    <hr>
+                    <form id="formaddDetailLaksKegiatanMdl">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="">Akun: <i class="text-red">*</i></label>
+                                <select id="id_akunaddDetailLaksKegiatanMdl" class="form-control">
+                                    <option value="">---</option>
+                                    @foreach ($detailRba as $akn)
+                                        <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="">Waktu Pelakasanaan: <i class="text-red">*</i></label>
+                                <input type="datetime-local" class="form-control" id="voladdDetailLaksKegiatanMdl">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="">Waktu Pelakasanaan: <i class="text-red">*</i></label>
+                                <input type="datetime-local" class="form-control" id="satuanaddDetailLaksKegiatanMdl">
+                            </div>
+                            <div class="col">
+                                <label for="">Tahun: <i class="text-red">*</i></label>
+                                <input type="number" value="{{ date('Y') }}" class="form-control" id="indikatoraddDetailLaksKegiatanMdl">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="">Jumlah: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="tarifaddDetailLaksKegiatanMdl">
+                            </div>
+                            <div class="col">
+                                <label for="">Total: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="totaladdDetailLaksKegiatanMdl">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnaddDetailLaksKegiatanMdl" class="btn btn-primary">Tambah</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                 </div>
             </div>
@@ -251,6 +405,14 @@
 
             $("#addDetailRba").click(function() {
                 $('#addDetailRbaMdl').modal('show');
+            });
+
+            $("#tarifaddDetailRbaMdl").keyup(function() {
+                $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $(this).val());
+            });
+
+            $("#addDetailLaksKegiatan").click(function() {
+                $('#addDetailLaksKegiatanMdl').modal('show');
             });
 
             $("#btnaddDetailRbaMdl").click(function() {
@@ -346,6 +508,8 @@
                 });
             });
         });
+
+
 
         function getId() {
             let id = [];

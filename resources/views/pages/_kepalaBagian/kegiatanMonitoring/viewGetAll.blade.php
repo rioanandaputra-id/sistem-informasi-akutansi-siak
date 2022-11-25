@@ -131,7 +131,7 @@
                         name: 'nm_kegiatan',
                         title: 'Kegiatan',
                         render: function(data, type, row) {
-                            return `<a href="{{ route('kepalabagian.KegiatanMonitoring.viewDetail') }}?id_rba=${row.id_rba}">${row.nm_misi},<br>${row.nm_program},<br>${data}</a>`;
+                            return `<a href="{{ route('kepalabagian.KegiatanMonitoring.viewDetail') }}?id_kegiatan_divisi=${row.id_kegiatan_divisi}">${row.nm_misi},<br>${row.nm_program},<br>${data}</a>`;
                         }
                     },
                     {
