@@ -15,11 +15,12 @@ class LaksanaKegiatan extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'id_laksana_kegiatan',
         'id_kegiatan_divisi',
         'tgl_ajuan',
-        'a_verif_kabag_keuangan',
-        'id_verif_kabag_keuangan',
-        'tgl_verif_kabag_keuangan',
+        'a_verif_bend_kegiatan',
+        'id_verif_bend_kegiatan',
+        'tgl_verif_bend_kegiatan',
         'catatan',
         'waktu_pelaksanaan',
         'waktu_selesai',

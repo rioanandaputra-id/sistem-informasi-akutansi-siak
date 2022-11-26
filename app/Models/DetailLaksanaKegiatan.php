@@ -15,11 +15,13 @@ class DetailLaksanaKegiatan extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'id_detail_laksana_kegiatan',
         'id_laksana_kegiatan',
         'id_detail_rba',
         'jumlah',
         'total',
         'created_at',
         'updated_at',
+        'id_updater',
     ];
 }

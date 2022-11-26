@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\KepalaUud;
 
+use App\Http\Controllers\Controller;
 use App\Models\Visi;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -14,12 +15,9 @@ use Illuminate\Support\Facades\Validator;
 class VisiController extends Controller
 {
     private $request;
-    private $mVisi;
-
     public function __construct()
     {
         $this->request = app(Request::class);
-        $this->mVisi = app(Visi::class);
     }
 
     public function apiGetAll()
@@ -66,10 +64,10 @@ class VisiController extends Controller
         }
     }
 
-    public function apiGetById($idVisi = null)
+    public function apiGetById()
     {
         try {
-            $id_visi = $idVisi ?? $this->request->id_visi;
+            $id_visi = $this->request->id_visi;
             $apiGetById = DB::select("
                 SELECT
                     vsi.id_visi,
@@ -115,11 +113,10 @@ class VisiController extends Controller
         }
     }
 
-    public function apiCreate($noApi = null)
+    public function apiCreate()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
             $rules = [
                 'nm_visi' => 'required|max:255',
                 'periode' => 'required|min:4|max:4',
@@ -127,27 +124,15 @@ class VisiController extends Controller
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return back()->withInput()->withErrors($validator);
             }
-
             $id_visi = guid();
             $nm_visi = $this->request->nm_visi;
             $periode = $this->request->periode;
             $a_aktif = $this->request->a_aktif;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mVisi->create([
+            Visi::create([
                 'id_visi' => $id_visi,
                 'nm_visi' => $nm_visi,
                 'periode' => $periode,
@@ -155,55 +140,23 @@ class VisiController extends Controller
                 'created_at' => $created_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Ditambahkan!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Created',
-                    'error' => null,
-                    'response' => ['id_visi' => $id_visi]
-                ];
-            }
+            return back()->with('success', 'Data Berhasil Ditambahkan!');
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | QueryException');
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | Exception');
         }
     }
 
-    public function apiUpdate($noApi = null, $idVisi = null)
+    public function apiUpdate()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
             $rules = [
                 'id_visi' => 'required|uuid',
                 'nm_visi' => 'required|max:255',
@@ -212,149 +165,86 @@ class VisiController extends Controller
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return back()->withInput()->withErrors($validator);
             }
-
             $id_visi = $idVisi ?? $this->request->id_visi;
             $nm_visi = $this->request->nm_visi;
             $periode = $this->request->periode;
             $a_aktif = $this->request->a_aktif;
             $updated_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mVisi->where('id_visi', $id_visi)->update([
+            Visi::where('id_visi', $id_visi)->update([
                 'nm_visi' => $nm_visi,
                 'periode' => $periode,
                 'a_aktif' => $a_aktif,
                 'updated_at' => $updated_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Diubah!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Updated',
-                    'error' => null,
-                    'response' => ['id_visi' => $id_visi]
-                ];
-            }
+            return back()->with('success', 'Data Berhasil Diubah!');
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | QueryException');
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | Exception');
         }
     }
 
-    public function apiDelete($noApi = null, $idVisi = null)
+    public function apiDelete()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
             $rules = [
                 'id_visi.*' => 'required|uuid',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
             }
-
-            $id_visi = $idVisi ?? $this->request->id_visi;
+            $id_visi = $this->request->id_visi;
             $deleted_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mVisi->whereIn('id_visi', $id_visi)->update([
+            Visi::whereIn('id_visi', $id_visi)->update([
                 'deleted_at' => $deleted_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Dihapus!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Deleted',
-                    'error' => null,
-                    'response' => ['id_visi' => $id_visi]
-                ];
-            }
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Deleted',
+                'error' => null,
+                'response' => ['id_visi' => $id_visi]
+            ];
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
         }
     }
 
@@ -364,7 +254,7 @@ class VisiController extends Controller
             'title' => 'Visi',
             'site_active' => 'Visi',
         ];
-        return view('pages.visi.viewGetAll', compact('info'));
+        return view('pages._kepalaUud.visi.viewGetAll', compact('info'));
     }
 
     public function viewCreate()
@@ -373,7 +263,7 @@ class VisiController extends Controller
             'title' => 'Visi',
             'site_active' => 'Visi',
         ];
-        return view('pages.visi.viewCreate', compact('info'));
+        return view('pages._kepalaUud.visi.viewCreate', compact('info'));
     }
 
     public function viewUpdate()
@@ -383,6 +273,6 @@ class VisiController extends Controller
             'site_active' => 'Visi',
         ];
         $visi = $this->apiGetById()['response'];
-        return view('pages.visi.viewUpdate', compact('info', 'visi'));
+        return view('pages._kepalaUud.visi.viewUpdate', compact('info', 'visi'));
     }
 }

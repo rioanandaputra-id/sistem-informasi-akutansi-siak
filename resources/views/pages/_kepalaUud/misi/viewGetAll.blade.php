@@ -21,7 +21,7 @@
                     <div class="row mb-2">
                         <div class="col">
                             <div class="float-left">
-                                <a href="{{ route('misi.viewCreate') }}" type="button" class="btn btn-info noborder">
+                                <a href="{{ route('kepalauud.misi.viewCreate') }}" type="button" class="btn btn-info noborder">
                                     <i class="fas fa-plus-circle"></i> Tambah
                                 </a>
                                 <button id="refresh" type="button" class="btn btn-info noborder"><i
@@ -50,8 +50,7 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('adminlte320/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.css') }}">
 @endpush
@@ -72,7 +71,7 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('misi.apiGetAll') }}',
+                    url: '{{ route('kepalauud.misi.apiGetAll') }}',
                     type: 'GET'
                 },
                 columns: [{
@@ -86,9 +85,9 @@
                 }, {
                     data: 'nm_misi',
                     name: 'nm_misi',
-                    title: 'Nama',
+                    title: 'Misi',
                     render: function(data, type, row, meta) {
-                        return `<a href="{!! route('misi.viewUpdate') !!}?id_misi=${row.id_misi}">${data}</a>`;
+                        return `<a href="{!! route('kepalauud.misi.viewUpdate') !!}?id_misi=${row.id_misi}">${data}</a>`;
                     }
                 }, {
                     data: 'periode',
@@ -128,7 +127,7 @@
                     if (willDelete.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "{!! route('misi.apiDelete') !!}",
+                            url: "{!! route('kepalauud.misi.apiDelete') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
                                 no_api: 0,

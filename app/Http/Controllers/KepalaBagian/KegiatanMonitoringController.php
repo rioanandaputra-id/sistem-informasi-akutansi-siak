@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\KepalaBagian;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ProgramController;
+use App\Models\DetailLaksanaKegiatan;
 use App\Models\DetailRba;
+use App\Models\LaksanaKegiatan;
 use App\Models\Rba;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,56 +18,64 @@ use Illuminate\Support\Facades\Validator;
 class KegiatanMonitoringController extends Controller
 {
     private $request;
-    private $mProgram;
     private $mRba;
     private $mDetailRba;
+    private $mLaksanaKegiatan;
+    private $mDetailLaksanaKegiatan;
 
     public function __construct()
     {
         $this->request = app(Request::class);
-        $this->mProgram = app(ProgramController::class);
         $this->mRba = app(Rba::class);
         $this->mDetailRba = app(DetailRba::class);
+        $this->mLaksanaKegiatan = app(LaksanaKegiatan::class);
+        $this->mDetailLaksanaKegiatan = app(DetailLaksanaKegiatan::class);
     }
 
     public function apiGetAll()
     {
-        $id_program = ($this->request->id_program) ? " AND  kgt.id_program = '" . $this->request->id_program . "'" : "";
-        $id_divisi = (Auth::user()->id_divisi) ? " AND  kdiv.id_divisi = '" . Auth::user()->id_divisi . "'" : "";
         $apiGetAll = DB::select("
             SELECT
                 kdiv.id_kegiatan_divisi,
                 kdiv.id_divisi,
+                div.nm_divisi,
                 kdiv.id_kegiatan,
-                msi.nm_misi,
-                pgm.nm_program,
+                CONCAT('( ', msi.periode, ' ) ', msi.nm_misi) AS nm_misi,
+                CONCAT('( ', pgm.periode, ' ) ', pgm.nm_program) AS nm_program,
                 kgt.nm_kegiatan,
                 rba.id_rba,
+                rba.tgl_submit,
                 CASE
                     kdiv.a_verif_rba
                     WHEN '2' THEN 'Disetujui TIM RBA'
-                    WHEN '3' THEN 'Tidak Disetujui TIM RBA'
+                    WHEN '3' THEN 'Ditolak TIM RBA'
                     ELSE 'Belum Diverifikasi TIM RBA'
                 END AS kdiv_a_verif_rba,
                 CASE
                     rba.a_verif_rba
                     WHEN '2' THEN 'Disetujui Kepala UUD'
-                    WHEN '3' THEN 'Tidak Disetujui Kepala UUD'
+                    WHEN '3' THEN 'Ditolak Kepala UUD'
                     ELSE 'Belum Diverifikasi Kepala UUD'
                 END AS rba_a_verif_rba,
                 CASE
                     rba.a_verif_wilayah
                     WHEN '2' THEN 'Disetujui Kepala Wilayah'
-                    WHEN '3' THEN 'Tidak Disetujui Kepala Wilayah'
+                    WHEN '3' THEN 'Ditolak Kepala Wilayah'
                     ELSE 'Belum Diverifikasi Kepala Wilayah'
                 END AS rba_a_verif_wilayah,
                 kdiv.id_verif_rba AS kdiv_id_verif_rba,
-                rba.id_verif_rba AS rba_id_verif_rba,
-                rba.id_verif_wilayah AS rba_id_verif_wilayah,
+                kdiv.tgl_verif_rba AS kdiv_tgl_verif_rba,
                 kdiv.catatan AS kdiv_catatan,
-                rba.catatan AS rba_catatan
+                rba.id_verif_rba AS rba_id_verif_rba,
+                rba.tgl_verif_rba AS rba_tgl_verif_rba,
+                rba.catatan_verif_rba AS rba_catatan_verif_rba,
+                rba.id_verif_wilayah AS rba_id_verif_wilayah,
+                rba.tgl_verif_wilayah AS rba_tgl_verif_wilayah,
+                rba.catatan_verif_wilayah AS rba_catatan_verif_wilayah
             FROM
                 kegiatan_divisi AS kdiv
+                JOIN divisi AS div ON div.id_divisi = kdiv.id_divisi
+                AND div.deleted_at IS NULL
                 JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
@@ -77,50 +86,56 @@ class KegiatanMonitoringController extends Controller
                 AND rba.deleted_at IS NULL
             WHERE
                 kdiv.deleted_at IS NULL
-                " . $id_program . "
-                " . $id_divisi . "
+                AND  kdiv.id_divisi = '" . Auth::user()->id_divisi . "'
         ");
         return DaTables::of($apiGetAll)->make(true);
     }
 
-    public function apiGetById($idKegiatanDivisi = null)
+    public function apiGetById()
     {
-        $id_kegiatan_divisi = $idKegiatanDivisi ?? $this->request->id_kegiatan_divisi;
-        $id_divisi = (Auth::user()->id_divisi) ? " AND  kdiv.id_divisi = '" . Auth::user()->id_divisi . "'" : "";
+        $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
         $apiGetById = DB::select("
             SELECT
                 kdiv.id_kegiatan_divisi,
                 kdiv.id_divisi,
+                div.nm_divisi,
                 kdiv.id_kegiatan,
-                msi.nm_misi,
-                pgm.nm_program,
+                CONCAT('( ', msi.periode, ' ) ', msi.nm_misi) AS nm_misi,
+                CONCAT('( ', pgm.periode, ' ) ', pgm.nm_program) AS nm_program,
                 kgt.nm_kegiatan,
                 rba.id_rba,
+                rba.tgl_submit,
                 CASE
                     kdiv.a_verif_rba
                     WHEN '2' THEN 'Disetujui TIM RBA'
-                    WHEN '3' THEN 'Tidak Disetujui TIM RBA'
+                    WHEN '3' THEN 'Ditolak TIM RBA'
                     ELSE 'Belum Diverifikasi TIM RBA'
                 END AS kdiv_a_verif_rba,
                 CASE
                     rba.a_verif_rba
                     WHEN '2' THEN 'Disetujui Kepala UUD'
-                    WHEN '3' THEN 'Tidak Disetujui Kepala UUD'
+                    WHEN '3' THEN 'Ditolak Kepala UUD'
                     ELSE 'Belum Diverifikasi Kepala UUD'
                 END AS rba_a_verif_rba,
                 CASE
                     rba.a_verif_wilayah
                     WHEN '2' THEN 'Disetujui Kepala Wilayah'
-                    WHEN '3' THEN 'Tidak Disetujui Kepala Wilayah'
+                    WHEN '3' THEN 'Ditolak Kepala Wilayah'
                     ELSE 'Belum Diverifikasi Kepala Wilayah'
                 END AS rba_a_verif_wilayah,
                 kdiv.id_verif_rba AS kdiv_id_verif_rba,
-                rba.id_verif_rba AS rba_id_verif_rba,
-                rba.id_verif_wilayah AS rba_id_verif_wilayah,
+                kdiv.tgl_verif_rba AS kdiv_tgl_verif_rba,
                 kdiv.catatan AS kdiv_catatan,
-                rba.catatan AS rba_catatan
+                rba.id_verif_rba AS rba_id_verif_rba,
+                rba.tgl_verif_rba AS rba_tgl_verif_rba,
+                rba.catatan_verif_rba AS rba_catatan_verif_rba,
+                rba.id_verif_wilayah AS rba_id_verif_wilayah,
+                rba.tgl_verif_wilayah AS rba_tgl_verif_wilayah,
+                rba.catatan_verif_wilayah AS rba_catatan_verif_wilayah
             FROM
                 kegiatan_divisi AS kdiv
+                JOIN divisi AS div ON div.id_divisi = kdiv.id_divisi
+                AND div.deleted_at IS NULL
                 JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
@@ -131,8 +146,8 @@ class KegiatanMonitoringController extends Controller
                 AND rba.deleted_at IS NULL
             WHERE
                 kdiv.deleted_at IS NULL
+                AND kdiv.id_divisi = '" . Auth::user()->id_divisi . "'
                 AND kdiv.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
-                " . $id_divisi . "
         ");
         return $apiGetById;
     }
@@ -143,7 +158,6 @@ class KegiatanMonitoringController extends Controller
             DB::beginTransaction();
             $rules = [
                 'id_rba' => 'required',
-                'a_verif_wilayah' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -155,34 +169,34 @@ class KegiatanMonitoringController extends Controller
                     'response' => null
                 ];
             }
-
             $id_rba = $this->request->id_rba;
             $tgl_submit = now();
-            $catatan = $this->request->catatan;
-            $a_verif_wilayah = $this->request->a_verif_wilayah;
-            $id_verif_wilayah = Auth::user()->id_user;
-            $tgl_verif_wilayah = now();
             $updated_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mRba->whereIn('id_rba', $id_rba)->update([
-                'tgl_submit' => $tgl_submit,
-                'catatan' => $catatan,
-                'a_verif_wilayah' => $a_verif_wilayah,
-                'id_verif_wilayah' => $id_verif_wilayah,
-                'tgl_verif_wilayah' => $tgl_verif_wilayah,
-                'updated_at' => $updated_at,
-                'id_updater' => $id_updater,
-            ]);
-
-            DB::commit();
-            return [
-                'status' => true,
-                'latency' => AppLatency(),
-                'message' => 'Updated',
-                'error' => null,
-                'response' => ['id_rba' => $id_rba]
-            ];
+            $check = $this->mDetailRba->where('id_rba', $id_rba)->count();
+            if ($check == 0) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'Detail RBA belum ditambahkan!',
+                    'error' => null,
+                    'response' => ['id_rba' => $id_rba]
+                ];
+            } else {
+                $this->mRba->where('id_rba', $id_rba)->update([
+                    'tgl_submit' => $tgl_submit,
+                    'updated_at' => $updated_at,
+                    'id_updater' => $id_updater,
+                ]);
+                DB::commit();
+                return [
+                    'status' => true,
+                    'latency' => AppLatency(),
+                    'message' => 'Updated',
+                    'error' => null,
+                    'response' => ['id_rba' => $id_rba]
+                ];
+            }
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
@@ -338,14 +352,160 @@ class KegiatanMonitoringController extends Controller
         }
     }
 
+    public function apiCreateDetailLaksana()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_kegiatan_divisi' => 'required|uuid',
+                'id_detail_rba' => 'required|uuid',
+                'waktu_pelaksanaan' => 'required|date',
+                'waktu_selesai' => 'required|date',
+                'tahun' => 'required|numeric',
+                'jumlah' => 'required|numeric',
+                'total' => 'required|numeric',
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            $id_laksana_kegiatan = guid();
+            $id_detail_laksana_kegiatan = guid();
+            $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
+            $id_detail_rba = $this->request->id_detail_rba;
+            $waktu_pelaksanaan = $this->request->waktu_pelaksanaan;
+            $waktu_selesai = $this->request->waktu_selesai;
+            $tahun = $this->request->tahun;
+            $jumlah = $this->request->jumlah;
+            $total = $this->request->total;
+            $created_at = now();
+            $id_updater = Auth::user()->id_user;
+
+            $this->mLaksanaKegiatan->create([
+                'id_laksana_kegiatan' => $id_laksana_kegiatan,
+                'id_kegiatan_divisi' => $id_kegiatan_divisi,
+                'tgl_ajuan' => $created_at,
+                'a_verif_bend_kegiatan' => '1',
+                'waktu_pelaksanaan' => $waktu_pelaksanaan,
+                'waktu_selesai' => $waktu_selesai,
+                'tahun' => $tahun,
+                'created_at' => $created_at,
+                'id_updater' => $id_updater,
+            ]);
+
+            $this->mDetailLaksanaKegiatan->create([
+                'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,
+                'id_laksana_kegiatan' => $id_laksana_kegiatan,
+                'id_detail_rba' => $id_detail_rba,
+                'jumlah' => $jumlah,
+                'total' => $total,
+                'created_at' => $created_at,
+                'id_updater' => $id_updater,
+            ]);
+
+            DB::commit();
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Created',
+                'error' => null,
+                'response' => ['id_detail_rba' => $id_detail_rba]
+            ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
+    public function apiDeleteDetailLaksana()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_laksana_kegiatan.*' => 'required|uuid',
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
+            $deleted_at = now();
+            $id_updater = Auth::user()->id_user;
+
+            $this->mLaksanaKegiatan->whereIn('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
+                'deleted_at' => $deleted_at,
+                'id_updater' => $id_updater,
+            ]);
+
+            DB::commit();
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Deleted',
+                'error' => null,
+                'response' => ['id_laksana_kegiatan' => $id_laksana_kegiatan]
+            ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
     public function viewGetAll()
     {
         $info = [
             'title' => 'Monitoring Kegiatan',
             'site_active' => 'MonitoringKegiatan',
         ];
-        $program = $this->mProgram->apiGetAll()['response'] ?? [];
-        return view('pages._kepalaBagian.kegiatanMonitoring.viewGetAll', compact('info', 'program'));
+        return view('pages._kepalaBagian.kegiatanMonitoring.viewGetAll', compact('info'));
     }
 
     public function viewDetail()
@@ -355,7 +515,7 @@ class KegiatanMonitoringController extends Controller
             'title' => 'Detail Monitoring Kegiatan',
             'site_active' => 'MonitoringKegiatan',
         ];
-        $kegiatan = $this->apiGetById($id_kegiatan_divisi);
+        $kegiatan = $this->apiGetById();
         $detailRba = DB::select("
             SELECT
                 drba.id_detail_rba,
@@ -369,7 +529,7 @@ class KegiatanMonitoringController extends Controller
                 CASE
                     drba.a_setuju
                     WHEN '2' THEN 'Disetujui'
-                    WHEN '3' THEN 'Tidak Disetujui'
+                    WHEN '3' THEN 'Ditolak'
                     ELSE 'Belum Diverifikasi'
                 END AS a_setuju,
                 drba.created_at,
@@ -405,7 +565,7 @@ class KegiatanMonitoringController extends Controller
                 CASE
                     lkgt.a_verif_bend_kegiatan
                     WHEN '2' THEN 'Disetujui Bend. Kegiatan'
-                    WHEN '3' THEN 'Tidak Disetujui Bend. Kegiatan'
+                    WHEN '3' THEN 'Ditolak Bend. Kegiatan'
                     ELSE 'Belum Diverifikasi Bend. Kegiatan'
                 END AS a_verif_bend_kegiatan,
                 lkgt.id_verif_bend_kegiatan,
@@ -421,7 +581,7 @@ class KegiatanMonitoringController extends Controller
                 detail_laksana_kegiatan AS dkgt
                 JOIN laksana_kegiatan AS lkgt ON lkgt.id_laksana_kegiatan = dkgt.id_laksana_kegiatan
                 AND lkgt.deleted_at IS NULL
-                JOIN detail_rba AS drba ON drba.id_rba = dkgt.id_detail_rba
+                JOIN detail_rba AS drba ON drba.id_detail_rba = dkgt.id_detail_rba
                 AND drba.deleted_at IS NULL
                 JOIN akun AS akn ON akn.id_akun = drba.id_akun
                 AND akn.deleted_at IS NULL

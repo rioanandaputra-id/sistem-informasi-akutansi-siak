@@ -22,30 +22,21 @@
                         <div class="col">
                             <div class="float-left">
                                 <div class="input-group">
-                                    @can('timrba')
-                                    <select id="status" class="form-control mr-2">
+                                    <select id="status" class="form-control">
                                         <option value="1">Belum Diverifikasi</option>
                                         <option value="2">Disetujui</option>
-                                        <option value="3">Tidak Disetujui</option>
+                                        <option value="3">Ditolak</option>
                                     </select>
-                                    @endcan
-                                    <select class="form-control" id="program" style="min-width: 620px">
-                                        @foreach ($program as $pro)
-                                            <option value="{{ $pro->id_program }}">
-                                                {{ $pro->periode_program . ' - ' . $pro->nm_program }}</option>
-                                        @endforeach
-                                    </select>
+                                    <button id="refresh" type="button" class="btn btn-info noborder ml-2">
+                                        <i class="fas fa-sync"></i> Refresh
+                                    </button>
+                                    <button id="verif" type="button" class="btn btn-info noborder ml-2">
+                                        <i class="fas fa-sign-in-alt"></i> Verifikasi
+                                    </button>
                                 </div>
                             </div>
                             <div class="float-right text-bold">
-                                <div class="input-group">
-                                    <button id="refresh" type="button" class="btn btn-info noborder">
-                                        <i class="fas fa-sync"></i> Refresh</button>
-                                        @can('timrba')
-                                            <button id="selected" type="button" class="btn btn-info noborder ml-2">
-                                            <i class="fas fa-sign-in-alt"></i> Konfirmasi</button>
-                                        @endcan
-                                </div>
+                                <b>Daftar Kegiatan</b>
                             </div>
                         </div>
                     </div>
@@ -62,7 +53,7 @@
         </div>
     </div>
 
-    <div id="SelectedMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="VerifMdl" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -72,17 +63,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="formSelectedMdl">
-                        <select id="a_verif_rbaSelectedMdl" class="form-control mb-2">
-                            <option value="">-- Status Verifikasi --</option>
-                            <option value="2">Setujui</option>
-                            <option value="3">Tidak Setujui</option>
+                    <form id="formVerifMdl">
+                        <select id="a_verif_rbaVerifMdl" class="form-control mb-2">
+                            <option value="">-- Verifikasi --</option>
+                            <option value="2">Disetujui</option>
+                            <option value="3">Ditolak</option>
                         </select>
-                        <textarea id="catatanSelectedMdl" cols="30" rows="10" class="form-control" placeholder="Catataan.."></textarea>
+                        <textarea id="catatanVerifMdl" cols="30" rows="10" class="form-control" placeholder="Catataan.."></textarea>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnSelectedMdl" class="btn btn-primary">Verifikasi</button>
+                    <button type="button" id="btnVerifMdl" class="btn btn-primary">Verifikasi</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                 </div>
             </div>
@@ -92,8 +83,7 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('adminlte320/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.css') }}">
 @endpush
@@ -119,19 +109,29 @@
                 $('#tbkegiatandivisi').DataTable().ajax.reload();
             });
 
-            $("#selected").click(function() {
-                $('#SelectedMdl').modal('show');
+            $('#status').on('change', function() {
+                if($(this).val() != 1){
+                    $('#verif').prop("disabled", true);
+                } else {
+                    $('#verif').prop("disabled", false);
+                }
+                $('#tbkegiatandivisi').DataTable().clear().destroy();
+                tbkegiatandivisi();
             });
 
-            $("#btnSelectedMdl").click(function() {
+            $("#verif").click(function() {
+                $('#VerifMdl').modal('show');
+            });
+
+            $("#btnVerifMdl").click(function() {
                 $.ajax({
                     type: 'POST',
-                    url: "{{ route('kegiatanDivisi.apiUpdate') }}",
+                    url: "{{ route('timrba.kegiatanMonitoring.apiUpdate') }}",
                     data: {
                         _token: "{!! csrf_token() !!}",
                         id_kegiatan_divisi: getId(),
-                        a_verif_rba: $('#a_verif_rbaSelectedMdl').val(),
-                        catatan: $('#catatanSelectedMdl').val(),
+                        a_verif_rba: $('#a_verif_rbaVerifMdl').val(),
+                        catatan: $('#catatanVerifMdl').val(),
                     },
                     beforeSend: function() {
                         $(this).prop("disabled", true);
@@ -146,16 +146,15 @@
                             timer: 1000,
                         });
                         $(this).prop("disabled", false);
-                        $('#formSelectedMdl').trigger("reset");
-                        $('#SelectedMdl').modal('hide');
+                        $('#formVerifMdl').trigger("reset");
+                        $('#VerifMdl').modal('hide');
                         $('#tbkegiatandivisi').DataTable().ajax.reload();
                     } else {
                         Swal.fire({
                             position: 'top-end',
                             icon: 'error',
                             title: 'Verifikasi Kegiatan Gagal',
-                            showConfirmButton: false,
-                            timer: 1000,
+                            showConfirmButton: true,
                         });
                     }
                 }).fail(function(res) {
@@ -163,27 +162,14 @@
                         position: 'top-end',
                         icon: 'error',
                         title: 'Verifikasi Kegiatan Gagal',
-                        showConfirmButton: false,
-                        timer: 1000,
+                        showConfirmButton: true,
                     });
                     console.log(res);
                     $(this).prop("disabled", false);
                 });
             });
-
-            $('#program').on('change', function() {
-                $('#tbkegiatandivisi').DataTable().clear().destroy();
-                tbkegiatandivisi();
-            });
-
-            $('#status').on('change', function() {
-                $('#tbkegiatandivisi').DataTable().clear().destroy();
-                tbkegiatandivisi();
-            });
         });
-    </script>
 
-    <script>
         function getId() {
             let id = [];
             $('.ckItem:checked').each(function() {
@@ -202,12 +188,11 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kegiatanDivisi.apiGetAll') }}',
+                    url: '{{ route('timrba.kegiatanMonitoring.apiGetAll') }}',
                     type: 'GET',
                     data: {
-                        id_program: $('#program').val(),
-                        a_verif_rba: $('#status').val(),
-                    }
+                        kdiv_a_verif_rba: $('#status').val()
+                    },
                 },
                 columns: [{
                         data: 'id_kegiatan_divisi',
@@ -221,16 +206,46 @@
                         data: 'nm_kegiatan',
                         name: 'nm_kegiatan',
                         title: 'Kegiatan',
+                        render: function(data, type, row) {
+                            return `<a href="{{ route('timrba.kegiatanMonitoring.viewDetail') }}?id_kegiatan_divisi=${row.id_kegiatan_divisi}">${data}</a>`;
+                        }
                     },
                     {
+                        data: 'nm_program',
+                        name: 'nm_program',
+                        title: 'Program',
+                    },
+                    {
+                        data: 'nm_misi',
+                        name: 'nm_misi',
+                        title: 'Misi',
+                    }, {
                         data: 'nm_divisi',
                         name: 'nm_divisi',
                         title: 'Divisi',
+                    }, {
+                        data: 'rba_a_verif_wilayah',
+                        name: 'rba_a_verif_wilayah',
+                        title: 'Status',
+                        render: function(data, type, row) {
+                            if (row.rba_a_verif_wilayah != "Belum Diverifikasi Kepala Wilayah") {
+                                return row.rba_a_verif_wilayah;
+                            } else if (row.rba_a_verif_rba != "Belum Diverifikasi Kepala UUD") {
+                                return row.rba_a_verif_rba;
+                            } else {
+                                return row.kdiv_a_verif_rba;
+                            }
+                        }
                     },
                     {
-                        data: 'a_verif_rba',
-                        name: 'a_verif_rba',
-                        title: 'Status',
+                        data: 'rba_a_verif_rba',
+                        name: 'rba_a_verif_rba',
+                        visible: false,
+                    },
+                    {
+                        data: 'kdiv_a_verif_rba',
+                        name: 'kdiv_a_verif_rba',
+                        visible: false,
                     },
                 ]
             });

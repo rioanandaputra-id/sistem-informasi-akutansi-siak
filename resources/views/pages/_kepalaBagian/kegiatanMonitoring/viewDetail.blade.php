@@ -4,9 +4,10 @@
 
 @section('content')
     @php
-        // $lockBtn = 'disabled';
-        $lockBtn = '';
+        $lockBtnDetailRba = '';
+        $lockBtnDetailLaksana = '';
         $IdRba = '';
+        $sisaAnggaran = 0;
     @endphp
     <div class="row">
         <div class="col">
@@ -34,18 +35,27 @@
                                         <button onclick="history.back()" class="btn btn-sm noborder btn-light"><i
                                                 class="fas fa-chevron-circle-left"></i>
                                             Kembali</button>
+                                        <button id="locked" class="btn btn-sm noborder btn-light ml-2"><i
+                                                class="fas fa-lock"></i>
+                                            Simpan</button>
                                     </div>
                                 </div>
                             </div>
                             @foreach ($kegiatan as $kgt)
                                 @php
-                                    // $lockBtn = $kgt->rba_a_verif_wilayah == 'Disetujui Kepala Wilayah' ? '' : 'disabled';
+                                    $lockBtnDetailRba = $kgt->tgl_submit ? 'disabled' : '';
+                                    $lockBtnDetailLaksana = $kgt->rba_a_verif_wilayah == "Disetujui Kepala Wilayah" ? '' : 'disabled';
                                     $IdRba = $kgt->id_rba;
                                 @endphp
                                 <table>
                                     <tbody>
                                         <tr>
                                             <th colspan="3">Info Kegiatan</th>
+                                        </tr>
+                                        <tr>
+                                            <td style="min-width: 200px">Divisi</td>
+                                            <td>:</td>
+                                            <td>{{ $kgt->nm_divisi }}</td>
                                         </tr>
                                         <tr>
                                             <td style="min-width: 200px">Misi</td>
@@ -62,6 +72,11 @@
                                             <td>:</td>
                                             <td>{{ $kgt->nm_kegiatan }}</td>
                                         </tr>
+                                        <tr>
+                                            <td style="min-width: 200px">Waktu Simpan</td>
+                                            <td>:</td>
+                                            <td>{{ $kgt->tgl_submit }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                                 <table class="mt-3">
@@ -77,12 +92,12 @@
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>-</td>
+                                            <td>{{ $kgt->kdiv_tgl_verif_rba }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>-</td>
+                                            <td>{{ $kgt->kdiv_catatan }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -99,12 +114,12 @@
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>-</td>
+                                            <td>{{ $kgt->rba_tgl_verif_rba }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>-</td>
+                                            <td>{{ $kgt->rba_catatan_verif_rba }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -121,12 +136,12 @@
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>-</td>
+                                            <td>{{ $kgt->rba_tgl_verif_wilayah }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>-</td>
+                                            <td>{{ $kgt->rba_catatan_verif_wilayah }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -137,10 +152,10 @@
                                         <b>DETAIL RENCANA ANGGARAN BIAYA KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
-                                        <button {{ $lockBtn }} id="addDetailRba"
+                                        <button {{ $lockBtnDetailRba }} id="addDetailRba"
                                             class="btn btn-sm noborder btn-light"><i class="fas fa-plus-circle"></i>
                                             Tambah</button>
-                                        <button {{ $lockBtn }} id="deleteDetailRba"
+                                        <button {{ $lockBtnDetailRba }} id="deleteDetailRba"
                                             class="btn btn-sm noborder btn-light ml-2"><i class="fas fa-trash"></i>
                                             Hapus</button>
                                     </div>
@@ -149,14 +164,13 @@
                             <table class="table table-striped teble-bordered" id="tbDetailRba" style="width: 100%">
                                 <thead class="bg-success">
                                     <tr>
-                                        <th><input type="checkbox" id="ckAll"></th>
+                                        <th><input type="checkbox" class="ckAllDetailRba"></th>
                                         <th>Akun</th>
                                         <th>Satuan</th>
                                         <th>Indikator</th>
                                         <th>Volume</th>
                                         <th>Tarif</th>
                                         <th>Total</th>
-                                        {{-- <th>Status</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,7 +179,8 @@
                                     @endphp
                                     @foreach ($detailRba as $drba)
                                         <tr>
-                                            <th><input class="ckItem" type="checkbox" value="{{ $drba->id_detail_rba }}">
+                                            <th><input class="ckItemDetailRba" type="checkbox"
+                                                    value="{{ $drba->id_detail_rba }}">
                                             </th>
                                             <td>{{ $drba->no_akun }} - {{ $drba->nm_akun }}</td>
                                             <td>{{ $drba->satuan }}</td>
@@ -173,7 +188,6 @@
                                             <td>{{ $drba->vol }}</td>
                                             <td>{{ $drba->tarif }}</td>
                                             <td>{{ $drba->total }}</td>
-                                            {{-- <td>{{ $drba->a_setuju }}</td> --}}
                                         </tr>
                                         @php
                                             $tbDetailRbaTotal += $drba->total;
@@ -199,10 +213,10 @@
                                         <b>DETAIL PELAKSANAAN KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
-                                        <button {{ $lockBtn }} id="addDetailLaksKegiatan"
+                                        <button {{ $lockBtnDetailLaksana }} id="addDetailLaksKegiatan"
                                             class="btn btn-sm noborder btn-light"><i class="fas fa-plus-circle"></i>
                                             Tambah</button>
-                                        <button {{ $lockBtn }} id="deleteDetailLaksKegiatan"
+                                        <button {{ $lockBtnDetailLaksana }} id="deleteDetailLaksKegiatan"
                                             class="btn btn-sm noborder btn-light ml-2"><i class="fas fa-trash"></i>
                                             Hapus</button>
                                     </div>
@@ -211,7 +225,7 @@
                             <table class="table table-striped teble-bordered" id="tbDetailLaksKegiatan" style="width: 100%">
                                 <thead class="bg-purple">
                                     <tr>
-                                        <th><input type="checkbox" id="ckAll"></th>
+                                        <th><input type="checkbox" class="ckAllDetailLaksKegiatan"></th>
                                         <th>Akun</th>
                                         <th>Tgl. Ajuan</th>
                                         <th>Tgl. Verif</th>
@@ -230,8 +244,8 @@
                                     @endphp
                                     @foreach ($detailLaksKegiatan as $dlk)
                                         <tr>
-                                            <th><input class="ckItem" type="checkbox"
-                                                    value="{{ $dlk->id_detail_laksana_kegiatan }}">
+                                            <th><input class="ckItemDetailLaksKegiatan" type="checkbox"
+                                                    value="{{ $dlk->id_laksana_kegiatan }}">
                                             </th>
                                             <td>{{ $dlk->no_akun }} - {{ $dlk->nm_akun }}</td>
                                             <td>{{ $dlk->tgl_ajuan }}</td>
@@ -245,7 +259,7 @@
                                             <td>{{ $dlk->total }}</td>
                                         </tr>
                                         @php
-                                            if ($dlk->a_verif_bend_kegiatan != "Tidak Disetujui Bend. Kegiatan") {
+                                            if ($dlk->a_verif_bend_kegiatan != 'Ditolak Bend. Kegiatan') {
                                                 $tbDetailLaksKegiatanTotal += $dlk->total;
                                             }
                                         @endphp
@@ -336,7 +350,8 @@
                 <div class="modal-body">
                     <div class="row mb-2 bg-warning">
                         <div class="col">
-                            Sisa Anggaran Yang Dapat Anda Ajukan : {{ $tbDetailRbaTotal - $tbDetailLaksKegiatanTotal}}
+                            Sisa Anggaran Yang Dapat Anda Ajukan :
+                            {{ $sisaAnggaran = $tbDetailRbaTotal - $tbDetailLaksKegiatanTotal }}
                         </div>
                     </div>
                     <hr>
@@ -344,33 +359,37 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="">Akun: <i class="text-red">*</i></label>
-                                <select id="id_akunaddDetailLaksKegiatanMdl" class="form-control">
+                                <select id="id_detail_rbaaddDetailLaksKegiatanMdl" class="form-control">
                                     <option value="">---</option>
                                     @foreach ($detailRba as $akn)
-                                        <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
+                                        <option value="{{ $akn->id_detail_rba }}">{{ $akn->no_akun }}
+                                            {{ $akn->nm_akun }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col">
                                 <label for="">Waktu Pelakasanaan: <i class="text-red">*</i></label>
-                                <input type="datetime-local" class="form-control" id="voladdDetailLaksKegiatanMdl">
+                                <input type="datetime-local" class="form-control"
+                                    id="waktu_pelaksanaanaddDetailLaksKegiatanMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
-                                <label for="">Waktu Pelakasanaan: <i class="text-red">*</i></label>
-                                <input type="datetime-local" class="form-control" id="satuanaddDetailLaksKegiatanMdl">
+                                <label for="">Waktu Selesai: <i class="text-red">*</i></label>
+                                <input type="datetime-local" class="form-control"
+                                    id="waktu_selesaiaddDetailLaksKegiatanMdl">
                             </div>
                             <div class="col">
                                 <label for="">Tahun: <i class="text-red">*</i></label>
-                                <input type="number" value="{{ date('Y') }}" class="form-control" id="indikatoraddDetailLaksKegiatanMdl">
+                                <input type="number" value="{{ date('Y') }}" class="form-control"
+                                    id="tahunaddDetailLaksKegiatanMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="">Jumlah: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="tarifaddDetailLaksKegiatanMdl">
+                                <input type="number" class="form-control" id="jumlahaddDetailLaksKegiatanMdl">
                             </div>
                             <div class="col">
                                 <label for="">Total: <i class="text-red">*</i></label>
@@ -395,11 +414,24 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $("#ckAll").change(function() {
+
+            if("{!! $lockBtnDetailRba !!}" == 'disabled'){
+                $('#locked').prop("disabled", true);
+            }
+
+            $(".ckAllDetailRba").change(function() {
                 if (this.checked) {
-                    $('.ckItem').prop('checked', true);
+                    $('.ckItemDetailRba').prop('checked', true);
                 } else {
-                    $('.ckItem').prop('checked', false);
+                    $('.ckItemDetailRba').prop('checked', false);
+                }
+            });
+
+            $(".ckAllDetailLaksKegiatan").change(function() {
+                if (this.checked) {
+                    $('.ckItemDetailLaksKegiatan').prop('checked', true);
+                } else {
+                    $('.ckItemDetailLaksKegiatan').prop('checked', false);
                 }
             });
 
@@ -409,10 +441,6 @@
 
             $("#tarifaddDetailRbaMdl").keyup(function() {
                 $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $(this).val());
-            });
-
-            $("#addDetailLaksKegiatan").click(function() {
-                $('#addDetailLaksKegiatanMdl').modal('show');
             });
 
             $("#btnaddDetailRbaMdl").click(function() {
@@ -482,7 +510,7 @@
                             url: "{!! route('kepalabagian.KegiatanMonitoring.apiDeleteDetailRba') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
-                                id_detail_rba: getId()
+                                id_detail_rba: getIdDetailRba()
                             }
                         }).done(function(res) {
                             Swal.fire({
@@ -496,7 +524,7 @@
                         }).fail(function(res) {
                             Swal.fire({
                                 position: 'top-end',
-                                icon: 'erorr',
+                                icon: 'error',
                                 title: 'Data Gagal Dihapus!',
                                 showConfirmButton: true,
                             });
@@ -507,13 +535,178 @@
                     }
                 });
             });
+
+            $("#locked").click(function() {
+                $("#locked").prop("disabled", true);
+                Swal.fire({
+                    title: 'Apakah anda yakin?',
+                    text: "Kegiatan ini akan disimpan & diverifikasi, Anda tidak dapat lagi menambahkan detail RBA setelahnya!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Simpan!',
+                    cancelButtonText: 'Tidak, Batalkan!'
+                }).then((willDelete) => {
+                    if (willDelete.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{!! route('kepalabagian.KegiatanMonitoring.apiUpdate') !!}",
+                            data: {
+                                _token: "{!! csrf_token() !!}",
+                                id_rba: "{!! $IdRba !!}"
+                            }
+                        }).done(function(res) {
+                            if (res.status) {
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Data Berhasil Disimpan!',
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                });
+                                location.reload();
+                            } else {
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    title: res.message,
+                                    showConfirmButton: true,
+                                });
+                                $("#locked").prop("disabled", false);
+                            }
+                        }).fail(function(res) {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Data Gagal Disimpan!',
+                                showConfirmButton: true,
+                            });
+                            $("#locked").prop("disabled", false);
+                        });
+                    } else {
+                        $("#locked").prop("disabled", false);
+                    }
+                });
+            });
+
+            $("#addDetailLaksKegiatan").click(function() {
+                $('#addDetailLaksKegiatanMdl').modal('show');
+            });
+
+            $("#btnaddDetailLaksKegiatanMdl").click(function() {
+                if ($('#totaladdDetailLaksKegiatanMdl').val() > "{!! $sisaAnggaran !!}") {
+                    alert("Melampaui sisa anggaran!");
+                } else if ($('#waktu_selesaiaddDetailLaksKegiatanMdl').val() < $(
+                        '#waktu_pelaksanaanaddDetailLaksKegiatanMdl').val()) {
+                    alert("Tanggal pelaksanaan atau selesai kegiatan tidak valid!");
+                } else {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('kepalabagian.KegiatanMonitoring.apiCreateDetailLaksana') }}",
+                        data: {
+                            _token: "{!! csrf_token() !!}",
+                            id_kegiatan_divisi: "{!! request()->get('id_kegiatan_divisi') !!}",
+                            id_detail_rba: $('#id_detail_rbaaddDetailLaksKegiatanMdl').val(),
+                            waktu_pelaksanaan: $('#waktu_pelaksanaanaddDetailLaksKegiatanMdl')
+                                .val(),
+                            waktu_selesai: $('#waktu_selesaiaddDetailLaksKegiatanMdl').val(),
+                            tahun: $('#tahunaddDetailLaksKegiatanMdl').val(),
+                            jumlah: $('#jumlahaddDetailLaksKegiatanMdl').val(),
+                            total: $('#totaladdDetailLaksKegiatanMdl').val(),
+                        },
+                        beforeSend: function() {
+                            $(this).prop("disabled", true);
+                        },
+                    }).done(function(res) {
+                        if (res.status) {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Tambah Detail Laksana Berhasil',
+                                showConfirmButton: false,
+                                timer: 1000,
+                            });
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Tambah Detail Laksana Gagal',
+                                showConfirmButton: false,
+                                timer: 1000,
+                            });
+                        }
+                    }).fail(function(res) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Tambah Detail Laksana Gagal',
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                        console.log(res);
+                        $(this).prop("disabled", false);
+                    });
+                }
+            });
+
+            $("#deleteDetailLaksKegiatan").click(function() {
+                $(this).prop("disabled", true);
+                Swal.fire({
+                    title: 'Apakah anda yakin?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Tidak, Batalkan!'
+                }).then((willDelete) => {
+                    if (willDelete.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{!! route('kepalabagian.KegiatanMonitoring.apiDeleteDetailLaksana') !!}",
+                            data: {
+                                _token: "{!! csrf_token() !!}",
+                                id_laksana_kegiatan: getIdDetailLaksKegiatan()
+                            }
+                        }).done(function(res) {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Data Berhasil Dihapus!',
+                                showConfirmButton: false,
+                                timer: 1000,
+                            });
+                            location.reload();
+                        }).fail(function(res) {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Data Gagal Dihapus!',
+                                showConfirmButton: true,
+                            });
+                            $(this).prop("disabled", false);
+                        });
+                    } else {
+                        $(this).prop("disabled", false);
+                    }
+                });
+            });
         });
 
-
-
-        function getId() {
+        function getIdDetailRba() {
             let id = [];
-            $('.ckItem:checked').each(function() {
+            $('.ckItemDetailRba:checked').each(function() {
+                id.push($(this).val());
+            });
+            return id;
+        }
+
+        function getIdDetailLaksKegiatan() {
+            let id = [];
+            $('.ckItemDetailLaksKegiatan:checked').each(function() {
                 id.push($(this).val());
             });
             return id;

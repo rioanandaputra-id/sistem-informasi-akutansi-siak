@@ -1,4 +1,5 @@
 @extends('layouts.adminlteMaster')
+
 @section('breadcrumb')
 @endsection
 
@@ -18,26 +19,24 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-4">
+                    <div class="row mb-3">
                         <div class="col">
                             <div class="float-left">
-                                <a href="{{ route('kepalauud.program.viewCreate') }}" type="button" class="btn btn-info noborder">
-                                    <i class="fas fa-plus-circle"></i> Tambah
-                                </a>
-                                <button id="refresh" type="button" class="btn btn-info noborder"><i class="fas fa-sync"></i>
+                                <button id="refresh" type="button" class="btn btn-info noborder"><i
+                                        class="fas fa-sync"></i>
                                     Refresh</button>
-                                <button id="delete" type="button" class="btn btn-info noborder"><i class="fas fa-trash"></i>
-                                    Hapus</button>
+                                <button id="selected" type="button" class="btn btn-info noborder"><i
+                                        class="fas fa-sign-in-alt"></i> Ajukan</button>
                             </div>
                             <div class="float-right">
-                                <b>Daftar Program</b>
+                                <b>Daftar Kegiatan</b>
                             </div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col">
-                            <table class="table table-striped teble-bordered" id="tbProgram" style="width: 100%">
+                            <table class="table table-striped teble-bordered" id="tbKegiatan" style="width: 100%">
                                 <thead class="bg-info"></thead>
                             </table>
                         </div>
@@ -63,88 +62,82 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            tbProgram();
+            tbKegiatan();
 
-            $("#ckAll").change(function() {
+            $(".ckAlltbKegiatan").change(function() {
                 if (this.checked) {
-                    $('.ckItem').prop('checked', true);
+                    $('.ckItemtbKegiatan').prop('checked', true);
                 } else {
-                    $('.ckItem').prop('checked', false);
+                    $('.ckItemtbKegiatan').prop('checked', false);
                 }
             });
 
             $("#refresh").click(function() {
-                $('#tbProgram').DataTable().ajax.reload();
+                $('#tbKegiatan').DataTable().ajax.reload();
             });
 
-            $('#misi').on('change', function() {
-                $('#tbProgram').DataTable().clear().destroy();
-                tbProgram();
-            });
-
-            $("#delete").click(function() {
-                $("#delete").prop("disabled", true);
+            $("#selected").click(function() {
                 Swal.fire({
-                    title: 'Apakah anda yakin?',
-                    text: "Data yang dihapus tidak dapat dikembalikan!",
-                    icon: 'warning',
+                    title: 'Apakah Anda Yakin!',
+                    text: "Ingin Mengajukan Kegiatan Baru?",
+                    icon: 'info',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Hapus!',
+                    confirmButtonText: 'Ya, Yakin!',
                     cancelButtonText: 'Tidak, Batalkan!'
                 }).then((willDelete) => {
                     if (willDelete.isConfirmed) {
                         $.ajax({
-                            type: "POST",
-                            url: "{!! route('kepalauud.program.apiDelete') !!}",
+                            type: 'POST',
+                            url: "{{ route('kepalabagian.Kegiatan.apiCreate') }}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
-                                no_api: 0,
-                                id_program: getId()
-                            }
+                                id_kegiatan: getIdtbKegiatan()
+                            },
                         }).done(function(res) {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                title: 'Data Berhasil Dihapus!',
-                                showConfirmButton: false,
-                                timer: 1000,
-                            });
-                            $('#tbProgram').DataTable().ajax.reload();
-                            $("#delete").prop("disabled", false);
+                            if (res.status) {
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Pengajuan Kegiatan Baru Berhasil',
+                                    showConfirmButton: false,
+                                    timer: 1000,
+                                });
+                            } else {
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    title: 'Pengajuan Kegiatan Baru Gagal',
+                                    showConfirmButton: true,
+                                });
+                            }
+                            $('#tbKegiatan').DataTable().ajax.reload();
+                            console.log(res);
                         }).fail(function(res) {
                             Swal.fire({
                                 position: 'top-end',
                                 icon: 'error',
-                                title: 'Data Gagal Dihapus!',
+                                title: 'Pengajuan Kegiatan Baru Gagal',
                                 showConfirmButton: true,
                             });
-                            $('#tbProgram').DataTable().ajax.reload();
-                            $("#delete").prop("disabled", false);
+                            console.log(res);
                         });
-                    } else {
-                        $('#tbProgram').DataTable().ajax.reload();
-                        $("#delete").prop("disabled", false);
                     }
                 });
             });
-
-            $("#confirm").click(function() {
-                $('#tbProgram').DataTable().ajax.reload();
-            });
         });
 
-        function getId() {
+        function getIdtbKegiatan() {
             let id = [];
-            $('.ckItem:checked').each(function() {
+            $('.ckItemtbKegiatan:checked').each(function() {
                 id.push($(this).val());
             });
             return id;
         }
 
-        function tbProgram() {
-            $('#tbProgram').DataTable({
+        function tbKegiatan() {
+            $('#tbKegiatan').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
@@ -153,35 +146,32 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kepalauud.program.apiGetAll') }}',
+                    url: '{{ route('kepalabagian.Kegiatan.apiGetAll') }}',
                     type: 'GET',
                     data: {
-                        id_misi: $('#misi').val()
+                        id_program: $('#program').val()
                     }
                 },
                 columns: [{
-                    data: 'id_program',
-                    name: 'id_program',
-                    title: '<input type="checkbox" id="ckAll" />',
+                    data: 'id_kegiatan',
+                    name: 'id_kegiatan',
+                    title: '<input type="checkbox" class="ckAlltbKegiatan" />',
                     width: '5px',
                     render: function(data, type, row) {
-                        return `<input type="checkbox" class="ckItem" value="${data}" />`;
+                        return `<input type="checkbox" class="ckItemtbKegiatan" value="${data}" />`;
                     }
+                }, {
+                    data: 'nm_kegiatan',
+                    name: 'nm_kegiatan',
+                    title: 'Kegiatan',
                 }, {
                     data: 'nm_program',
                     name: 'nm_program',
                     title: 'Program',
-                    render: function(data, type, row, meta) {
-                        return `<a href="{!! route('kepalauud.program.viewUpdate') !!}?id_program=${row.id_program}">${data}</a>`;
-                    }
                 }, {
                     data: 'nm_misi',
                     name: 'nm_misi',
                     title: 'Misi',
-                }, {
-                    data: 'a_aktif',
-                    name: 'a_aktif',
-                    title: 'Status',
                 }, ]
             });
         }

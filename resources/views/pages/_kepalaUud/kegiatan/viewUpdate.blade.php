@@ -24,7 +24,7 @@
                 </div>
                 <div class="card-body">
                     <div class="bg-light p-3">
-                        <form action="{{ route('kegiatan.apiUpdate') }}" method="POST">
+                        <form action="{{ route('kepalauud.kegiatan.apiUpdate') }}" method="POST">
                             @csrf
                             @foreach ($kegiatan as $kgt)
                                 <div class="form-row">
@@ -35,9 +35,8 @@
                                             <option value="">-</option>
                                             @foreach ($program as $pgm)
                                                 <option value="{{ $pgm->id_program }}"
-                                                    {{ (old('id_program') ?? $kgt->id_program == $pgm->id_program) ? 'selected' : '' }}>Program:
-                                                    {{ $pgm->nm_program }} ({{ $pgm->periode_program }}) | Misi:
-                                                    {{ $pgm->nm_misi }} ({{ $pgm->periode_misi }})</option>
+                                                    {{ (old('id_program') ?? $kgt->id_program == $pgm->id_program) ? 'selected' : '' }}>
+                                                    {{ $pgm->nm_program }} | {{ $pgm->nm_misi }}</option>
                                             @endforeach
                                         </select>
                                         @error('id_program')
@@ -84,7 +83,7 @@
                             <div class="card-footer mt-4">
                                 <button type="submit" class="btn noborder btn-info mr-2"><i
                                     class="fas fa-edit"></i> Ubah Data</button>
-                                <a href="{{ route('kegiatan.viewGetAll') }}" type="button"
+                                <a href="{{ route('kepalauud.kegiatan.viewGetAll') }}" type="button"
                                     class="btn noborder btn-info"><i class="fas fa-chevron-circle-left"></i> Kembali</a>
                                 <div class="float-right">
                                     <strong><i class="text-danger">*</i> Bidang harus diisi..</strong>

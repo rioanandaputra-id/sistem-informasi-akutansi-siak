@@ -24,7 +24,7 @@
                 </div>
                 <div class="card-body">
                     <div class="bg-light p-3">
-                        <form action="{{ route('program.apiUpdate') }}" method="POST">
+                        <form action="{{ route('kepalauud.program.apiUpdate') }}" method="POST">
                             @csrf
                             @foreach ($program as $pgm)
                             <div class="form-row">
@@ -84,7 +84,7 @@
                             <div class="card-footer mt-4">
                                 <button type="submit" class="btn noborder btn-info mr-2"><i
                                     class="fas fa-edit"></i> Ubah Data</button>
-                                <a href="{{ route('program.viewGetAll') }}" type="button" class="btn noborder btn-info"><i
+                                <a href="{{ route('kepalauud.program.viewGetAll') }}" type="button" class="btn noborder btn-info"><i
                                         class="fas fa-chevron-circle-left"></i> Kembali</a>
                                 <div class="float-right">
                                     <strong><i class="text-danger">*</i> Bidang harus diisi..</strong>

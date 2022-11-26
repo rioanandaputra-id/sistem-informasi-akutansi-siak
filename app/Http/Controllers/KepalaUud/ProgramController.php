@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\KepalaUud;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Program;
 use Exception;
@@ -14,26 +16,20 @@ use Illuminate\Support\Facades\Validator;
 class ProgramController extends Controller
 {
     private $request;
-    private $mProgram;
-    private $mMisi;
-
     public function __construct()
     {
         $this->request = app(Request::class);
-        $this->mProgram = app(Program::class);
-        $this->mMisi = app(MisiController::class);
     }
 
     public function apiGetAll()
     {
         try {
-            $id_misi = ($this->request->id_misi) ? " AND  pgm.id_misi = '".$this->request->id_misi."'" : "";
             $apiGetAll = DB::select("
                 SELECT
-                    pgm.id_program,
                     pgm.id_misi,
-                    pgm.nm_program,
-                    pgm.periode AS periode_program,
+                    pgm.id_program,
+                    CONCAT('( ', msi.periode, ' ) ', msi.nm_misi) AS nm_misi,
+                    CONCAT('( ', pgm.periode, ' ) ', pgm.nm_program) AS nm_program,
                     CASE
                         WHEN pgm.a_aktif = '1' THEN 'Aktif'
                         ELSE 'Non Aktif'
@@ -41,30 +37,21 @@ class ProgramController extends Controller
                     pgm.created_at,
                     pgm.updated_at,
                     pgm.deleted_at,
-                    pgm.id_updater,
-                    msi.nm_misi,
-                    msi.periode AS periode_misi
+                    pgm.id_updater
                 FROM
                     program AS pgm
                     JOIN misi AS msi ON msi.id_misi = pgm.id_misi
-                    AND msi.deleted_at IS NULL AND msi.a_aktif = '1'
+                    AND msi.deleted_at IS NULL
+                    AND msi.a_aktif = '1'
                 WHERE
                     pgm.deleted_at IS NULL
-                    ".$id_misi."
                 ORDER BY
-                    pgm.periode DESC
+                    msi.periode,
+                    msi.nm_misi,
+                    pgm.periode,
+                    pgm.nm_program ASC
             ");
-            if ($this->request->ajax()) {
-                return DaTables::of($apiGetAll)->make(true);
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'OK',
-                    'error' => null,
-                    'response' => $apiGetAll
-                ];
-            }
+            return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
             return [
@@ -86,10 +73,10 @@ class ProgramController extends Controller
         }
     }
 
-    public function apiGetById($idProgram = null)
+    public function apiGetById()
     {
         try {
-            $id_program = $idProgram ?? $this->request->id_program;
+            $id_program = $this->request->id_program;
             $apiGetById = DB::select("
                 SELECT
                     pgm.id_program,
@@ -141,11 +128,10 @@ class ProgramController extends Controller
         }
     }
 
-    public function apiCreate($noApi = null)
+    public function apiCreate()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
             $rules = [
                 'id_misi' => 'required|uuid',
                 'nm_program' => 'required|max:255',
@@ -154,19 +140,8 @@ class ProgramController extends Controller
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return back()->withInput()->withErrors($validator);
             }
-
             $id_program = guid();
             $id_misi = $this->request->id_misi;
             $nm_program = $this->request->nm_program;
@@ -174,8 +149,7 @@ class ProgramController extends Controller
             $a_aktif = $this->request->a_aktif;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mProgram->create([
+            Program::create([
                 'id_misi' => $id_misi,
                 'id_program' => $id_program,
                 'nm_program' => $nm_program,
@@ -184,55 +158,23 @@ class ProgramController extends Controller
                 'created_at' => $created_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Ditambahkan!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Created',
-                    'error' => null,
-                    'response' => ['id_program' => $id_program]
-                ];
-            }
+            return back()->with('success', 'Data Berhasil Ditambahkan!');
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | QueryException');
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | Exception');
         }
     }
 
-    public function apiUpdate($noApi = null, $idProgram = null)
+    public function apiUpdate()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
             $rules = [
                 'id_program' => 'required|uuid',
                 'id_misi' => 'required|uuid',
@@ -242,28 +184,16 @@ class ProgramController extends Controller
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return back()->withInput()->withErrors($validator);
             }
-
-            $id_program = $idProgram ?? $this->request->id_program;
+            $id_program = $this->request->id_program;
             $id_misi = $this->request->id_misi;
             $nm_program = $this->request->nm_program;
             $periode = $this->request->periode;
             $a_aktif = $this->request->a_aktif;
             $updated_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mProgram->where('id_program', $id_program)->update([
+            Program::where('id_program', $id_program)->update([
                 'id_misi' => $id_misi,
                 'nm_program' => $nm_program,
                 'periode' => $periode,
@@ -271,122 +201,69 @@ class ProgramController extends Controller
                 'updated_at' => $updated_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Diubah!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Updated',
-                    'error' => null,
-                    'response' => ['id_program' => $id_program]
-                ];
-            }
+            return back()->with('success', 'Data Berhasil Diubah!');
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | QueryException');
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | Exception');
         }
     }
 
-    public function apiDelete($noApi = null, $idProgram = null)
+    public function apiDelete()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
-            $rules = [
-                'id_program.*' => 'required|uuid',
-            ];
+            $rules = ['id_program.*' => 'required|uuid'];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
             }
-
-            $id_program = $idProgram ?? $this->request->id_program;
+            $id_program = $this->request->id_program;
             $deleted_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mProgram->whereIn('id_program', $id_program)->update([
+            Program::whereIn('id_program', $id_program)->update([
                 'deleted_at' => $deleted_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Dihapus!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Deleted',
-                    'error' => null,
-                    'response' => ['id_program' => $id_program]
-                ];
-            }
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Deleted',
+                'error' => null,
+                'response' => ['id_program' => $id_program]
+            ];
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
         }
     }
 
@@ -396,8 +273,7 @@ class ProgramController extends Controller
             'title' => 'Program',
             'site_active' => 'Program',
         ];
-        $misi = $this->mMisi->apiGetAll()['response'] ?? [];
-        return view('pages.program.viewGetAll', compact('info', 'misi'));
+        return view('pages._kepalaUud.program.viewGetAll', compact('info'));
     }
 
     public function viewCreate()
@@ -406,8 +282,26 @@ class ProgramController extends Controller
             'title' => 'Program',
             'site_active' => 'Program',
         ];
-        $misi = $this->mMisi->apiGetAll()['response'] ?? [];
-        return view('pages.program.viewCreate', compact('info', 'misi'));
+        $misi = DB::select("
+            SELECT
+                msi.id_misi,
+                msi.nm_misi,
+                msi.periode,
+                CASE
+                    WHEN msi.a_aktif = '1' THEN 'Aktif'
+                    ELSE 'Non Aktif'
+                END AS a_aktif,
+                msi.created_at,
+                msi.updated_at,
+                msi.deleted_at
+            FROM
+                misi AS msi
+            WHERE
+                msi.deleted_at IS NULL
+            ORDER BY
+                msi.periode DESC
+        ");
+        return view('pages._kepalaUud.program.viewCreate', compact('info', 'misi'));
     }
 
     public function viewUpdate()
@@ -417,7 +311,25 @@ class ProgramController extends Controller
             'site_active' => 'Program',
         ];
         $program = $this->apiGetById()['response'];
-        $misi = $this->mMisi->apiGetAll()['response'] ?? [];
-        return view('pages.program.viewUpdate', compact('info', 'program', 'misi'));
+        $misi = DB::select("
+            SELECT
+                msi.id_misi,
+                msi.nm_misi,
+                msi.periode,
+                CASE
+                    WHEN msi.a_aktif = '1' THEN 'Aktif'
+                    ELSE 'Non Aktif'
+                END AS a_aktif,
+                msi.created_at,
+                msi.updated_at,
+                msi.deleted_at
+            FROM
+                misi AS msi
+            WHERE
+                msi.deleted_at IS NULL
+            ORDER BY
+                msi.periode DESC
+        ");
+        return view('pages._kepalaUud.program.viewUpdate', compact('info', 'program', 'misi'));
     }
 }

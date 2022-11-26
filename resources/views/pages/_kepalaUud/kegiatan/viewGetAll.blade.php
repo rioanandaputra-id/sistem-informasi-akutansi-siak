@@ -21,27 +21,19 @@
                     <div class="row mb-3">
                         <div class="col">
                             <div class="float-left">
-                                <select class="form-control" id="program" style="min-width: 750px">
-                                    @foreach ($program as $pro)
-                                        <option value="{{ $pro->id_program }}">
-                                            {{ $pro->periode_program . ' - ' . $pro->nm_program }}</option>
-                                    @endforeach
-                                </select>
+                                <a href="{{ route('kepalauud.kegiatan.viewCreate') }}" type="button"
+                                    class="btn btn-info noborder">
+                                    <i class="fas fa-plus-circle"></i> Tambah
+                                </a>
+                                <button id="delete" type="button" class="btn btn-info noborder"><i
+                                        class="fas fa-trash"></i>
+                                    Hapus</button>
+                                <button id="refresh" type="button" class="btn btn-info noborder"><i
+                                        class="fas fa-sync"></i>
+                                    Refresh</button>
                             </div>
                             <div class="float-right">
-                                @can('kepalauud')
-                                    <a href="{{ route('kegiatan.viewCreate') }}" type="button" class="btn btn-info noborder">
-                                        <i class="fas fa-plus-circle"></i> Tambah
-                                    </a>
-                                    <button id="delete" type="button" class="btn btn-info noborder"><i class="fas fa-trash"></i>
-                                        Hapus</button>
-                                @endcan
-                                <button id="refresh" type="button" class="btn btn-info noborder"><i class="fas fa-sync"></i>
-                                    Refresh</button>
-                                @can('kepalabagian')
-                                    <button id="selected" type="button" class="btn btn-info noborder"><i
-                                            class="fas fa-sign-in-alt"></i> Ajukan</button>
-                                @endcan
+                                <b>Daftar Kegiatan</b>
                             </div>
                         </div>
                     </div>
@@ -61,8 +53,7 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet"
-        href="{{ asset('adminlte320/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.css') }}">
 @endpush
@@ -108,7 +99,7 @@
                     if (willDelete.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "{!! route('kegiatan.apiDelete') !!}",
+                            url: "{!! route('kepalauud.kegiatan.apiDelete') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
                                 no_api: 0,
@@ -140,44 +131,8 @@
                     }
                 });
             });
-
-            $("#selected").click(function() {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('kegiatanDivisi.apiCreate') }}",
-                    data: {
-                        _token: "{!! csrf_token() !!}",
-                        id_kegiatan: getId()
-                    },
-                    beforeSend: function() {
-                        $('#selected').prop("disabled", true);
-                    },
-                }).done(function(res) {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Pengajuan Kegiatan Baru Berhasil',
-                        showConfirmButton: false,
-                        timer: 1000,
-                    });
-                    $('#selected').prop("disabled", false);
-                    $('#tbkegiatan').DataTable().ajax.reload();
-                }).fail(function(res) {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Pengajuan Kegiatan Baru Gagal',
-                        showConfirmButton: false,
-                        timer: 1000,
-                    });
-                    console.log(res);
-                    $('#selected').prop("disabled", false);
-                });
-            });
         });
-    </script>
 
-    <script>
         function getId() {
             let id = [];
             $('.ckItem:checked').each(function() {
@@ -185,70 +140,24 @@
             });
             return id;
         }
-    </script>
 
-    @can('kepalauud')
-        <script>
-            function tbkegiatan() {
-                $('#tbkegiatan').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    searching: true,
-                    paging: true,
-                    info: true,
-                    ordering: false,
-                    ajax: {
-                        url: '{{ route('kegiatan.apiGetAll') }}',
-                        type: 'GET',
-                        data: {
-                            id_program: $('#program').val()
-                        }
-                    },
-                    columns: [{
-                            data: 'id_kegiatan',
-                            name: 'id_kegiatan',
-                            title: '<input type="checkbox" id="ckAll" />',
-                            width: '5px',
-                            render: function(data, type, row) {
-                                return `<input type="checkbox" class="ckItem" value="${data}" />`;
-                            }
-                        }, {
-                            data: 'nm_kegiatan',
-                            name: 'nm_kegiatan',
-                            title: 'Kegiatan',
-                            render: function(data, type, row, meta) {
-                                return `<a href="{!! route('kegiatan.viewUpdate') !!}?id_kegiatan=${row.id_kegiatan}">${data}</a>`;
-                            }
-                        },
-                        {
-                            data: 'a_aktif',
-                            name: 'a_aktif',
-                            title: 'Status',
-                        },
-                    ]
-                });
-            }
-        </script>
-    @else
-        <script>
-            function tbkegiatan() {
-                $('#tbkegiatan').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    searching: true,
-                    paging: true,
-                    info: true,
-                    ordering: false,
-                    ajax: {
-                        url: '{{ route('kegiatan.apiGetAll') }}',
-                        type: 'GET',
-                        data: {
-                            id_program: $('#program').val()
-                        }
-                    },
-                    columns: [{
+        function tbkegiatan() {
+            $('#tbkegiatan').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                searching: true,
+                paging: true,
+                info: true,
+                ordering: false,
+                ajax: {
+                    url: '{{ route('kepalauud.kegiatan.apiGetAll') }}',
+                    type: 'GET',
+                    data: {
+                        id_program: $('#program').val()
+                    }
+                },
+                columns: [{
                         data: 'id_kegiatan',
                         name: 'id_kegiatan',
                         title: '<input type="checkbox" id="ckAll" />',
@@ -259,13 +168,28 @@
                     }, {
                         data: 'nm_kegiatan',
                         name: 'nm_kegiatan',
-                        title: 'Nama',
+                        title: 'Kegiatan',
                         render: function(data, type, row, meta) {
-                            return `<a href="{!! route('kegiatan.viewUpdate') !!}?id_kegiatan=${row.id_kegiatan}">${data}</a>`;
+                            return `<a href="{!! route('kepalauud.kegiatan.viewUpdate') !!}?id_kegiatan=${row.id_kegiatan}">${data}</a>`;
                         }
-                    }, ]
-                });
-            }
-        </script>
-    @endcan
+                    },
+                    {
+                        data: 'nm_program',
+                        name: 'nm_program',
+                        title: 'Program',
+                    },
+                    {
+                        data: 'nm_misi',
+                        name: 'nm_misi',
+                        title: 'Misi',
+                    },
+                    {
+                        data: 'a_aktif',
+                        name: 'a_aktif',
+                        title: 'Status',
+                    },
+                ]
+            });
+        }
+    </script>
 @endpush

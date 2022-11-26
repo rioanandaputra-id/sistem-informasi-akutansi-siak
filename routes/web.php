@@ -1,15 +1,16 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KegiatanController;
-use App\Http\Controllers\KegiatanDivisiController;
-use App\Http\Controllers\MisiController;
-use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\VisiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KepalaBagian\KegiatanMonitoringController as KepalaBagianKegiatanMonitoringController;
 use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegiatanMonitoringController;
+use App\Http\Controllers\KepalaUud\VisiController as KepalaUudVisiController;
+use App\Http\Controllers\KepalaUud\KegiatanController as KepalaUudKegiatanController;
+use App\Http\Controllers\KepalaUud\MisiController as KepalaUudMisiController;
+use App\Http\Controllers\KepalaUud\ProgramController as KepalaUudProgramController;
+use App\Http\Controllers\TimRba\KegiatanMonitoringController as TimRbaKegiatanMonitoringController;
+use App\Http\Controllers\KepalaBagian\KegiatanController as KepalaBagianKegiatanController;
+use App\Http\Controllers\KepalaBagian\KegiatanMonitoringController as KepalaBagianKegiatanMonitoringController;
 use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
 
 Auth::routes();
@@ -20,76 +21,79 @@ Route::middleware('auth')->group(function () {
     Route::controller(DashboardController::class)->prefix('dashboard')->group(function () {
         Route::get('/', 'dashboard')->name('dashboard');
     });
-    Route::controller(VisiController::class)->prefix('visi')->group(function () {
-        Route::get('apiGetAll', 'apiGetAll')->name('visi.apiGetAll');
-        Route::get('apiGetById', 'apiGetById')->name('visi.apiGetById');
-        Route::post('apiCreate', 'apiCreate')->name('visi.apiCreate');
-        Route::post('apiUpdate', 'apiUpdate')->name('visi.apiUpdate');
-        Route::post('apiDelete', 'apiDelete')->name('visi.apiDelete');
-        Route::get('viewGetAll', 'viewGetAll')->name('visi.viewGetAll');
-        Route::get('viewCreate', 'viewCreate')->name('visi.viewCreate');
-        Route::get('viewUpdate', 'viewUpdate')->name('visi.viewUpdate');
-    });
-    Route::controller(MisiController::class)->prefix('misi')->group(function () {
-        Route::get('apiGetAll', 'apiGetAll')->name('misi.apiGetAll');
-        Route::get('apiGetById', 'apiGetById')->name('misi.apiGetById');
-        Route::post('apiCreate', 'apiCreate')->name('misi.apiCreate');
-        Route::post('apiUpdate', 'apiUpdate')->name('misi.apiUpdate');
-        Route::post('apiDelete', 'apiDelete')->name('misi.apiDelete');
-        Route::get('viewGetAll', 'viewGetAll')->name('misi.viewGetAll');
-        Route::get('viewCreate', 'viewCreate')->name('misi.viewCreate');
-        Route::get('viewUpdate', 'viewUpdate')->name('misi.viewUpdate');
-    });
-    Route::controller(ProgramController::class)->prefix('program')->group(function () {
-        Route::get('apiGetAll', 'apiGetAll')->name('program.apiGetAll');
-        Route::get('apiGetById', 'apiGetById')->name('program.apiGetById');
-        Route::post('apiCreate', 'apiCreate')->name('program.apiCreate');
-        Route::post('apiUpdate', 'apiUpdate')->name('program.apiUpdate');
-        Route::post('apiDelete', 'apiDelete')->name('program.apiDelete');
-        Route::get('viewGetAll', 'viewGetAll')->name('program.viewGetAll');
-        Route::get('viewCreate', 'viewCreate')->name('program.viewCreate');
-        Route::get('viewUpdate', 'viewUpdate')->name('program.viewUpdate');
-    });
-    Route::controller(KegiatanController::class)->prefix('kegiatan')->group(function () {
-        Route::get('apiGetAll', 'apiGetAll')->name('kegiatan.apiGetAll');
-        Route::get('apiGetById', 'apiGetById')->name('kegiatan.apiGetById');
-        Route::post('apiCreate', 'apiCreate')->name('kegiatan.apiCreate');
-        Route::post('apiUpdate', 'apiUpdate')->name('kegiatan.apiUpdate');
-        Route::post('apiDelete', 'apiDelete')->name('kegiatan.apiDelete');
-        Route::get('viewGetAll', 'viewGetAll')->name('kegiatan.viewGetAll');
-        Route::get('viewCreate', 'viewCreate')->name('kegiatan.viewCreate');
-        Route::get('viewUpdate', 'viewUpdate')->name('kegiatan.viewUpdate');
-    });
-    Route::controller(KegiatanDivisiController::class)->prefix('kegiatanDivisi')->group(function () {
-        Route::get('apiGetAll', 'apiGetAll')->name('kegiatanDivisi.apiGetAll');
-        Route::get('apiGetById', 'apiGetById')->name('kegiatanDivisi.apiGetById');
-        Route::post('apiCreate', 'apiCreate')->name('kegiatanDivisi.apiCreate');
-        Route::post('apiUpdate', 'apiUpdate')->name('kegiatanDivisi.apiUpdate');
-        Route::post('apiDelete', 'apiDelete')->name('kegiatanDivisi.apiDelete');
-        Route::get('viewGetAll', 'viewGetAll')->name('kegiatanDivisi.viewGetAll');
-        Route::get('viewCreate', 'viewCreate')->name('kegiatanDivisi.viewCreate');
-        Route::get('viewUpdate', 'viewUpdate')->name('kegiatanDivisi.viewUpdate');
-    });
-
-
     // =====================================KEPALA UUD========================================
-    Route::controller(KepalaUudKegiatanMonitoringController::class)->prefix('kepalauud/KegiatanMonitoring')->group(function () {
-        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.KegiatanMonitoring.apiGetAll');
-        Route::post('apiCreate', 'apiCreate')->name('kepalauud.KegiatanMonitoring.apiCreate');
-        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.KegiatanMonitoring.apiUpdate');
-        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.KegiatanMonitoring.viewGetAll');
+    Route::controller(KepalaUudVisiController::class)->prefix('kepalauud/visi')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.visi.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kepalauud.visi.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kepalauud.visi.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.visi.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kepalauud.visi.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.visi.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalauud.visi.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kepalauud.visi.viewUpdate');
+    });
+    Route::controller(KepalaUudMisiController::class)->prefix('kepalauud/misi')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.misi.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kepalauud.misi.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kepalauud.misi.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.misi.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kepalauud.misi.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.misi.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalauud.misi.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kepalauud.misi.viewUpdate');
+    });
+    Route::controller(KepalaUudProgramController::class)->prefix('kepalauud/program')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.program.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kepalauud.program.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kepalauud.program.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.program.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kepalauud.program.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.program.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalauud.program.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kepalauud.program.viewUpdate');
+    });
+    Route::controller(KepalaUudKegiatanController::class)->prefix('kepalauud/kegiatan')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.kegiatan.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kepalauud.kegiatan.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kepalauud.kegiatan.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.kegiatan.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kepalauud.kegiatan.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.kegiatan.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalauud.kegiatan.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kepalauud.kegiatan.viewUpdate');
+    });
+    Route::controller(KepalaUudKegiatanMonitoringController::class)->prefix('kepalauud/kegiatanMonitoring')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.kegiatanMonitoring.apiGetAll');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.kegiatanMonitoring.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.kegiatanMonitoring.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('kepalauud.kegiatanMonitoring.viewDetail');
+    });
+    // =====================================TIM RBA========================================
+    Route::controller(TimRbaKegiatanMonitoringController::class)->prefix('timrba/kegiatanMonitoring')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('timrba.kegiatanMonitoring.apiGetAll');
+        Route::post('apiUpdate', 'apiUpdate')->name('timrba.kegiatanMonitoring.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('timrba.kegiatanMonitoring.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('timrba.kegiatanMonitoring.viewDetail');
     });
     // =====================================KEPALA WILAYAH========================================
     Route::controller(KepalaWilayahKegiatanMonitoringController::class)->prefix('kepalawilayah/KegiatanMonitoring')->group(function () {
-        Route::get('apiGetAll', 'apiGetAll')->name('kepalawilayah.KegiatanMonitoring.apiGetAll');
-        Route::post('apiUpdate', 'apiUpdate')->name('kepalawilayah.KegiatanMonitoring.apiUpdate');
-        Route::get('viewGetAll', 'viewGetAll')->name('kepalawilayah.KegiatanMonitoring.viewGetAll');
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalawilayah.kegiatanMonitoring.apiGetAll');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalawilayah.kegiatanMonitoring.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalawilayah.kegiatanMonitoring.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('kepalawilayah.kegiatanMonitoring.viewDetail');
     });
     // =====================================KEPALA BAGIAN========================================
+    Route::controller(KepalaBagianKegiatanController::class)->prefix('kepalabagian/Kegiatan')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.Kegiatan.apiGetAll');
+        Route::post('apiCreate', 'apiCreate')->name('kepalabagian.Kegiatan.apiCreate');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.Kegiatan.viewGetAll');
+    });
     Route::controller(KepalaBagianKegiatanMonitoringController::class)->prefix('kepalabagian/KegiatanMonitoring')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.KegiatanMonitoring.apiGetAll');
         Route::post('apiCreateDetailRba', 'apiCreateDetailRba')->name('kepalabagian.KegiatanMonitoring.apiCreateDetailRba');
         Route::post('apiDeleteDetailRba', 'apiDeleteDetailRba')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailRba');
+        Route::post('apiCreateDetailLaksana', 'apiCreateDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiCreateDetailLaksana');
+        Route::post('apiDeleteDetailLaksana', 'apiDeleteDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailLaksana');
         Route::post('apiUpdate', 'apiUpdate')->name('kepalabagian.KegiatanMonitoring.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.KegiatanMonitoring.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('kepalabagian.KegiatanMonitoring.viewDetail');

@@ -21,15 +21,13 @@
                     <div class="row mb-2">
                         <div class="col">
                             <div class="float-left">
-                                <a href="{{ route('visi.viewCreate') }}" type="button" class="btn btn-info noborder">
+                                <a href="{{ route('kepalauud.visi.viewCreate') }}" type="button" class="btn btn-info noborder">
                                     <i class="fas fa-plus-circle"></i> Tambah
                                 </a>
                                 <button id="refresh" type="button" class="btn btn-info noborder"><i
                                         class="fas fa-sync"></i> Refresh</button>
                                 <button id="delete" type="button" class="btn btn-info noborder"><i
                                         class="fas fa-trash"></i> Hapus</button>
-                                {{-- <button id="confirm" type="button" class="btn btn-info noborder"><i
-                                        class="fas fa-check-circle"></i></button> --}}
                             </div>
                             <div class="float-right text-bold">
                                 Daftar Visi
@@ -74,7 +72,7 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('visi.apiGetAll') }}',
+                    url: '{{ route('kepalauud.visi.apiGetAll') }}',
                     type: 'GET'
                 },
                 columns: [{
@@ -88,9 +86,9 @@
                 }, {
                     data: 'nm_visi',
                     name: 'nm_visi',
-                    title: 'Nama',
+                    title: 'Visi',
                     render: function(data, type, row, meta) {
-                        return `<a href="{!! route('visi.viewUpdate') !!}?id_visi=${row.id_visi}">${data}</a>`;
+                        return `<a href="{!! route('kepalauud.visi.viewUpdate') !!}?id_visi=${row.id_visi}">${data}</a>`;
                     }
                 }, {
                     data: 'periode',
@@ -130,7 +128,7 @@
                     if (willDelete.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "{!! route('visi.apiDelete') !!}",
+                            url: "{!! route('kepalauud.visi.apiDelete') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
                                 no_api: 0,

@@ -24,7 +24,7 @@
                 </div>
                 <div class="card-body">
                     <div class="bg-light p-3">
-                        <form action="{{ route('misi.apiCreate') }}" method="POST">
+                        <form action="{{ route('kepalauud.misi.apiCreate') }}" method="POST">
                             @csrf
                             <div class="form-row">
                                 <div class="form-group col-md-6">
@@ -65,7 +65,7 @@
                             <div class="card-footer mt-4">
                                 <button type="submit" class="btn noborder btn-info mr-2"><i
                                     class="fas fa-plus-circle"></i> Tambah Data</button>
-                                <a href="{{ route('misi.viewGetAll') }}" type="button" class="btn noborder btn-info"><i
+                                <a href="{{ route('kepalauud.misi.viewGetAll') }}" type="button" class="btn noborder btn-info"><i
                                     class="fas fa-chevron-circle-left"></i> Kembali</a>
                                 <div class="float-right">
                                     <strong><i class="text-danger">*</i> Bidang harus diisi..</strong>

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\KepalaUud;
 
+use App\Http\Controllers\Controller;
 use App\Models\Misi;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -14,12 +15,9 @@ use Illuminate\Support\Facades\Validator;
 class MisiController extends Controller
 {
     private $request;
-    private $mMisi;
-
     public function __construct()
     {
         $this->request = app(Request::class);
-        $this->mMisi = app(Misi::class);
     }
 
     public function apiGetAll()
@@ -44,17 +42,7 @@ class MisiController extends Controller
                 ORDER BY
                     msi.periode DESC
             ");
-            if ($this->request->ajax()) {
-                return DaTables::of($apiGetAll)->make(true);
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Created',
-                    'error' => null,
-                    'response' => $apiGetAll
-                ];
-            }
+            return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
             return [
@@ -76,10 +64,10 @@ class MisiController extends Controller
         }
     }
 
-    public function apiGetById($idMisi = null)
+    public function apiGetById()
     {
         try {
-            $id_misi = $idMisi ?? $this->request->id_misi;
+            $id_misi = $this->request->id_misi;
             $apiGetById = DB::select("
                 SELECT
                     msi.id_misi,
@@ -125,11 +113,10 @@ class MisiController extends Controller
         }
     }
 
-    public function apiCreate($noApi = null)
+    public function apiCreate()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
             $rules = [
                 'nm_misi' => 'required|max:255',
                 'periode' => 'required|min:4|max:4',
@@ -137,27 +124,15 @@ class MisiController extends Controller
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return back()->withInput()->withErrors($validator);
             }
-
             $id_misi = guid();
             $nm_misi = $this->request->nm_misi;
             $periode = $this->request->periode;
             $a_aktif = $this->request->a_aktif;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mMisi->create([
+            Misi::create([
                 'id_misi' => $id_misi,
                 'nm_misi' => $nm_misi,
                 'periode' => $periode,
@@ -165,55 +140,23 @@ class MisiController extends Controller
                 'created_at' => $created_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Ditambahkan!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Created',
-                    'error' => null,
-                    'response' => ['id_misi' => $id_misi]
-                ];
-            }
+            return back()->with('success', 'Data Berhasil Ditambahkan!');
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | QueryException');
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | Exception');
         }
     }
 
-    public function apiUpdate($noApi = null, $idMisi = null)
+    public function apiUpdate()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
             $rules = [
                 'id_misi' => 'required|uuid',
                 'nm_misi' => 'required|max:255',
@@ -222,149 +165,84 @@ class MisiController extends Controller
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return back()->withInput()->withErrors($validator);
             }
-
-            $id_misi = $idMisi ?? $this->request->id_misi;
+            $id_misi = $this->request->id_misi;
             $nm_misi = $this->request->nm_misi;
             $periode = $this->request->periode;
             $a_aktif = $this->request->a_aktif;
             $updated_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mMisi->where('id_misi', $id_misi)->update([
+            Misi::where('id_misi', $id_misi)->update([
                 'nm_misi' => $nm_misi,
                 'periode' => $periode,
                 'a_aktif' => $a_aktif,
                 'updated_at' => $updated_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Diubah!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Updated',
-                    'error' => null,
-                    'response' => ['id_misi' => $id_misi]
-                ];
-            }
+            return back()->with('success', 'Data Berhasil Diubah!');
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | QueryException');
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return back()->with('error', 'Internal Server Error | Exception');
         }
     }
 
-    public function apiDelete($noApi = null, $idMisi = null)
+    public function apiDelete()
     {
         try {
             DB::beginTransaction();
-            $no_api = $noApi ?? $this->request->no_api;
-            $rules = [
-                'id_misi.*' => 'required|uuid',
-            ];
+            $rules = ['id_misi.*' => 'required|uuid'];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
-                if ($no_api) {
-                    return back()->withInput()->withErrors($validator);
-                } else {
-                    return [
-                        'status' => false,
-                        'latency' => AppLatency(),
-                        'message' => 'BadRequest',
-                        'error' => $validator->errors(),
-                        'response' => null
-                    ];
-                }
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
             }
-
             $id_misi = $idMisi ?? $this->request->id_misi;
             $deleted_at = now();
             $id_updater = Auth::user()->id_user;
-
-            $this->mMisi->whereIn('id_misi', $id_misi)->update([
+            Misi::whereIn('id_misi', $id_misi)->update([
                 'deleted_at' => $deleted_at,
                 'id_updater' => $id_updater,
             ]);
-
             DB::commit();
-            if ($no_api) {
-                return back()->with('success', 'Data Berhasil Dihapus!');
-            } else {
-                return [
-                    'status' => true,
-                    'latency' => AppLatency(),
-                    'message' => 'Deleted',
-                    'error' => null,
-                    'response' => ['id_misi' => $id_misi]
-                ];
-            }
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Deleted',
+                'error' => null,
+                'response' => ['id_misi' => $id_misi]
+            ];
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | QueryException');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'QueryException',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
         } catch (Exception $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
-            if ($no_api) {
-                return back()->with('error', 'Internal Server Error | Exception');
-            } else {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'Exception',
-                    'error' => null,
-                    'response' => null
-                ];
-            }
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
         }
     }
 
@@ -374,7 +252,7 @@ class MisiController extends Controller
             'title' => 'Misi',
             'site_active' => 'Misi',
         ];
-        return view('pages.misi.viewGetAll', compact('info'));
+        return view('pages._kepalaUud.misi.viewGetAll', compact('info'));
     }
 
     public function viewCreate()
@@ -383,7 +261,7 @@ class MisiController extends Controller
             'title' => 'Misi',
             'site_active' => 'Misi',
         ];
-        return view('pages.misi.viewCreate', compact('info'));
+        return view('pages._kepalaUud.misi.viewCreate', compact('info'));
     }
 
     public function viewUpdate()
@@ -393,6 +271,6 @@ class MisiController extends Controller
             'site_active' => 'Misi',
         ];
         $misi = $this->apiGetById()['response'];
-        return view('pages.misi.viewUpdate', compact('info', 'misi'));
+        return view('pages._kepalaUud.misi.viewUpdate', compact('info', 'misi'));
     }
 }
