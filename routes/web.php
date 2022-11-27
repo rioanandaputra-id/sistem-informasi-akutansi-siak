@@ -3,7 +3,9 @@
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegiatanMonitoringController;
+use App\Http\Controllers\KepalaUud\AkunController as KepalaUudAkunController;
+use App\Http\Controllers\KepalaUud\DivisiController as KepalaUudDivisiController;
+use App\Http\Controllers\KepalaUud\ManAksesController as KepalaUudManAksesController;
 use App\Http\Controllers\KepalaUud\VisiController as KepalaUudVisiController;
 use App\Http\Controllers\KepalaUud\KegiatanController as KepalaUudKegiatanController;
 use App\Http\Controllers\KepalaUud\MisiController as KepalaUudMisiController;
@@ -23,6 +25,36 @@ Route::middleware('auth')->group(function () {
         Route::get('/', 'dashboard')->name('dashboard');
     });
     // =====================================KEPALA UUD========================================
+    Route::controller(KepalaUudAkunController::class)->prefix('kepalauud/master/akun')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.master.akun.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kepalauud.master.akun.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kepalauud.master.akun.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.master.akun.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kepalauud.master.akun.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.master.akun.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalauud.master.akun.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kepalauud.master.akun.viewUpdate');
+    });
+    Route::controller(KepalaUudDivisiController::class)->prefix('kepalauud/master/divisi')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.master.divisi.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kepalauud.master.divisi.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kepalauud.master.divisi.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.master.divisi.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kepalauud.master.divisi.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.master.divisi.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalauud.master.divisi.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kepalauud.master.divisi.viewUpdate');
+    });
+    Route::controller(KepalaUudManAksesController::class)->prefix('kepalauud/master/manAkses')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.master.manAkses.apiGetAll');
+        Route::get('apiGetById', 'apiGetById')->name('kepalauud.master.manAkses.apiGetById');
+        Route::post('apiCreate', 'apiCreate')->name('kepalauud.master.manAkses.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.master.manAkses.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kepalauud.master.manAkses.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.master.manAkses.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalauud.master.manAkses.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kepalauud.master.manAkses.viewUpdate');
+    });
     Route::controller(KepalaUudVisiController::class)->prefix('kepalauud/visi')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.visi.apiGetAll');
         Route::get('apiGetById', 'apiGetById')->name('kepalauud.visi.apiGetById');
