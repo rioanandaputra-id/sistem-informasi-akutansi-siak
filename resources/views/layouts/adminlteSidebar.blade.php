@@ -1,6 +1,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="{{ url('/') }}" class="brand-link">
-        <span class="brand-text text-sm ml-2"><strong>SISTEM INFORMASI AKUTANSI</strong></span>
+        <img src="{{ asset('images/logo.ico') }}" alt="PMI" class="brand-image" style="opacity: .8">
+        <span class="brand-text text-danger ml-2"><strong>PMI LAMPUNG</strong></span>
     </a>
     <div class="sidebar">
         <div class="user-panel mt-2 pb-1 mb-3 d-flex">
@@ -118,6 +119,43 @@
                             <p>Monitoring BKU</p>
                         </a>
                     </li>
+                    @if(Auth::user()->id_divisi == 'f270590c-78f2-4980-be9a-edf0becc3f4f')
+                    <li class="nav-item {{ $info['site_active'] == 'Manajemen Keuangan' || $info['site_active'] == 'ManajemenKeuangan' ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $info['site_active'] == 'Manajemen Keuangan' || $info['site_active'] == 'ManajemenKeuangan' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-list"></i>
+                            <p>
+                                Manajemen Keuangan
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('kepalabagian.ManajemenKeuangan.perencanaan.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'Perencanaan' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Perencanaan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('kepalabagian.ManajemenKeuangan.penganggaran.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'Penganggaran' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Penganggaran</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link {{ $info['site_active'] == 'Penatausahaan' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Penatausahaan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link {{ $info['site_active'] == 'Pelaporan' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Pelaporan</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    @endif
                 @endcan
                 @can('bendpenerimaan')
                     <li class="nav-item">

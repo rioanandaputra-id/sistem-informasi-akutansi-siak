@@ -169,8 +169,8 @@
                                         <th>Satuan</th>
                                         <th>Indikator</th>
                                         <th>Volume</th>
-                                        <th>Tarif</th>
-                                        <th>Total</th>
+                                        <th style="text-align:right">Tarif</th>
+                                        <th style="text-align:right">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -186,8 +186,8 @@
                                             <td>{{ $drba->satuan }}</td>
                                             <td>{{ $drba->indikator }}</td>
                                             <td>{{ $drba->vol }}</td>
-                                            <td>{{ $drba->tarif }}</td>
-                                            <td>{{ $drba->total }}</td>
+                                            <td style="text-align:right">{{ number_to_currency_without_rp($drba->tarif,0) }}</td>
+                                            <td style="text-align:right">{{ number_to_currency_without_rp($drba->total,0) }}</td>
                                         </tr>
                                         @php
                                             $tbDetailRbaTotal += $drba->total;
@@ -198,7 +198,7 @@
                                     <tr>
                                         <th></th>
                                         <th colspan="5">Total</th>
-                                        <th>{{ $tbDetailRbaTotal }}</th>
+                                        <th style="text-align:right">{{ number_to_currency_without_rp($tbDetailRbaTotal,0) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -235,7 +235,7 @@
                                         <th>Tahun</th>
                                         <th>Status</th>
                                         <th>Jumlah</th>
-                                        <th>Total</th>
+                                        <th style="text-align:right">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -256,7 +256,7 @@
                                             <td>{{ $dlk->tahun }}</td>
                                             <td>{{ $dlk->a_verif_bend_kegiatan }}</td>
                                             <td>{{ $dlk->jumlah }}</td>
-                                            <td>{{ $dlk->total }}</td>
+                                            <td style="text-align:right">{{ number_to_currency_without_rp($dlk->total,0) }}</td>
                                         </tr>
                                         @php
                                             if ($dlk->a_verif_bend_kegiatan != 'Ditolak Bend. Kegiatan') {
@@ -269,7 +269,7 @@
                                     <tr>
                                         <th></th>
                                         <th colspan="9">Total</th>
-                                        <th>{{ $tbDetailLaksKegiatanTotal }}</th>
+                                        <th style="text-align:right">{{ number_to_currency_without_rp($tbDetailLaksKegiatanTotal,0) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -349,9 +349,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-2 bg-warning">
-                        <div class="col">
-                            Sisa Anggaran Yang Dapat Anda Ajukan :
-                            {{ $sisaAnggaran = $tbDetailRbaTotal - $tbDetailLaksKegiatanTotal }}
+                        <div class="col d-flex justify-content-between p-2">
+                            <h5>
+                                Sisa Anggaran Yang Dapat Anda Ajukan :
+                            </h5>
+                            <h5>
+                                {{ $sisaAnggaran = $tbDetailRbaTotal - $tbDetailLaksKegiatanTotal }}
+                            </h5>
                         </div>
                     </div>
                     <hr>
@@ -369,21 +373,21 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <label for="">Waktu Pelakasanaan: <i class="text-red">*</i></label>
-                                <input type="datetime-local" class="form-control"
-                                    id="waktu_pelaksanaanaddDetailLaksKegiatanMdl">
+                                <label for="">Tahun: <i class="text-red">*</i></label>
+                                <input type="number" value="{{ date('Y') }}" class="form-control"
+                                    id="tahunaddDetailLaksKegiatanMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
+                                <label for="">Waktu Pelakasanaan: <i class="text-red">*</i></label>
+                                <input type="datetime-local" class="form-control"
+                                    id="waktu_pelaksanaanaddDetailLaksKegiatanMdl">
+                            </div>
+                            <div class="col">
                                 <label for="">Waktu Selesai: <i class="text-red">*</i></label>
                                 <input type="datetime-local" class="form-control"
                                     id="waktu_selesaiaddDetailLaksKegiatanMdl">
-                            </div>
-                            <div class="col">
-                                <label for="">Tahun: <i class="text-red">*</i></label>
-                                <input type="number" value="{{ date('Y') }}" class="form-control"
-                                    id="tahunaddDetailLaksKegiatanMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
@@ -595,7 +599,7 @@
             });
 
             $("#btnaddDetailLaksKegiatanMdl").click(function() {
-                if ($('#totaladdDetailLaksKegiatanMdl').val() > "{!! $sisaAnggaran !!}") {
+                if (parseInt($('#totaladdDetailLaksKegiatanMdl').val()) > parseInt("{!! $sisaAnggaran !!}")) {
                     alert("Melampaui sisa anggaran!");
                 } else if ($('#waktu_selesaiaddDetailLaksKegiatanMdl').val() < $(
                         '#waktu_pelaksanaanaddDetailLaksKegiatanMdl').val()) {

@@ -246,6 +246,7 @@ class KegiatanMonitoringController extends Controller
             $id_rba = $this->request->id_rba;
             $id_akun = $this->request->id_akun;
             $vol = $this->request->vol;
+            $indikator = $this->request->indikator;
             $satuan = $this->request->satuan;
             $tarif = $this->request->tarif;
             $total = $this->request->total;
@@ -256,6 +257,7 @@ class KegiatanMonitoringController extends Controller
                 'id_rba' => $id_rba,
                 'id_akun' => $id_akun,
                 'vol' => $vol,
+                'indikator' => $indikator,
                 'satuan' => $satuan,
                 'tarif' => $tarif,
                 'total' => $total,

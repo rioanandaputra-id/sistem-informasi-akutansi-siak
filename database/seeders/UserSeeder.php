@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
                 'email' => 'kepalauud@siak.com',
                 'username' => 'kepalauud',
                 'password' => bcrypt('kepalauud'),
-                'full_name' => 'Kepla UDD',
+                'full_name' => 'Kepala UDD',
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => '0',

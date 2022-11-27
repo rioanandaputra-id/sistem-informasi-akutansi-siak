@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignUuid('id_divisi');
             $table->foreignUuid('id_kegiatan');
             $table->char('a_verif_rba', 1);
+            $table->dateTime('tgl_verif_rba')->nullable();
             $table->foreignUuid('id_verif_rba')->nullable();
             $table->text('catatan')->nullable();
             $table->dateTime('created_at');

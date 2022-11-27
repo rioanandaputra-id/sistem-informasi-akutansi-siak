@@ -13,12 +13,13 @@
 </head>
 
 <body class="hold-transition login-page" style="background: url('images/bg.png') no-repeat; background-size: 100% 100%;">
+    <div class="bg-image"></div>
     <div class="login-box">
         <!-- /.login-logo -->
         <div class="card card-outline card-danger">
             <div class="card-header text-center">
                 <a href="{{ url('/') }}" class="h1">
-                    <img src="{{ asset('images/pmi.png') }}" class="img-fluid">
+                    <img src="{{ asset('images/pmi.png') }}" width="100%" height="100px">
                 </a>
             </div>
             <div class="card-body">

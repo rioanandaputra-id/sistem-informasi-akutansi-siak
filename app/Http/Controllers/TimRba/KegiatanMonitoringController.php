@@ -165,6 +165,7 @@ class KegiatanMonitoringController extends Controller
 
             $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
             $a_verif_rba = $this->request->a_verif_rba;
+            $tgl_verif_rba = now();
             $id_verif_rba = Auth::user()->id_user;
             $catatan = $this->request->catatan;
             $updated_at = now();
@@ -172,6 +173,7 @@ class KegiatanMonitoringController extends Controller
 
             KegiatanDivisi::whereIn('id_kegiatan_divisi', $id_kegiatan_divisi)->update([
                 'a_verif_rba' => $a_verif_rba,
+                'tgl_verif_rba' => $tgl_verif_rba,
                 'id_verif_rba' => $id_verif_rba,
                 'catatan' => $catatan,
                 'updated_at' => $updated_at,
