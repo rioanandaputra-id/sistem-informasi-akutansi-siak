@@ -10,6 +10,7 @@ use App\Http\Controllers\KepalaUud\VisiController as KepalaUudVisiController;
 use App\Http\Controllers\KepalaUud\KegiatanController as KepalaUudKegiatanController;
 use App\Http\Controllers\KepalaUud\MisiController as KepalaUudMisiController;
 use App\Http\Controllers\KepalaUud\ProgramController as KepalaUudProgramController;
+use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegiatanMonitoringController;
 use App\Http\Controllers\TimRba\KegiatanMonitoringController as TimRbaKegiatanMonitoringController;
 use App\Http\Controllers\KepalaBagian\KegiatanController as KepalaBagianKegiatanController;
 use App\Http\Controllers\KepalaBagian\KegiatanMonitoringController as KepalaBagianKegiatanMonitoringController;
