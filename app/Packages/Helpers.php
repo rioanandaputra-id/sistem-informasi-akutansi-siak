@@ -13,3 +13,4 @@ include $path.'TglFormat.php';
 include $path.'TglIndonesia.php';
 include $path.'TglIndonesiaShort.php';
 include $path.'TglWaktuIndonesia.php';
+include $path.'StatusVerificationColor.php';

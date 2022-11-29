@@ -220,7 +220,7 @@ class KegiatanMonitoringController extends Controller
             'title' => 'Monitoring Kegiatan',
             'site_active' => 'MonitoringKegiatan',
         ];
-        return view('pages._kepalaWilayah.kegiatanMonitoring.viewGetAll', compact('info'));
+        return view('pages._kepalawilayah.kegiatanMonitoring.viewGetAll', compact('info'));
     }
 
     public function viewDetail()
@@ -241,12 +241,6 @@ class KegiatanMonitoringController extends Controller
                 drba.indikator,
                 drba.tarif,
                 drba.total,
-                CASE
-                    drba.a_setuju
-                    WHEN '2' THEN 'Disetujui'
-                    WHEN '3' THEN 'Ditolak'
-                    ELSE 'Belum Diverifikasi'
-                END AS a_setuju,
                 drba.created_at,
                 drba.updated_at,
                 drba.deleted_at,
@@ -263,48 +257,169 @@ class KegiatanMonitoringController extends Controller
                 AND akn.deleted_at IS NULL
             WHERE
                 drba.deleted_at IS NULL
+            ORDER BY drba.created_at ASC
         ");
-        $detailLaksKegiatan = DB::select("
+        $laksKegiatan = DB::select("
             SELECT
-                dkgt.id_detail_laksana_kegiatan,
-                dkgt.id_laksana_kegiatan,
-                dkgt.id_detail_rba,
-                dkgt.jumlah,
-                dkgt.total,
-                dkgt.created_at,
-                dkgt.updated_at,
-                dkgt.deleted_at,
-                dkgt.id_updater,
+                lkgt.id_laksana_kegiatan,
                 lkgt.id_kegiatan_divisi,
                 lkgt.tgl_ajuan,
+                lkgt.urutan_laksana_kegiatan,
                 CASE
-                    lkgt.a_verif_bend_kegiatan
-                    WHEN '2' THEN 'Disetujui Bend. Kegiatan'
-                    WHEN '3' THEN 'Ditolak Bend. Kegiatan'
-                    ELSE 'Belum Diverifikasi Bend. Kegiatan'
-                END AS a_verif_bend_kegiatan,
-                lkgt.id_verif_bend_kegiatan,
-                lkgt.tgl_verif_bend_kegiatan,
+                    lkgt.a_verif_kabag_keuangan
+                    WHEN '2' THEN 'Disetujui Kabag. Keuangan'
+                    WHEN '3' THEN 'Ditolak Kabag. Keuangan'
+                    ELSE 'Belum Diverifikasi Kabag. Keuangan'
+                END AS a_verif_kabag_keuangan,
+                lkgt.id_verif_kabag_keuangan,
+                lkgt.tgl_verif_kabag_keuangan,
                 lkgt.catatan,
                 lkgt.waktu_pelaksanaan,
                 lkgt.waktu_selesai,
                 lkgt.tahun,
-                akn.id_akun,
+                lkgt.created_at,
+                lkgt.updated_at,
+                lkgt.deleted_at,
+                lkgt.id_updater,
+                kgt.id_kegiatan,
+                kgt.nm_kegiatan,
+                (
+                    SELECT
+                        SUM(total)
+                    FROM
+                        detail_laksana_kegiatan
+                    WHERE
+                        deleted_at IS NULL
+                        AND id_laksana_kegiatan = lkgt.id_laksana_kegiatan
+                ) AS total_anggaran
+            FROM
+                laksana_kegiatan AS lkgt
+                JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                AND kdiv.deleted_at IS NULL
+                JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
+                AND kgt.deleted_at IS NULL
+            WHERE
+                lkgt.deleted_at IS NULL
+                AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
+            ORDER BY lkgt.created_at ASC
+        ");
+        $akun = DB::select("SELECT * FROM akun WHERE no_akun_induk = '5'");
+        return view('pages._kepalawilayah.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
+    }
+
+    public function viewGetAllLaksanaDetail()
+    {
+        $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
+        $info = [
+            'title' => 'Detail Pelaksanaan Kegiatan | Monitoring Kegiatan',
+            'site_active' => 'MonitoringKegiatan',
+        ];
+
+        $kegiatan = DB::select("
+            SELECT
+                lkgt.id_laksana_kegiatan,
+                div.nm_divisi,
+                msi.nm_misi,
+                pgm.nm_program,
+                kgt.nm_kegiatan,
+                lkgt.urutan_laksana_kegiatan,
+                lkgt.tgl_ajuan,
+                lkgt.waktu_pelaksanaan,
+                lkgt.waktu_selesai,
+                CASE
+                    lkgt.a_verif_kabag_keuangan
+                    WHEN '2' THEN 'Disetujui Kabag. Keuangan'
+                    WHEN '3' THEN 'Ditolak Kabag. Keuangan'
+                    ELSE 'Belum Diverifikasi Kabag. Keuangan'
+                END AS a_verif_kabag_keuangan,
+                lkgt.tgl_verif_kabag_keuangan,
+                lkgt.catatan,
+                (
+                    SELECT
+                        SUM(dlkgt.total)
+                    FROM
+                        detail_laksana_kegiatan AS dlkgt
+                        JOIN laksana_kegiatan AS llkgt ON dlkgt.id_laksana_kegiatan = llkgt.id_laksana_kegiatan
+                        AND llkgt.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                        AND llkgt.deleted_at IS NULL
+                    WHERE
+                        dlkgt.deleted_at IS NULL
+                ) AS total_anggaran_terpakai,
+                (
+                    SELECT
+                        SUM(drba.total)
+                    FROM
+                        rba AS rba
+                        JOIN detail_rba AS drba ON drba.id_rba = rba.id_rba
+                        AND drba.deleted_at IS NULL
+                    WHERE
+                        rba.deleted_at IS NULL
+                        AND rba.a_verif_wilayah = '2'
+                        AND rba.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                ) AS total_anggaran_tersedia
+            FROM
+                laksana_kegiatan AS lkgt
+                JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                AND kdiv.deleted_at IS NULL
+                JOIN divisi AS div ON div.id_divisi = kdiv.id_divisi
+                AND div.deleted_at IS NULL
+                JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
+                AND kgt.deleted_at IS NULL
+                JOIN program AS pgm ON pgm.id_program = kgt.id_program
+                AND pgm.deleted_at IS NULL
+                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                AND msi.deleted_at IS NULL
+            WHERE
+                lkgt.deleted_at IS NULL
+                AND lkgt.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
+        ");
+
+        $detailLaks = DB::select("
+            SELECT
+                dlkgt.id_detail_laksana_kegiatan,
+                dlkgt.id_laksana_kegiatan,
+                dlkgt.id_detail_rba,
+                dlkgt.jumlah,
+                dlkgt.total,
+                dlkgt.created_at,
+                dlkgt.updated_at,
+                dlkgt.deleted_at,
+                dlkgt.id_updater,
                 akn.no_akun,
                 akn.nm_akun
             FROM
-                detail_laksana_kegiatan AS dkgt
-                JOIN laksana_kegiatan AS lkgt ON lkgt.id_laksana_kegiatan = dkgt.id_laksana_kegiatan
-                AND lkgt.deleted_at IS NULL
-                JOIN detail_rba AS drba ON drba.id_detail_rba = dkgt.id_detail_rba
+                detail_laksana_kegiatan AS dlkgt
+                JOIN detail_rba AS drba ON drba.id_detail_rba = dlkgt.id_detail_rba
                 AND drba.deleted_at IS NULL
                 JOIN akun AS akn ON akn.id_akun = drba.id_akun
                 AND akn.deleted_at IS NULL
             WHERE
-                dkgt.deleted_at IS NULL
-                AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
+                dlkgt.deleted_at IS NULL
+                AND dlkgt.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
+            ORDER BY dlkgt.created_at ASC
         ");
-        $akun = DB::select("SELECT * FROM akun WHERE no_akun_induk = '5'");
-        return view('pages._kepalaWilayah.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'detailLaksKegiatan'));
+
+        $akun = DB::select("
+            SELECT
+                drba.id_detail_rba,
+                akn.id_akun,
+                akn.no_akun,
+                akn.no_akun_induk,
+                akn.nm_akun
+            FROM
+                laksana_kegiatan AS lkgt
+                JOIN rba AS rba ON rba.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                AND rba.deleted_at IS NULL
+                JOIN detail_rba AS drba ON drba.id_rba = drba.id_rba
+                AND drba.deleted_at IS NULL
+                JOIN akun AS akn ON akn.id_akun = drba.id_akun
+                AND akn.deleted_at IS NULL
+            WHERE
+                lkgt.deleted_at IS NULL
+                AND lkgt.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
+            ORDER BY akn.no_akun ASC
+        ");
+
+        return view('pages._kepalawilayah.kegiatanMonitoring.viewGetAllLaksanaDetail', compact('info', 'kegiatan', 'detailLaks', 'akun'));
     }
 }

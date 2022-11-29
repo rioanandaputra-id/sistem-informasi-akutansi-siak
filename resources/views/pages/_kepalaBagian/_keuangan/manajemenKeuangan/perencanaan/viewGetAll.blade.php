@@ -21,19 +21,30 @@
                     <div class="row mb-3">
                         <div class="col">
                             <div class="float-left">
-                                <button id="refresh" type="button" class="btn btn-info noborder">
-                                    <i class="fas fa-sync"></i> Refresh
-                                </button>
+                                <div class="input-group">
+                                    <select class="form-control" id="misi" style="max-width: 620px">
+                                        <option value="" selected>Pilih</option>
+                                        @foreach ($misi as $msi)
+                                        <option value="{{ $msi->id_misi }}">
+                                            {{ $msi->periode . ' - ' . $msi->nm_misi }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                             <div class="float-right text-bold">
-                                <b>Daftar Kegiatan</b>
+                                <div class="input-group">
+                                    <button id="refresh" type="button" class="btn btn-info noborder">
+                                        <i class="fas fa-sync"></i> Refresh
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col">
-                            <table class="table table-striped teble-bordered" id="tbkegiatandivisi" style="width: 100%">
+                            <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
                                 <thead class="bg-info"></thead>
                             </table>
                         </div>
@@ -59,31 +70,22 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            tbkegiatandivisi();
-
-            $("#ckAll").change(function() {
-                if (this.checked) {
-                    $('.ckItem').prop('checked', true);
-                } else {
-                    $('.ckItem').prop('checked', false);
-                }
-            });
+            tbkegiatan();
 
             $("#refresh").click(function() {
-                $('#tbkegiatandivisi').DataTable().ajax.reload();
+                $('#tbkegiatan').DataTable().ajax.reload();
+            });
+
+            $('#misi').on('change', function() {
+                $('#tbkegiatan').DataTable().clear().destroy();
+                tbkegiatan();
             });
         });
+    </script>
 
-        function getId() {
-            let id = [];
-            $('.ckItem:checked').each(function() {
-                id.push($(this).val());
-            });
-            return id;
-        }
-
-        function tbkegiatandivisi() {
-            $('#tbkegiatandivisi').DataTable({
+    <script>
+        function tbkegiatan() {
+            $('#tbkegiatan').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
@@ -92,12 +94,15 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kepalabagian.KegiatanMonitoring.apiGetAll') }}',
+                    url: '{{ route('kepalabagian.ManajemenKeuangan.perencanaan.apiGetAll') }}',
                     type: 'GET',
+                    data: {
+                        misi: $('#misi').val()
+                    }
                 },
                 columns: [{
-                        data: 'id_kegiatan_divisi',
-                        name: 'id_kegiatan_divisi',
+                        data: 'id_kegiatan',
+                        name: 'id_kegiatan',
                         title: '<input type="checkbox" id="ckAll" />',
                         width: '5px',
                         render: function(data, type, row) {
@@ -107,49 +112,12 @@
                         data: 'nm_kegiatan',
                         name: 'nm_kegiatan',
                         title: 'Kegiatan',
-                        render: function(data, type, row) {
-                            return `<a href="{{ route('kepalabagian.KegiatanMonitoring.viewDetail') }}?id_kegiatan_divisi=${row.id_kegiatan_divisi}">${data}</a>`;
-                        }
                     },
                     {
-                        data: 'nm_program',
-                        name: 'nm_program',
-                        title: 'Program',
-                    },
-                    {
-                        data: 'nm_misi',
-                        name: 'nm_misi',
-                        title: 'Misi',
-                    }, {
-                        data: 'nm_divisi',
-                        name: 'nm_divisi',
-                        title: 'Divisi',
-                    }, {
-                        data: 'rba_a_verif_wilayah',
-                        name: 'rba_a_verif_wilayah',
+                        data: 'a_aktif',
+                        name: 'a_aktif',
                         title: 'Status',
-                        render: function(data, type, row) {
-                            if (row.tgl_submit === null) {
-                                return 'Belum Disimpan';
-                            } else if (row.rba_a_verif_wilayah != "Belum Diverifikasi Kepala Wilayah") {
-                                return row.rba_a_verif_wilayah;
-                            } else if (row.rba_a_verif_rba != "Belum Diverifikasi Kepala UUD") {
-                                return row.rba_a_verif_rba;
-                            } else {
-                                return row.kdiv_a_verif_rba;
-                            }
-                        }
-                    },
-                    {
-                        data: 'rba_a_verif_rba',
-                        name: 'rba_a_verif_rba',
-                        visible: false,
-                    },
-                    {
-                        data: 'kdiv_a_verif_rba',
-                        name: 'kdiv_a_verif_rba',
-                        visible: false,
-                    },
+                    }
                 ]
             });
         }

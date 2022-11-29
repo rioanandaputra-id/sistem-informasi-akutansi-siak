@@ -101,6 +101,7 @@ Route::middleware('auth')->group(function () {
         Route::post('apiUpdate', 'apiUpdate')->name('kepalauud.kegiatanMonitoring.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.kegiatanMonitoring.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('kepalauud.kegiatanMonitoring.viewDetail');
+        Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('kepalauud.KegiatanMonitoring.viewGetAllLaksanaDetail');
     });
     // =====================================TIM RBA========================================
     Route::controller(TimRbaKegiatanMonitoringController::class)->prefix('timrba/kegiatanMonitoring')->group(function () {
@@ -108,6 +109,7 @@ Route::middleware('auth')->group(function () {
         Route::post('apiUpdate', 'apiUpdate')->name('timrba.kegiatanMonitoring.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('timrba.kegiatanMonitoring.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('timrba.kegiatanMonitoring.viewDetail');
+        Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('timrba.KegiatanMonitoring.viewGetAllLaksanaDetail');
     });
     // =====================================KEPALA WILAYAH========================================
     Route::controller(KepalaWilayahKegiatanMonitoringController::class)->prefix('kepalawilayah/KegiatanMonitoring')->group(function () {
@@ -115,6 +117,7 @@ Route::middleware('auth')->group(function () {
         Route::post('apiUpdate', 'apiUpdate')->name('kepalawilayah.kegiatanMonitoring.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalawilayah.kegiatanMonitoring.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('kepalawilayah.kegiatanMonitoring.viewDetail');
+        Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('kepalawilayah.KegiatanMonitoring.viewGetAllLaksanaDetail');
     });
     // =====================================KEPALA BAGIAN========================================
     Route::controller(KepalaBagianKegiatanController::class)->prefix('kepalabagian/Kegiatan')->group(function () {
@@ -126,6 +129,7 @@ Route::middleware('auth')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.KegiatanMonitoring.apiGetAll');
 
         Route::post('apiCreateDetailRba', 'apiCreateDetailRba')->name('kepalabagian.KegiatanMonitoring.apiCreateDetailRba');
+        Route::post('apiUpdateDetailRba', 'apiUpdateDetailRba')->name('kepalabagian.KegiatanMonitoring.apiUpdateDetailRba');
         Route::post('apiDeleteDetailRba', 'apiDeleteDetailRba')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailRba');
 
         Route::post('apiCreateLaksana', 'apiCreateLaksana')->name('kepalabagian.KegiatanMonitoring.apiCreateLaksana');
@@ -137,6 +141,7 @@ Route::middleware('auth')->group(function () {
         Route::get('viewDetail', 'viewDetail')->name('kepalabagian.KegiatanMonitoring.viewDetail');
 
         Route::post('apiCreateDetailLaksana', 'apiCreateDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiCreateDetailLaksana');
+        Route::post('apiUpdateDetailLaksana', 'apiUpdateDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiUpdateDetailLaksana');
         Route::post('apiDeleteDetailLaksana', 'apiDeleteDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailLaksana');
         Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('kepalabagian.KegiatanMonitoring.viewGetAllLaksanaDetail');
     });

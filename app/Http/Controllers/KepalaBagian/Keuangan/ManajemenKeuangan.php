@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\KepalaBagian;
+namespace App\Http\Controllers\KepalaBagian\Keuangan;
 
 use App\Http\Controllers\Controller;
 use Exception;

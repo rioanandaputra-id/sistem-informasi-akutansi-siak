@@ -7,7 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="icon" href="{{ asset('images/logo.ico') }}" type="image/x-icon" />
     <title>{{ $info['title'] }} | PMI</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte320/dist/css/adminlte.min.css') }}">
     <style>
@@ -47,6 +48,22 @@
     <script src="{{ asset('adminlte320/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('adminlte320/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('adminlte320/dist/js/adminlte.min.js') }}"></script>
+    <script>
+        if (localStorage.getItem('navbarTrigger') == 'open') {
+            $("body").removeClass("sidebar-collapse");
+            console.log('open');
+        } else {
+            $("body").addClass("sidebar-collapse");
+            console.log('close');
+        }
+        function navbarTrigger() {
+            if (localStorage.getItem('navbarTrigger') == 'open') {
+                localStorage.setItem('navbarTrigger', 'close');
+            } else {
+                localStorage.setItem('navbarTrigger', 'open');
+            }
+        }
+    </script>
     @stack('js')
 </body>
 

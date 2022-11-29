@@ -7,7 +7,6 @@
         $lockBtnDetailRba = '';
         $lockBtnLaksana = '';
         $IdRba = '';
-        $sisaAnggaran = 0;
     @endphp
     <div class="row">
         <div class="col">
@@ -36,8 +35,8 @@
                                                 class="fas fa-chevron-circle-left"></i>
                                             Kembali</button>
                                         <button id="locked" class="btn btn-sm noborder btn-light ml-2"><i
-                                                class="fas fa-lock"></i>
-                                            Simpan</button>
+                                                class="fas fa-sign-in-alt"></i>
+                                            Ajukan</button>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +72,7 @@
                                             <td>{{ $kgt->nm_kegiatan }}</td>
                                         </tr>
                                         <tr>
-                                            <td style="min-width: 200px">Waktu Simpan</td>
+                                            <td style="min-width: 200px">Waktu Pengajuan</td>
                                             <td>:</td>
                                             <td>{{ tglWaktuIndonesia($kgt->tgl_submit) ?? '-' }}</td>
                                         </tr>
@@ -87,7 +86,7 @@
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->kdiv_a_verif_rba }}</td>
+                                            <td>{!! status_verification_color($kgt->kdiv_a_verif_rba) !!}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu</td>
@@ -109,7 +108,7 @@
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_a_verif_rba }}</td>
+                                            <td>{!! status_verification_color($kgt->rba_a_verif_rba) !!}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu</td>
@@ -131,7 +130,7 @@
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_a_verif_wilayah }}</td>
+                                            <td>{!! status_verification_color($kgt->rba_a_verif_wilayah) !!}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu</td>
@@ -152,10 +151,10 @@
                                         <b>RINCIAN RENCANA ANGGARAN BIAYA KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
-                                        <button {{ $lockBtnDetailRba }} id="addDetailRba"
+                                        <button id="addDetailRba"
                                             class="btn btn-sm noborder btn-light"><i class="fas fa-plus-circle"></i>
                                             Tambah</button>
-                                        <button {{ $lockBtnDetailRba }} id="deleteDetailRba"
+                                        <button id="deleteDetailRba"
                                             class="btn btn-sm noborder btn-light ml-2"><i class="fas fa-trash"></i>
                                             Hapus</button>
                                     </div>
@@ -181,7 +180,20 @@
                                         <tr>
                                             <th><input class="ckItemDetailRba" type="checkbox"
                                                     value="{{ $drba->id_detail_rba }}"></th>
-                                            <td><a href="javascript:">{{ $drba->no_akun }} - {{ $drba->nm_akun }}</a></td>
+                                            @if ($lockBtnDetailRba == 'disabled')
+                                                <td>{{ $drba->no_akun }} - {{ $drba->nm_akun }}</td>
+                                            @else
+                                                <td><a href="javascript:"
+                                                    onclick="modalUpdateDetailRba(
+                                                        '{!! $drba->id_detail_rba !!}',
+                                                        '{!! $drba->id_akun !!}',
+                                                        '{!! $drba->satuan !!}',
+                                                        '{!! $drba->indikator !!}',
+                                                        '{!! $drba->vol !!}',
+                                                        '{!! $drba->tarif !!}',
+                                                        '{!! $drba->total !!}',
+                                                    )">{{ $drba->no_akun }} - {{ $drba->nm_akun }}</a></td>
+                                            @endif
                                             <td>{{ $drba->satuan }}</td>
                                             <td class="text-right">{{ $drba->indikator }}</td>
                                             <td class="text-right">{{ $drba->vol }}</td>
@@ -215,10 +227,10 @@
                                         <b>PELAKSANAAN KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
-                                        <button {{ $lockBtnLaksana }} id="addLaksKegiatan"
+                                        <button id="addLaksKegiatan"
                                             class="btn btn-sm noborder btn-light"><i class="fas fa-plus-circle"></i>
                                             Tambah</button>
-                                        <button {{ $lockBtnLaksana }} id="deleteLaksKegiatan"
+                                        <button id="deleteLaksKegiatan"
                                             class="btn btn-sm noborder btn-light ml-2"><i class="fas fa-trash"></i>
                                             Hapus</button>
                                     </div>
@@ -251,7 +263,8 @@
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item mb-2"
                                                             href="{{ route('kepalabagian.KegiatanMonitoring.viewGetAllLaksanaDetail') }}?id_laksana_kegiatan={{ $lkgt->id_laksana_kegiatan }}">Detail
-                                                            Laksana Kegiatan</a>
+                                                            Pelaksanaan Kegiatan</a>
+                                                        @if (str_contains($lkgt->a_verif_kabag_keuangan, 'Belum'))
                                                         <a class="dropdown-item" href="javascript:"
                                                             onclick="modalUpdateDetailLaks(
                                                                     '{!! $lkgt->id_laksana_kegiatan !!}',
@@ -261,9 +274,10 @@
                                                                     '{!! $lkgt->waktu_selesai !!}',
                                                                 )">Ubah
                                                             Data</a>
+                                                        @endif
                                                     </div>
                                             </td>
-                                            <td>{{ $lkgt->a_verif_bend_kegiatan }}</td>
+                                            <td>{!! status_verification_color($lkgt->a_verif_kabag_keuangan) !!}</td>
                                             <td>{{ tglWaktuIndonesia($lkgt->tgl_ajuan) ?? '-' }}</td>
                                             <td class="text-center">
                                                 {{ tglWaktuIndonesia($lkgt->waktu_pelaksanaan) }} <span
@@ -274,7 +288,7 @@
                                                 {{ number_to_currency_without_rp($lkgt->total_anggaran, 0) }}</td>
                                         </tr>
                                         @php
-                                            if ($lkgt->a_verif_bend_kegiatan != 'Ditolak Bend. Kegiatan') {
+                                            if (!str_contains($lkgt->a_verif_kabag_keuangan, 'Ditolak')) {
                                                 $tbLaksKegiatanTotal += $lkgt->total_anggaran;
                                             }
                                         @endphp
@@ -354,6 +368,65 @@
         </div>
     </div>
 
+    <div id="updateDetailRbaMdl" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ubah Detail Rencana Anggaran Biaya</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formupdateDetailRbaMdl">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <input type="hidden" id="id_detail_rbaupdateDetailRbaMdl">
+                                <label for="id_akunupdateDetailRbaMdl">Akun: <i class="text-red">*</i></label>
+                                <select id="id_akunupdateDetailRbaMdl" class="form-control">
+                                    <option value="">---</option>
+                                    @foreach ($akun as $akn)
+                                        <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="satuanupdateDetailRbaMdl">Satuan: <i class="text-red">*</i></label>
+                                <input type="text" class="form-control" id="satuanupdateDetailRbaMdl">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="indikatorupdateDetailRbaMdl">Indikator: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="indikatorupdateDetailRbaMdl">
+                            </div>
+                            <div class="col">
+                                <label for="volupdateDetailRbaMdl">Volume: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="volupdateDetailRbaMdl">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="tarifupdateDetailRbaMdl">Tarif: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="tarifupdateDetailRbaMdl">
+                            </div>
+                            <div class="col">
+                                <label for="totalupdateDetailRbaMdl">Total: <i class="text-red">*</i></label>
+                                <input type="number" readonly class="form-control" id="totalupdateDetailRbaMdl"
+                                    value="0">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnupdateDetailRbaMdl" class="btn btn-primary">Ubah</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="addLaksKegiatanMdl" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -395,7 +468,7 @@
         </div>
     </div>
 
-    <div id="updateLaksKegiatanDetailMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="updateLaksKegiatanMdl" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -405,32 +478,32 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="formupdateLaksKegiatanDetailMdl">
+                    <form id="formupdateLaksKegiatanMdl">
                         <div class="row mb-2">
                             <div class="col">
-                                <input type="hidden" id="id_laksana_kegiatanupdateLaksKegiatanDetailMdl">
-                                <label for="tahunupdateLaksKegiatanDetailMdl">Tahun: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="tahunupdateLaksKegiatanDetailMdl">
+                                <input type="hidden" id="id_laksana_kegiatanupdateLaksKegiatanMdl">
+                                <label for="tahunupdateLaksKegiatanMdl">Tahun: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="tahunupdateLaksKegiatanMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
-                                <label for="waktu_pelaksanaanupdateLaksKegiatanDetailMdl">Waktu Pelakasanaan: <i
+                                <label for="waktu_pelaksanaanupdateLaksKegiatanMdl">Waktu Pelakasanaan: <i
                                         class="text-red">*</i></label>
                                 <input type="datetime-local" class="form-control"
-                                    id="waktu_pelaksanaanupdateLaksKegiatanDetailMdl">
+                                    id="waktu_pelaksanaanupdateLaksKegiatanMdl">
                             </div>
                             <div class="col">
-                                <label for="waktu_selesaiupdateLaksKegiatanDetailMdl">Waktu Selesai: <i
+                                <label for="waktu_selesaiupdateLaksKegiatanMdl">Waktu Selesai: <i
                                         class="text-red">*</i></label>
                                 <input type="datetime-local" class="form-control"
-                                    id="waktu_selesaiupdateLaksKegiatanDetailMdl">
+                                    id="waktu_selesaiupdateLaksKegiatanMdl">
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnupdateLaksKegiatanDetailMdl" class="btn btn-primary">Ubah Data</button>
+                    <button type="button" id="btnupdateLaksKegiatanMdl" class="btn btn-primary">Ubah Data</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                 </div>
             </div>
@@ -445,9 +518,15 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-
             if ("{!! $lockBtnDetailRba !!}" == 'disabled') {
                 $('#locked').prop("disabled", true);
+                $('#addDetailRba').prop("disabled", true);
+                $('#deleteDetailRba').prop("disabled", true);
+            }
+
+            if ("{!! $lockBtnLaksana !!}" == 'disabled') {
+                $('#addLaksKegiatan').prop("disabled", true);
+                $('#deleteLaksKegiatan').prop("disabled", true);
             }
 
             $(".ckAllDetailRba").change(function() {
@@ -474,6 +553,18 @@
                 $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $(this).val());
             });
 
+            $("#voladdDetailRbaMdl").keyup(function() {
+                $("#totaladdDetailRbaMdl").val($("#tarifaddDetailRbaMdl").val() * $(this).val());
+            });
+
+            $("#tarifupdateDetailRbaMdl").keyup(function() {
+                $("#totalupdateDetailRbaMdl").val($("#volupdateDetailRbaMdl").val() * $(this).val());
+            });
+
+            $("#volupdateDetailRbaMdl").keyup(function() {
+                $("#totalupdateDetailRbaMdl").val($("#tarifupdateDetailRbaMdl").val() * $(this).val());
+            });
+
             $("#btnaddDetailRbaMdl").click(function() {
                 $.ajax({
                     type: 'POST',
@@ -496,7 +587,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'Tambah Detail RAB Berhasil',
+                            title: 'Tambah Rincian Rencana Anggaran Biaya Kegiatan Berhasil',
                             showConfirmButton: false,
                             timer: 1000,
                         });
@@ -505,7 +596,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'error',
-                            title: 'Tambah Detail RAB Gagal',
+                            title: 'Tambah Rincian Rencana Anggaran Biaya Kegiatan Gagal',
                             showConfirmButton: false,
                             timer: 1000,
                         });
@@ -514,7 +605,7 @@
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
-                        title: 'Tambah Detail RAB Gagal',
+                        title: 'Tambah Rincian Rencana Anggaran Biaya Kegiatan Gagal',
                         showConfirmButton: false,
                         timer: 1000,
                     });
@@ -571,7 +662,7 @@
                 $("#locked").prop("disabled", true);
                 Swal.fire({
                     title: 'Apakah anda yakin?',
-                    text: "Kegiatan ini akan disimpan & diverifikasi, Anda tidak dapat lagi menambahkan detail RBA setelahnya!",
+                    text: "Rencana Anggaran Biaya Kegiatan Akan Diajukan Kepada Verifikator, Anda Tidak Dapat Melakukan Perubahan Rencana Anggaran Biaya Kegiatan Setelahnya!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -628,7 +719,7 @@
             $("#btnaddLaksKegiatanMdl").click(function() {
                 if ($('#waktu_selesaiaddLaksKegiatanMdl').val() < $('#waktu_pelaksanaanaddLaksKegiatanMdl')
                     .val()) {
-                    alert("Tanggal pelaksanaan kegiatan tidak valid!");
+                    alert("Tanggal Pelaksanaan Kegiatan Tidak Valid!");
                 } else {
                     $.ajax({
                         type: 'POST',
@@ -719,6 +810,106 @@
                     }
                 });
             });
+
+            $("#btnupdateDetailRbaMdl").click(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('kepalabagian.KegiatanMonitoring.apiUpdateDetailRba') }}",
+                    data: {
+                        _token: "{!! csrf_token() !!}",
+                        id_detail_rba: $("#id_detail_rbaupdateDetailRbaMdl").val(),
+                        id_akun: $("#id_akunupdateDetailRbaMdl").val(),
+                        satuan: $("#satuanupdateDetailRbaMdl").val(),
+                        indikator: $("#indikatorupdateDetailRbaMdl").val(),
+                        vol: $("#volupdateDetailRbaMdl").val(),
+                        tarif: $("#tarifupdateDetailRbaMdl").val(),
+                        total: $("#totalupdateDetailRbaMdl").val(),
+                    },
+                    beforeSend: function() {
+                        $(this).prop("disabled", true);
+                    },
+                }).done(function(res) {
+                    if (res.status) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Ubah Rincian Rencana Anggaran Biaya Kegiatan Berhasil',
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Ubah Rincian Rencana Anggaran Biaya Kegiatan Gagal',
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                    }
+                }).fail(function(res) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Ubah Rincian Rencana Anggaran Biaya Kegiatan Gagal',
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+                    console.log(res);
+                    $(this).prop("disabled", false);
+                });
+            });
+
+            $("#btnupdateLaksKegiatanMdl").click(function() {
+                if ($('#waktu_selesaiupdateLaksKegiatanMdl').val() < $('#waktu_pelaksanaanupdateLaksKegiatanMdl')
+                    .val()) {
+                    alert("Tanggal Pelaksanaan Kegiatan Tidak Valid!");
+                } else {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('kepalabagian.KegiatanMonitoring.apiUpdateLaksana') }}",
+                        data: {
+                            _token: "{!! csrf_token() !!}",
+                            id_laksana_kegiatan: $('#id_laksana_kegiatanupdateLaksKegiatanMdl').val(),
+                            waktu_pelaksanaan: $('#waktu_pelaksanaanupdateLaksKegiatanMdl').val(),
+                            waktu_selesai: $('#waktu_selesaiupdateLaksKegiatanMdl').val(),
+                            tahun: $('#tahunupdateLaksKegiatanMdl').val(),
+                        },
+                        beforeSend: function() {
+                            $(this).prop("disabled", true);
+                        },
+                    }).done(function(res) {
+                        if (res.status) {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Ubah Detail Laksana Berhasil',
+                                showConfirmButton: false,
+                                timer: 1000,
+                            });
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Ubah Detail Laksana Gagal',
+                                showConfirmButton: false,
+                                timer: 1000,
+                            });
+                        }
+                    }).fail(function(res) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Ubah Detail Laksana Gagal',
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                        console.log(res);
+                        $(this).prop("disabled", false);
+                    });
+                }
+            });
         });
 
         function getIdDetailRba() {
@@ -738,12 +929,23 @@
         }
 
         function modalUpdateDetailLaks(p1, p2, p3, p4, p5) {
-            $("#id_laksana_kegiatanupdateLaksKegiatanDetailMdl").val(p1);
-            $("#tahunupdateLaksKegiatanDetailMdl").val(p2);
-            $("#tgl_ajuanupdateLaksKegiatanDetailMdl").val(p3);
-            $("#waktu_pelaksanaanupdateLaksKegiatanDetailMdl").val(p4);
-            $("#waktu_selesaiupdateLaksKegiatanDetailMdl").val(p5);
-            $('#updateLaksKegiatanDetailMdl').modal('show');
+            $("#id_laksana_kegiatanupdateLaksKegiatanMdl").val(p1);
+            $("#tahunupdateLaksKegiatanMdl").val(p2);
+            $("#tgl_ajuanupdateLaksKegiatanMdl").val(p3);
+            $("#waktu_pelaksanaanupdateLaksKegiatanMdl").val(p4);
+            $("#waktu_selesaiupdateLaksKegiatanMdl").val(p5);
+            $('#updateLaksKegiatanMdl').modal('show');
+        }
+
+        function modalUpdateDetailRba(p1, p2, p3, p4, p5, p6, p7){
+            $("#id_detail_rbaupdateDetailRbaMdl").val(p1);
+            $("#id_akunupdateDetailRbaMdl").val(p2);
+            $("#satuanupdateDetailRbaMdl").val(p3);
+            $("#indikatorupdateDetailRbaMdl").val(p4);
+            $("#volupdateDetailRbaMdl").val(p5);
+            $("#tarifupdateDetailRbaMdl").val(p6);
+            $("#totalupdateDetailRbaMdl").val(p7);
+            $('#updateDetailRbaMdl').modal('show');
         }
     </script>
 @endpush

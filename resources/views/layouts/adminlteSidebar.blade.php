@@ -124,9 +124,9 @@
                 @endcan
                 @can('kepalabagian')
                     <li
-                        class="nav-item {{ $info['site_active'] == 'Kegiatan' || $info['site_active'] == 'MonitoringKegiatan' ? 'menu-open' : '' }}">
+                        class="nav-item {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' ? 'menu-open' : '' }}">
                         <a href="#"
-                            class="nav-link {{ $info['site_active'] == 'Kegiatan' || $info['site_active'] == 'MonitoringKegiatan' ? 'active' : '' }}">
+                            class="nav-link {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>
                                 Kegiatan
@@ -136,18 +136,27 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ route('kepalabagian.Kegiatan.viewGetAll') }}"
-                                    class="nav-link {{ $info['site_active'] == 'Kegiatan' ? 'active' : '' }}">
+                                    class="nav-link {{ $info['site_active'] == 'KegiatanBaru' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Pengajuan Kegiatan Baru</p>
+                                    <p>Ajukan Kegiatan Baru</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ route('kepalabagian.KegiatanMonitoring.viewGetAll') }}"
-                                    class="nav-link {{ $info['site_active'] == 'MonitoringKegiatan' ? 'active' : '' }}">
+                                    class="nav-link {{ $info['site_active'] == 'KegiatanDiajukan' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Monitoring Kegiatan</p>
+                                    <p>Kegiatan Telah Diajukan</p>
                                 </a>
                             </li>
+                            @if (Auth::user()->id_divisi == 'f270590c-78f2-4980-be9a-edf0becc3f4f')
+                            <li class="nav-item">
+                                <a href="#"
+                                    class="nav-link {{ $info['site_active'] == 'KegiatanPelaksana' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Pelaksanaan Kegiatan</p>
+                                </a>
+                            </li>
+                            @endif
                         </ul>
                     </li>
                     <li class="nav-item">

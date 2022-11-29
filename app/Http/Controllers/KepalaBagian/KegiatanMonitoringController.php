@@ -86,7 +86,7 @@ class KegiatanMonitoringController extends Controller
                 AND rba.deleted_at IS NULL
             WHERE
                 kdiv.deleted_at IS NULL
-                AND  kdiv.id_divisi = '" . Auth::user()->id_divisi . "'
+                AND kdiv.id_divisi = '" . Auth::user()->id_divisi . "'
         ");
         return DaTables::of($apiGetAll)->make(true);
     }
@@ -146,7 +146,6 @@ class KegiatanMonitoringController extends Controller
                 AND rba.deleted_at IS NULL
             WHERE
                 kdiv.deleted_at IS NULL
-                AND kdiv.id_divisi = '" . Auth::user()->id_divisi . "'
                 AND kdiv.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
         ");
         return $apiGetById;
@@ -178,7 +177,7 @@ class KegiatanMonitoringController extends Controller
                 return [
                     'status' => false,
                     'latency' => AppLatency(),
-                    'message' => 'Detail RBA belum ditambahkan!',
+                    'message' => 'Rincian Rencana Anggaran Biaya Kegiatan Belum Anda Tambahkan!',
                     'error' => null,
                     'response' => ['id_rba' => $id_rba]
                 ];
@@ -223,8 +222,8 @@ class KegiatanMonitoringController extends Controller
     public function viewGetAll()
     {
         $info = [
-            'title' => 'Monitoring Kegiatan',
-            'site_active' => 'MonitoringKegiatan',
+            'title' => 'Kegiatan Telah Diajukan',
+            'site_active' => 'KegiatanDiajukan',
         ];
         return view('pages._kepalaBagian.kegiatanMonitoring.viewGetAll', compact('info'));
     }
@@ -233,8 +232,8 @@ class KegiatanMonitoringController extends Controller
     {
         $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
         $info = [
-            'title' => 'Detail Monitoring Kegiatan',
-            'site_active' => 'MonitoringKegiatan',
+            'title' => 'Detail Kegiatan Telah Diajukan',
+            'site_active' => 'KegiatanDiajukan',
         ];
         $kegiatan = $this->apiGetById();
         $detailRba = DB::select("
@@ -263,6 +262,7 @@ class KegiatanMonitoringController extends Controller
                 AND akn.deleted_at IS NULL
             WHERE
                 drba.deleted_at IS NULL
+            ORDER BY drba.created_at ASC
         ");
         $laksKegiatan = DB::select("
             SELECT
@@ -271,13 +271,13 @@ class KegiatanMonitoringController extends Controller
                 lkgt.tgl_ajuan,
                 lkgt.urutan_laksana_kegiatan,
                 CASE
-                    lkgt.a_verif_bend_kegiatan
-                    WHEN '2' THEN 'Disetujui Bend. Kegiatan'
-                    WHEN '3' THEN 'Ditolak Bend. Kegiatan'
-                    ELSE 'Belum Diverifikasi Bend. Kegiatan'
-                END AS a_verif_bend_kegiatan,
-                lkgt.id_verif_bend_kegiatan,
-                lkgt.tgl_verif_bend_kegiatan,
+                    lkgt.a_verif_kabag_keuangan
+                    WHEN '2' THEN 'Disetujui Kabag. Keuangan'
+                    WHEN '3' THEN 'Ditolak Kabag. Keuangan'
+                    ELSE 'Belum Diverifikasi Kabag. Keuangan'
+                END AS a_verif_kabag_keuangan,
+                lkgt.id_verif_kabag_keuangan,
+                lkgt.tgl_verif_kabag_keuangan,
                 lkgt.catatan,
                 lkgt.waktu_pelaksanaan,
                 lkgt.waktu_selesai,
@@ -306,6 +306,7 @@ class KegiatanMonitoringController extends Controller
             WHERE
                 lkgt.deleted_at IS NULL
                 AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
+            ORDER BY lkgt.created_at ASC
         ");
         $akun = DB::select("SELECT * FROM akun WHERE no_akun_induk = '5'");
         return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
@@ -361,6 +362,81 @@ class KegiatanMonitoringController extends Controller
                 'status' => true,
                 'latency' => AppLatency(),
                 'message' => 'Created',
+                'error' => null,
+                'response' => ['id_detail_rba' => $id_detail_rba]
+            ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
+    public function apiUpdateDetailRba()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_detail_rba' => 'required|uuid',
+                'id_akun' => 'required|uuid',
+                'vol' => 'required|numeric',
+                'satuan' => 'required',
+                'tarif' => 'required|numeric',
+                'total' => 'required|numeric',
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            $id_detail_rba = $this->request->id_detail_rba;
+            $id_akun = $this->request->id_akun;
+            $vol = $this->request->vol;
+            $indikator = $this->request->indikator;
+            $satuan = $this->request->satuan;
+            $tarif = $this->request->tarif;
+            $total = $this->request->total;
+            $updated_at = now();
+            $id_updater = Auth::user()->id_user;
+
+            $this->mDetailRba->where('id_detail_rba', $id_detail_rba)->update([
+                'id_akun' => $id_akun,
+                'vol' => $vol,
+                'indikator' => $indikator,
+                'satuan' => $satuan,
+                'tarif' => $tarif,
+                'total' => $total,
+                'updated_at' => $updated_at,
+                'id_updater' => $id_updater,
+            ]);
+
+            DB::commit();
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Updated',
                 'error' => null,
                 'response' => ['id_detail_rba' => $id_detail_rba]
             ];
@@ -488,7 +564,7 @@ class KegiatanMonitoringController extends Controller
                 'id_laksana_kegiatan' => $id_laksana_kegiatan,
                 'id_kegiatan_divisi' => $id_kegiatan_divisi,
                 'urutan_laksana_kegiatan' => $urutan_laksana_kegiatan + 1,
-                'a_verif_bend_kegiatan' => '1',
+                'a_verif_kabag_keuangan' => '1',
                 'waktu_pelaksanaan' => $waktu_pelaksanaan,
                 'waktu_selesai' => $waktu_selesai,
                 'tahun' => $tahun,
@@ -531,9 +607,19 @@ class KegiatanMonitoringController extends Controller
     {
         try {
             DB::beginTransaction();
-            $rules = [
-                'id_laksana_kegiatan' => 'required|uuid',
-            ];
+            $type_request = $this->request->type_request;
+            if ($type_request == 'ajuan') {
+                $rules = [
+                    'id_laksana_kegiatan' => 'required|uuid',
+                ];
+            } else {
+                $rules = [
+                    'id_laksana_kegiatan' => 'required|uuid',
+                    'waktu_pelaksanaan' => 'required',
+                    'waktu_selesai' => 'required',
+                    'tahun' => 'required',
+                ];
+            }
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
                 return [
@@ -546,15 +632,27 @@ class KegiatanMonitoringController extends Controller
             }
 
             $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
-            $a_verif_bend_kegiatan = $this->request->a_verif_bend_kegiatan;
             $waktu_pelaksanaan = $this->request->waktu_pelaksanaan;
             $waktu_selesai = $this->request->waktu_selesai;
             $tahun = $this->request->tahun;
             $updated_at = now();
             $id_updater = Auth::user()->id_user;
 
+            if ($type_request == 'ajuan') {
+                $check = $this->mDetailLaksanaKegiatan->where('id_laksana_kegiatan', $id_laksana_kegiatan)->count();
+                if ($check < 1) {
+                    return [
+                        'status' => false,
+                        'latency' => AppLatency(),
+                        'message' => 'Rincian Detail Pelaksanaan Belum Anda Tambahkan!',
+                        'error' => null,
+                        'response' => ['id_laksana_kegiatan' => $id_laksana_kegiatan]
+                    ];
+                }
+            }
+
             $this->mLaksanaKegiatan->where('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
-                'a_verif_bend_kegiatan' => $a_verif_bend_kegiatan ?? DB::raw('a_verif_bend_kegiatan'),
+                'tgl_ajuan' => $type_request == 'ajuan' ? now() : DB::raw('tgl_ajuan'),
                 'waktu_pelaksanaan' => $waktu_pelaksanaan ?? DB::raw('waktu_pelaksanaan'),
                 'waktu_selesai' => $waktu_selesai ?? DB::raw('waktu_selesai'),
                 'tahun' => $tahun ?? DB::raw('tahun'),
@@ -660,8 +758,8 @@ class KegiatanMonitoringController extends Controller
     {
         $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
         $info = [
-            'title' => 'Detail Pelaksanaan Kegiatan | Monitoring Kegiatan',
-            'site_active' => 'MonitoringKegiatan',
+            'title' => 'Detail Pelaksanaan Kegiatan',
+            'site_active' => 'KegiatanDiajukan',
         ];
 
         $kegiatan = DB::select("
@@ -676,21 +774,23 @@ class KegiatanMonitoringController extends Controller
                 lkgt.waktu_pelaksanaan,
                 lkgt.waktu_selesai,
                 CASE
-                    lkgt.a_verif_bend_kegiatan
-                    WHEN '2' THEN 'Disetujui Bend. Kegiatan'
-                    WHEN '3' THEN 'Ditolak Bend. Kegiatan'
-                    ELSE 'Belum Diverifikasi Bend. Kegiatan'
-                END AS a_verif_bend_kegiatan,
-                lkgt.tgl_verif_bend_kegiatan,
+                    lkgt.a_verif_kabag_keuangan
+                    WHEN '2' THEN 'Disetujui Kabag. Keuangan'
+                    WHEN '3' THEN 'Ditolak Kabag. Keuangan'
+                    ELSE 'Belum Diverifikasi Kabag. Keuangan'
+                END AS a_verif_kabag_keuangan,
+                lkgt.tgl_verif_kabag_keuangan,
                 lkgt.catatan,
                 (
                     SELECT
                         SUM(dlkgt.total)
                     FROM
                         detail_laksana_kegiatan AS dlkgt
+                        JOIN laksana_kegiatan AS llkgt ON dlkgt.id_laksana_kegiatan = llkgt.id_laksana_kegiatan
+                        AND llkgt.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                        AND llkgt.deleted_at IS NULL
                     WHERE
                         dlkgt.deleted_at IS NULL
-                        AND dlkgt.id_laksana_kegiatan = lkgt.id_laksana_kegiatan
                 ) AS total_anggaran_terpakai,
                 (
                     SELECT
@@ -719,7 +819,6 @@ class KegiatanMonitoringController extends Controller
             WHERE
                 lkgt.deleted_at IS NULL
                 AND lkgt.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
-            LIMIT 1
         ");
 
         $detailLaks = DB::select("
@@ -744,6 +843,7 @@ class KegiatanMonitoringController extends Controller
             WHERE
                 dlkgt.deleted_at IS NULL
                 AND dlkgt.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
+            ORDER BY dlkgt.created_at ASC
         ");
 
         $akun = DB::select("
@@ -764,6 +864,7 @@ class KegiatanMonitoringController extends Controller
             WHERE
                 lkgt.deleted_at IS NULL
                 AND lkgt.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
+            ORDER BY akn.no_akun ASC
         ");
 
         return view('pages._kepalaBagian.kegiatanMonitoring.viewGetAllLaksanaDetail', compact('info', 'kegiatan', 'detailLaks', 'akun'));
@@ -839,12 +940,16 @@ class KegiatanMonitoringController extends Controller
         }
     }
 
-    public function apiDeleteDetailLaksana()
+    public function apiUpdateDetailLaksana()
     {
         try {
             DB::beginTransaction();
             $rules = [
-                'id_laksana_kegiatan.*' => 'required|uuid',
+                'id_detail_laksana_kegiatan' => 'required',
+                'id_laksana_kegiatan' => 'required',
+                'id_detail_rba' => 'required',
+                'jumlah' => 'required',
+                'total' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -857,11 +962,78 @@ class KegiatanMonitoringController extends Controller
                 ];
             }
 
+            $id_detail_laksana_kegiatan = $this->request->id_detail_laksana_kegiatan;
             $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
+            $id_detail_rba = $this->request->id_detail_rba;
+            $jumlah = $this->request->jumlah;
+            $total = $this->request->total;
+            $updated_at = now();
+            $id_updater = Auth::user()->id_user;
+
+            $this->mDetailLaksanaKegiatan->where('id_detail_laksana_kegiatan', $id_detail_laksana_kegiatan)->update([
+                'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,
+                'id_laksana_kegiatan' => $id_laksana_kegiatan,
+                'id_detail_rba' => $id_detail_rba,
+                'jumlah' => $jumlah,
+                'total' => $total,
+                'updated_at' => $updated_at,
+                'id_updater' => $id_updater,
+            ]);
+
+            DB::commit();
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Updated',
+                'error' => null,
+                'response' => ['id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan]
+            ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
+    public function apiDeleteDetailLaksana()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_detail_laksana_kegiatan.*' => 'required|uuid',
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            $id_detail_laksana_kegiatan = $this->request->id_detail_laksana_kegiatan;
             $deleted_at = now();
             $id_updater = Auth::user()->id_user;
 
-            $this->mDetailLaksanaKegiatan->whereIn('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
+            $this->mDetailLaksanaKegiatan->whereIn('id_detail_laksana_kegiatan', $id_detail_laksana_kegiatan)->update([
                 'deleted_at' => $deleted_at,
                 'id_updater' => $id_updater,
             ]);
@@ -872,7 +1044,7 @@ class KegiatanMonitoringController extends Controller
                 'latency' => AppLatency(),
                 'message' => 'Deleted',
                 'error' => null,
-                'response' => ['id_laksana_kegiatan' => $id_laksana_kegiatan]
+                'response' => ['id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan]
             ];
         } catch (QueryException $e) {
             DB::rollBack();

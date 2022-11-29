@@ -1,7 +1,7 @@
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            <a id="navbarTrigger" class="nav-link" data-widget="pushmenu" href="javascript:" onclick="navbarTrigger()" role="button"><i class="fas fa-bars"></i></a>
         </li>
     </ul>
     <span class="text-bold">{{ userDivisi(Auth::user()->id_divisi)[0]->nm_divisi }}</span>

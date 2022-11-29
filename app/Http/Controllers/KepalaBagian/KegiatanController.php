@@ -193,8 +193,8 @@ class KegiatanController extends Controller
     public function viewGetAll()
     {
         $info = [
-            'title' => 'Kegiatan',
-            'site_active' => 'Kegiatan',
+            'title' => 'Pengajuan Kegiatan Baru',
+            'site_active' => 'KegiatanBaru',
         ];
         return view('pages._kepalaBagian.kegiatan.viewGetAll', compact('info'));
     }

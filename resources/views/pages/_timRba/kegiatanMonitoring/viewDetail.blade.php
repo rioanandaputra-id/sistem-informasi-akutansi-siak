@@ -4,7 +4,7 @@
 
 @section('content')
     @php
-        $lockedVerif = '';
+        $lockedBtnVerif = '';
     @endphp
     <div class="row">
         <div class="col">
@@ -32,15 +32,15 @@
                                         <button onclick="history.back()" class="btn btn-sm noborder btn-light"><i
                                                 class="fas fa-chevron-circle-left"></i>
                                             Kembali</button>
-                                        <button id="verif" class="btn btn-sm noborder btn-light ml-2"><i
-                                                class="fas fa-sign-in-alt"></i>
+                                            <button id="verif" class="btn btn-sm noborder btn-light ml-2"><i
+                                                class="fas fa-check-circle"></i>
                                             Verifikasi</button>
                                     </div>
                                 </div>
                             </div>
                             @foreach ($kegiatan as $kgt)
                                 @php
-                                    $lockedVerif = $kgt->kdiv_tgl_verif_rba != null ? 'disabled' : '';
+                                    $lockedBtnVerif = $kgt->kdiv_tgl_verif_rba != null ? 'disabled' : '';
                                 @endphp
                                 <table>
                                     <tbody>
@@ -68,9 +68,9 @@
                                             <td>{{ $kgt->nm_kegiatan }}</td>
                                         </tr>
                                         <tr>
-                                            <td style="min-width: 200px">Waktu Simpan</td>
+                                            <td style="min-width: 200px">Waktu Pengajuan</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->tgl_submit }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->tgl_submit) ?? '-' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -82,17 +82,17 @@
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->kdiv_a_verif_rba }}</td>
+                                            <td>{!! status_verification_color($kgt->kdiv_a_verif_rba) !!}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->kdiv_tgl_verif_rba }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->kdiv_tgl_verif_rba) ?? '-' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->kdiv_catatan }}</td>
+                                            <td>{{ $kgt->kdiv_catatan ?? '-' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -104,17 +104,17 @@
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_a_verif_rba }}</td>
+                                            <td>{!! status_verification_color($kgt->rba_a_verif_rba) !!}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_tgl_verif_rba }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->rba_tgl_verif_rba) ?? '-' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_catatan_verif_rba }}</td>
+                                            <td>{{ $kgt->rba_catatan_verif_rba ?? '-' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -126,17 +126,17 @@
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_a_verif_wilayah }}</td>
+                                            <td>{!! status_verification_color($kgt->rba_a_verif_wilayah) !!}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_tgl_verif_wilayah }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->rba_tgl_verif_wilayah) ?? '-' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_catatan_verif_wilayah }}</td>
+                                            <td>{{ $kgt->rba_catatan_verif_wilayah ?? '-' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -144,19 +144,21 @@
                             <div class="row bg-success p-2 mb-4">
                                 <div class="col">
                                     <div class="float-left">
-                                        <b>DETAIL RENCANA ANGGARAN BIAYA KEGIATAN</b>
+                                        <b>RINCIAN RENCANA ANGGARAN BIAYA KEGIATAN</b>
+                                    </div>
+                                    <div class="float-right">
                                     </div>
                                 </div>
                             </div>
                             <table class="table table-striped teble-bordered" id="tbDetailRba" style="width: 100%">
-                                <thead class="bg-success">
+                                <thead class="bg-info">
                                     <tr>
                                         <th>Akun</th>
                                         <th>Satuan</th>
-                                        <th>Indikator</th>
-                                        <th>Volume</th>
-                                        <th>Tarif</th>
-                                        <th>Total</th>
+                                        <th class="text-right">Indikator</th>
+                                        <th class="text-right">Volume</th>
+                                        <th class="text-right">Tarif</th>
+                                        <th class="text-right">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,23 +167,25 @@
                                     @endphp
                                     @foreach ($detailRba as $drba)
                                         <tr>
-                                            <td>{{ $drba->no_akun }} - {{ $drba->nm_akun }}</td>
+                                                <td>{{ $drba->no_akun }} - {{ $drba->nm_akun }}</td>
                                             <td>{{ $drba->satuan }}</td>
-                                            <td>{{ $drba->indikator }}</td>
-                                            <td>{{ $drba->vol }}</td>
-                                            <td>{{ $drba->tarif }}</td>
-                                            <td>{{ $drba->total }}</td>
+                                            <td class="text-right">{{ $drba->indikator }}</td>
+                                            <td class="text-right">{{ $drba->vol }}</td>
+                                            <td class="text-right">{{ number_to_currency_without_rp($drba->tarif, 0) }}
+                                            </td>
+                                            <td class="text-right">{{ number_to_currency_without_rp($drba->total, 0) }}
+                                            </td>
                                         </tr>
                                         @php
                                             $tbDetailRbaTotal += $drba->total;
                                         @endphp
                                     @endforeach
                                 </tbody>
-                                <tfoot class="bg-success">
+                                <tfoot class="bg-info">
                                     <tr>
-                                        <th></th>
-                                        <th colspan="4">Total</th>
-                                        <th>{{ $tbDetailRbaTotal }}</th>
+                                        <th colspan="5">Total</th>
+                                        <th class="text-right">{{ number_to_currency_without_rp($tbDetailRbaTotal, 0) }}
+                                        </th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -190,57 +194,64 @@
                     <hr>
                     <div class="row mt-4">
                         <div class="col">
-                            <div class="row bg-purple p-2 mb-4">
+                            <div class="row bg-success p-2 mb-4">
                                 <div class="col">
                                     <div class="float-left">
-                                        <b>DETAIL PELAKSANAAN KEGIATAN</b>
+                                        <b>PELAKSANAAN KEGIATAN</b>
+                                    </div>
+                                    <div class="float-right">
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-striped teble-bordered" id="tbDetailLaksKegiatan" style="width: 100%">
-                                <thead class="bg-purple">
+                            <table class="table table-striped teble-bordered" id="tbLaksKegiatan" style="width: 100%">
+                                <thead class="bg-info">
                                     <tr>
-                                        <th>Akun</th>
-                                        <th>Tgl. Ajuan</th>
-                                        <th>Tgl. Verif</th>
-                                        <th>Catatan</th>
-                                        <th>Wkt. Laks</th>
-                                        <th>Wkt. Selesai</th>
-                                        <th>Tahun</th>
-                                        <th>Status</th>
-                                        <th>Jumlah</th>
-                                        <th>Total</th>
+                                        <th>Urutan Pengajuan</th>
+                                        <th>Status Verifikasi</th>
+                                        <th>Waktu Pengajuan</th>
+                                        <th class="text-center">Waktu Pelaksanaan</th>
+                                        <th class="text-right">Total Anggaran</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php
-                                        $tbDetailLaksKegiatanTotal = 0;
+                                        $tbLaksKegiatanTotal = 0;
                                     @endphp
-                                    @foreach ($detailLaksKegiatan as $dlk)
+                                    @foreach ($laksKegiatan as $lkgt)
                                         <tr>
-                                            <td>{{ $dlk->no_akun }} - {{ $dlk->nm_akun }}</td>
-                                            <td>{{ $dlk->tgl_ajuan }}</td>
-                                            <td>{{ $dlk->tgl_verif_bend_kegiatan }}</td>
-                                            <td>{{ $dlk->catatan }}</td>
-                                            <td>{{ $dlk->waktu_pelaksanaan }}</td>
-                                            <td>{{ $dlk->waktu_selesai }}</td>
-                                            <td>{{ $dlk->tahun }}</td>
-                                            <td>{{ $dlk->a_verif_bend_kegiatan }}</td>
-                                            <td>{{ $dlk->jumlah }}</td>
-                                            <td>{{ $dlk->total }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <a href="javascript:" type="button" data-toggle="dropdown">
+                                                        Pengajuan Ke-{{ $lkgt->urutan_laksana_kegiatan }}
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item mb-2"
+                                                            href="{{ route('timrba.KegiatanMonitoring.viewGetAllLaksanaDetail') }}?id_laksana_kegiatan={{ $lkgt->id_laksana_kegiatan }}">Detail
+                                                            Pelaksanaan Kegiatan</a>
+                                                    </div>
+                                            </td>
+                                            <td>{!! status_verification_color($lkgt->a_verif_kabag_keuangan) !!}</td>
+                                            <td>{{ tglWaktuIndonesia($lkgt->tgl_ajuan) ?? '-' }}</td>
+                                            <td class="text-center">
+                                                {{ tglWaktuIndonesia($lkgt->waktu_pelaksanaan) }} <span
+                                                    class="ml-2 mr-2">-</span>
+                                                {{ tglWaktuIndonesia($lkgt->waktu_selesai) }}
+                                            </td>
+                                            <td class="text-right">
+                                                {{ number_to_currency_without_rp($lkgt->total_anggaran, 0) }}</td>
                                         </tr>
                                         @php
-                                            if ($dlk->a_verif_bend_kegiatan != 'Ditolak Bend. Kegiatan') {
-                                                $tbDetailLaksKegiatanTotal += $dlk->total;
+                                            if (!str_contains($lkgt->a_verif_kabag_keuangan, 'Ditolak')) {
+                                                $tbLaksKegiatanTotal += $lkgt->total_anggaran;
                                             }
                                         @endphp
                                     @endforeach
                                 </tbody>
-                                <tfoot class="bg-purple">
+                                <tfoot class="bg-info">
                                     <tr>
-                                        <th></th>
-                                        <th colspan="8">Total</th>
-                                        <th>{{ $tbDetailLaksKegiatanTotal }}</th>
+                                        <th colspan="4">Total</th>
+                                        <th class="text-right">
+                                            {{ number_to_currency_without_rp($tbLaksKegiatanTotal, 0) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -250,6 +261,7 @@
             </div>
         </div>
     </div>
+
     <div id="VerifMdl" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -285,7 +297,7 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            if ("{!! $lockedVerif !!}" == 'disabled') {
+            if ("{!! $lockedBtnVerif !!}" == 'disabled') {
                 $('#verif').prop("disabled", true);
             }
 
