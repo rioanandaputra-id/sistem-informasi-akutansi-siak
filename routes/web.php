@@ -124,13 +124,18 @@ Route::middleware('auth')->group(function () {
     });
     Route::controller(KepalaBagianKegiatanMonitoringController::class)->prefix('kepalabagian/KegiatanMonitoring')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.KegiatanMonitoring.apiGetAll');
+
         Route::post('apiCreateDetailRba', 'apiCreateDetailRba')->name('kepalabagian.KegiatanMonitoring.apiCreateDetailRba');
         Route::post('apiDeleteDetailRba', 'apiDeleteDetailRba')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailRba');
-        Route::post('apiCreateDetailLaksana', 'apiCreateDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiCreateDetailLaksana');
-        Route::post('apiDeleteDetailLaksana', 'apiDeleteDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailLaksana');
+
+        Route::post('apiCreateLaksana', 'apiCreateLaksana')->name('kepalabagian.KegiatanMonitoring.apiCreateLaksana');
+        Route::post('apiUpdateLaksana', 'apiUpdateLaksana')->name('kepalabagian.KegiatanMonitoring.apiUpdateLaksana');
+        Route::post('apiDeleteLaksana', 'apiDeleteLaksana')->name('kepalabagian.KegiatanMonitoring.apiDeleteLaksana');
+
         Route::post('apiUpdate', 'apiUpdate')->name('kepalabagian.KegiatanMonitoring.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.KegiatanMonitoring.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('kepalabagian.KegiatanMonitoring.viewDetail');
+        Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('kepalabagian.KegiatanMonitoring.viewGetAllLaksanaDetail');
     });
     // =====================================KEPALA KEUANGAN========================================
     Route::controller(ManajemenKeuangan::class)->prefix('kepalabagian/ManajemenKeuangan')->group(function () {

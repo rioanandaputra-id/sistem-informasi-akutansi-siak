@@ -354,18 +354,15 @@ class KegiatanMonitoringController extends Controller
         }
     }
 
-    public function apiCreateDetailLaksana()
+    public function apiCreateLaksana()
     {
         try {
             DB::beginTransaction();
             $rules = [
                 'id_kegiatan_divisi' => 'required|uuid',
-                'id_detail_rba' => 'required|uuid',
                 'waktu_pelaksanaan' => 'required|date',
                 'waktu_selesai' => 'required|date',
                 'tahun' => 'required|numeric',
-                'jumlah' => 'required|numeric',
-                'total' => 'required|numeric',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -379,35 +376,20 @@ class KegiatanMonitoringController extends Controller
             }
 
             $id_laksana_kegiatan = guid();
-            $id_detail_laksana_kegiatan = guid();
             $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
-            $id_detail_rba = $this->request->id_detail_rba;
             $waktu_pelaksanaan = $this->request->waktu_pelaksanaan;
             $waktu_selesai = $this->request->waktu_selesai;
             $tahun = $this->request->tahun;
-            $jumlah = $this->request->jumlah;
-            $total = $this->request->total;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
 
             $this->mLaksanaKegiatan->create([
                 'id_laksana_kegiatan' => $id_laksana_kegiatan,
                 'id_kegiatan_divisi' => $id_kegiatan_divisi,
-                'tgl_ajuan' => $created_at,
                 'a_verif_bend_kegiatan' => '1',
                 'waktu_pelaksanaan' => $waktu_pelaksanaan,
                 'waktu_selesai' => $waktu_selesai,
                 'tahun' => $tahun,
-                'created_at' => $created_at,
-                'id_updater' => $id_updater,
-            ]);
-
-            $this->mDetailLaksanaKegiatan->create([
-                'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,
-                'id_laksana_kegiatan' => $id_laksana_kegiatan,
-                'id_detail_rba' => $id_detail_rba,
-                'jumlah' => $jumlah,
-                'total' => $total,
                 'created_at' => $created_at,
                 'id_updater' => $id_updater,
             ]);
@@ -418,7 +400,7 @@ class KegiatanMonitoringController extends Controller
                 'latency' => AppLatency(),
                 'message' => 'Created',
                 'error' => null,
-                'response' => ['id_detail_rba' => $id_detail_rba]
+                'response' => ['id_kegiatan_divisi' => $id_kegiatan_divisi]
             ];
         } catch (QueryException $e) {
             DB::rollBack();
@@ -443,7 +425,12 @@ class KegiatanMonitoringController extends Controller
         }
     }
 
-    public function apiDeleteDetailLaksana()
+    public function apiUpdateLaksana()
+    {
+        # code...
+    }
+
+    public function apiDeleteLaksana()
     {
         try {
             DB::beginTransaction();
@@ -466,6 +453,11 @@ class KegiatanMonitoringController extends Controller
             $id_updater = Auth::user()->id_user;
 
             $this->mLaksanaKegiatan->whereIn('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
+                'deleted_at' => $deleted_at,
+                'id_updater' => $id_updater,
+            ]);
+
+            $this->mDetailLaksanaKegiatan->whereIn('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
                 'deleted_at' => $deleted_at,
                 'id_updater' => $id_updater,
             ]);
@@ -528,12 +520,6 @@ class KegiatanMonitoringController extends Controller
                 drba.indikator,
                 drba.tarif,
                 drba.total,
-                CASE
-                    drba.a_setuju
-                    WHEN '2' THEN 'Disetujui'
-                    WHEN '3' THEN 'Ditolak'
-                    ELSE 'Belum Diverifikasi'
-                END AS a_setuju,
                 drba.created_at,
                 drba.updated_at,
                 drba.deleted_at,
@@ -551,17 +537,49 @@ class KegiatanMonitoringController extends Controller
             WHERE
                 drba.deleted_at IS NULL
         ");
-        $detailLaksKegiatan = DB::select("
+        // $detailLaksKegiatan = DB::select("
+        //     SELECT
+        //         dkgt.id_detail_laksana_kegiatan,
+        //         dkgt.id_laksana_kegiatan,
+        //         dkgt.id_detail_rba,
+        //         dkgt.jumlah,
+        //         dkgt.total,
+        //         dkgt.created_at,
+        //         dkgt.updated_at,
+        //         dkgt.deleted_at,
+        //         dkgt.id_updater,
+        //         lkgt.id_kegiatan_divisi,
+        //         lkgt.tgl_ajuan,
+        //         CASE
+        //             lkgt.a_verif_bend_kegiatan
+        //             WHEN '2' THEN 'Disetujui Bend. Kegiatan'
+        //             WHEN '3' THEN 'Ditolak Bend. Kegiatan'
+        //             ELSE 'Belum Diverifikasi Bend. Kegiatan'
+        //         END AS a_verif_bend_kegiatan,
+        //         lkgt.id_verif_bend_kegiatan,
+        //         lkgt.tgl_verif_bend_kegiatan,
+        //         lkgt.catatan,
+        //         lkgt.waktu_pelaksanaan,
+        //         lkgt.waktu_selesai,
+        //         lkgt.tahun,
+        //         akn.id_akun,
+        //         akn.no_akun,
+        //         akn.nm_akun
+        //     FROM
+        //         detail_laksana_kegiatan AS dkgt
+        //         JOIN laksana_kegiatan AS lkgt ON lkgt.id_laksana_kegiatan = dkgt.id_laksana_kegiatan
+        //         AND lkgt.deleted_at IS NULL
+        //         JOIN detail_rba AS drba ON drba.id_detail_rba = dkgt.id_detail_rba
+        //         AND drba.deleted_at IS NULL
+        //         JOIN akun AS akn ON akn.id_akun = drba.id_akun
+        //         AND akn.deleted_at IS NULL
+        //     WHERE
+        //         dkgt.deleted_at IS NULL
+        //         AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
+        // ");
+        $laksKegiatan = DB::select("
             SELECT
-                dkgt.id_detail_laksana_kegiatan,
-                dkgt.id_laksana_kegiatan,
-                dkgt.id_detail_rba,
-                dkgt.jumlah,
-                dkgt.total,
-                dkgt.created_at,
-                dkgt.updated_at,
-                dkgt.deleted_at,
-                dkgt.id_updater,
+                lkgt.id_laksana_kegiatan,
                 lkgt.id_kegiatan_divisi,
                 lkgt.tgl_ajuan,
                 CASE
@@ -576,22 +594,41 @@ class KegiatanMonitoringController extends Controller
                 lkgt.waktu_pelaksanaan,
                 lkgt.waktu_selesai,
                 lkgt.tahun,
-                akn.id_akun,
-                akn.no_akun,
-                akn.nm_akun
+                lkgt.created_at,
+                lkgt.updated_at,
+                lkgt.deleted_at,
+                lkgt.id_updater,
+                kgt.id_kegiatan,
+                kgt.nm_kegiatan,
+                (
+                    SELECT
+                        SUM(total)
+                    FROM
+                        detail_laksana_kegiatan
+                    WHERE
+                        deleted_at IS NULL
+                        AND id_laksana_kegiatan = lkgt.id_laksana_kegiatan
+                ) AS total_anggaran
             FROM
-                detail_laksana_kegiatan AS dkgt
-                JOIN laksana_kegiatan AS lkgt ON lkgt.id_laksana_kegiatan = dkgt.id_laksana_kegiatan
-                AND lkgt.deleted_at IS NULL
-                JOIN detail_rba AS drba ON drba.id_detail_rba = dkgt.id_detail_rba
-                AND drba.deleted_at IS NULL
-                JOIN akun AS akn ON akn.id_akun = drba.id_akun
-                AND akn.deleted_at IS NULL
+                laksana_kegiatan AS lkgt
+                JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                AND kdiv.deleted_at IS NULL
+                JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
+                AND kgt.deleted_at IS NULL
             WHERE
-                dkgt.deleted_at IS NULL
+                lkgt.deleted_at IS NULL
                 AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
         ");
         $akun = DB::select("SELECT * FROM akun WHERE no_akun_induk = '5'");
-        return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'detailLaksKegiatan'));
+        return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
+    }
+
+    public function viewGetAllLaksanaDetail()
+    {
+        $info = [
+            'title' => 'Detail Laksana Kegiatan | Monitoring Kegiatan',
+            'site_active' => 'MonitoringKegiatan',
+        ];
+        return view('pages._kepalaBagian.kegiatanMonitoring.viewGetAllLaksanaDetail', compact('info'));
     }
 }

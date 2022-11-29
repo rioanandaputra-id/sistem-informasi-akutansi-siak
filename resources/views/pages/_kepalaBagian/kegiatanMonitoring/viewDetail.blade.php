@@ -5,7 +5,7 @@
 @section('content')
     @php
         $lockBtnDetailRba = '';
-        $lockBtnDetailLaksana = '';
+        $lockBtnLaksana = '';
         $IdRba = '';
         $sisaAnggaran = 0;
     @endphp
@@ -44,7 +44,7 @@
                             @foreach ($kegiatan as $kgt)
                                 @php
                                     $lockBtnDetailRba = $kgt->tgl_submit ? 'disabled' : '';
-                                    $lockBtnDetailLaksana = $kgt->rba_a_verif_wilayah == "Disetujui Kepala Wilayah" ? '' : 'disabled';
+                                    $lockBtnLaksana = $kgt->rba_a_verif_wilayah == 'Disetujui Kepala Wilayah' ? '' : 'disabled';
                                     $IdRba = $kgt->id_rba;
                                 @endphp
                                 <table>
@@ -75,7 +75,7 @@
                                         <tr>
                                             <td style="min-width: 200px">Waktu Simpan</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->tgl_submit }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->tgl_submit) ?? '-' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -92,12 +92,12 @@
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->kdiv_tgl_verif_rba }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->kdiv_tgl_verif_rba) ?? '-' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->kdiv_catatan }}</td>
+                                            <td>{{ $kgt->kdiv_catatan ?? '-' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -114,12 +114,12 @@
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_tgl_verif_rba }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->rba_tgl_verif_rba) ?? '-' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_catatan_verif_rba }}</td>
+                                            <td>{{ $kgt->rba_catatan_verif_rba ?? '-' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -136,12 +136,12 @@
                                         <tr>
                                             <td>Waktu</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_tgl_verif_wilayah }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->rba_tgl_verif_wilayah) ?? '-' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->rba_catatan_verif_wilayah }}</td>
+                                            <td>{{ $kgt->rba_catatan_verif_wilayah ?? '-' }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -182,12 +182,14 @@
                                             <th><input class="ckItemDetailRba" type="checkbox"
                                                     value="{{ $drba->id_detail_rba }}">
                                             </th>
-                                            <td>{{ $drba->no_akun }} - {{ $drba->nm_akun }}</td>
+                                            <td><a href="javascript:">{{ $drba->no_akun }} - {{ $drba->nm_akun }}</a></td>
                                             <td>{{ $drba->satuan }}</td>
                                             <td>{{ $drba->indikator }}</td>
                                             <td>{{ $drba->vol }}</td>
-                                            <td style="text-align:right">{{ number_to_currency_without_rp($drba->tarif,0) }}</td>
-                                            <td style="text-align:right">{{ number_to_currency_without_rp($drba->total,0) }}</td>
+                                            <td style="text-align:right">
+                                                {{ number_to_currency_without_rp($drba->tarif, 0) }}</td>
+                                            <td style="text-align:right">
+                                                {{ number_to_currency_without_rp($drba->total, 0) }}</td>
                                         </tr>
                                         @php
                                             $tbDetailRbaTotal += $drba->total;
@@ -198,7 +200,8 @@
                                     <tr>
                                         <th></th>
                                         <th colspan="5">Total</th>
-                                        <th style="text-align:right">{{ number_to_currency_without_rp($tbDetailRbaTotal,0) }}</th>
+                                        <th style="text-align:right">
+                                            {{ number_to_currency_without_rp($tbDetailRbaTotal, 0) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -210,57 +213,67 @@
                             <div class="row bg-purple p-2 mb-4">
                                 <div class="col">
                                     <div class="float-left">
-                                        <b>DETAIL PELAKSANAAN KEGIATAN</b>
+                                        <b>PELAKSANAAN KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
-                                        <button {{ $lockBtnDetailLaksana }} id="addDetailLaksKegiatan"
+                                        <button {{ $lockBtnLaksana }} id="addLaksKegiatan"
                                             class="btn btn-sm noborder btn-light"><i class="fas fa-plus-circle"></i>
                                             Tambah</button>
-                                        <button {{ $lockBtnDetailLaksana }} id="deleteDetailLaksKegiatan"
+                                        <button {{ $lockBtnLaksana }} id="deleteLaksKegiatan"
                                             class="btn btn-sm noborder btn-light ml-2"><i class="fas fa-trash"></i>
                                             Hapus</button>
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-striped teble-bordered" id="tbDetailLaksKegiatan" style="width: 100%">
+                            <table class="table table-striped teble-bordered" id="tbLaksKegiatan" style="width: 100%">
                                 <thead class="bg-purple">
                                     <tr>
-                                        <th><input type="checkbox" class="ckAllDetailLaksKegiatan"></th>
-                                        <th>Akun</th>
-                                        <th>Tgl. Ajuan</th>
-                                        <th>Tgl. Verif</th>
-                                        <th>Catatan</th>
-                                        <th>Wkt. Laks</th>
-                                        <th>Wkt. Selesai</th>
-                                        <th>Tahun</th>
-                                        <th>Status</th>
-                                        <th>Jumlah</th>
-                                        <th style="text-align:right">Total</th>
+                                        <th style="width: 5px;"><input type="checkbox" class="ckAllLaksKegiatan"></th>
+                                        <th>Status Verifikasi</th>
+                                        <th>Waktu Pengajuan</th>
+                                        <th>Waktu Pelaksanaan</th>
+                                        <th class="text-right">Total Anggaran</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php
-                                        $tbDetailLaksKegiatanTotal = 0;
+                                        $tbLaksKegiatanTotal = 0;
                                     @endphp
-                                    @foreach ($detailLaksKegiatan as $dlk)
+                                    @foreach ($laksKegiatan as $lkgt)
                                         <tr>
-                                            <th><input class="ckItemDetailLaksKegiatan" type="checkbox"
-                                                    value="{{ $dlk->id_laksana_kegiatan }}">
-                                            </th>
-                                            <td>{{ $dlk->no_akun }} - {{ $dlk->nm_akun }}</td>
-                                            <td>{{ $dlk->tgl_ajuan }}</td>
-                                            <td>{{ $dlk->tgl_verif_bend_kegiatan }}</td>
-                                            <td>{{ $dlk->catatan }}</td>
-                                            <td>{{ $dlk->waktu_pelaksanaan }}</td>
-                                            <td>{{ $dlk->waktu_selesai }}</td>
-                                            <td>{{ $dlk->tahun }}</td>
-                                            <td>{{ $dlk->a_verif_bend_kegiatan }}</td>
-                                            <td>{{ $dlk->jumlah }}</td>
-                                            <td style="text-align:right">{{ number_to_currency_without_rp($dlk->total,0) }}</td>
+                                            <td><input class="ckItemLaksKegiatan" type="checkbox"
+                                                    value="{{ $lkgt->id_laksana_kegiatan }}"></td>
+                                            <td>{{ $lkgt->a_verif_bend_kegiatan }}</td>
+                                            <td>{{ tglWaktuIndonesia($lkgt->tgl_ajuan) ?? '-' }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <a href="javascript:" type="button" data-toggle="dropdown">
+                                                        {{ tglWaktuIndonesia($lkgt->waktu_pelaksanaan) }} <span
+                                                            class="ml-2 mr-2">-</span>
+                                                        {{ tglWaktuIndonesia($lkgt->waktu_selesai) }}
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item mb-2"
+                                                            href="{{ route('kepalabagian.KegiatanMonitoring.viewGetAllLaksanaDetail') }}?id_laksana_kegiatan={{ $lkgt->id_laksana_kegiatan }}">Detail
+                                                            Laksana Kegiatan</a>
+                                                        <a class="dropdown-item" href="javascript:"
+                                                            onclick="modalUpdateDetailLaks(
+                                                            '{!! $lkgt->id_laksana_kegiatan !!}',
+                                                            '{!! $lkgt->tahun !!}',
+                                                            '{!! $lkgt->tgl_ajuan !!}',
+                                                            '{!! $lkgt->waktu_pelaksanaan !!}',
+                                                            '{!! $lkgt->waktu_selesai !!}',
+                                                        )">Ubah
+                                                            Data</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-right">
+                                                {{ number_to_currency_without_rp($lkgt->total_anggaran, 0) }}</td>
                                         </tr>
                                         @php
-                                            if ($dlk->a_verif_bend_kegiatan != 'Ditolak Bend. Kegiatan') {
-                                                $tbDetailLaksKegiatanTotal += $dlk->total;
+                                            if ($lkgt->a_verif_bend_kegiatan != 'Ditolak Bend. Kegiatan') {
+                                                $tbLaksKegiatanTotal += $lkgt->total_anggaran;
                                             }
                                         @endphp
                                     @endforeach
@@ -268,8 +281,9 @@
                                 <tfoot class="bg-purple">
                                     <tr>
                                         <th></th>
-                                        <th colspan="9">Total</th>
-                                        <th style="text-align:right">{{ number_to_currency_without_rp($tbDetailLaksKegiatanTotal,0) }}</th>
+                                        <th colspan="3">Total</th>
+                                        <th style="text-align:right">
+                                            {{ number_to_currency_without_rp($tbLaksKegiatanTotal, 0) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -338,72 +352,84 @@
         </div>
     </div>
 
-    <div id="addDetailLaksKegiatanMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="addLaksKegiatanMdl" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Detail Pelaksanaan Kegiatan</h5>
+                    <h5 class="modal-title">Tambah Pelaksanaan Kegiatan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-2 bg-warning">
-                        <div class="col d-flex justify-content-between p-2">
-                            <h5>
-                                Sisa Anggaran Yang Dapat Anda Ajukan :
-                            </h5>
-                            <h5>
-                                {{ $sisaAnggaran = $tbDetailRbaTotal - $tbDetailLaksKegiatanTotal }}
-                            </h5>
-                        </div>
-                    </div>
-                    <hr>
-                    <form id="formaddDetailLaksKegiatanMdl">
+                    <form id="formaddLaksKegiatanMdl">
                         <div class="row mb-2">
                             <div class="col">
-                                <label for="">Akun: <i class="text-red">*</i></label>
-                                <select id="id_detail_rbaaddDetailLaksKegiatanMdl" class="form-control">
-                                    <option value="">---</option>
-                                    @foreach ($detailRba as $akn)
-                                        <option value="{{ $akn->id_detail_rba }}">{{ $akn->no_akun }}
-                                            {{ $akn->nm_akun }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col">
-                                <label for="">Tahun: <i class="text-red">*</i></label>
+                                <label for="tahunaddLaksKegiatanMdl">Tahun: <i class="text-red">*</i></label>
                                 <input type="number" value="{{ date('Y') }}" class="form-control"
-                                    id="tahunaddDetailLaksKegiatanMdl">
+                                    id="tahunaddLaksKegiatanMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
-                                <label for="">Waktu Pelakasanaan: <i class="text-red">*</i></label>
+                                <label for="waktu_pelaksanaanaddLaksKegiatanMdl">Waktu Pelakasanaan: <i
+                                        class="text-red">*</i></label>
                                 <input type="datetime-local" class="form-control"
-                                    id="waktu_pelaksanaanaddDetailLaksKegiatanMdl">
+                                    id="waktu_pelaksanaanaddLaksKegiatanMdl">
                             </div>
                             <div class="col">
-                                <label for="">Waktu Selesai: <i class="text-red">*</i></label>
-                                <input type="datetime-local" class="form-control"
-                                    id="waktu_selesaiaddDetailLaksKegiatanMdl">
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col">
-                                <label for="">Jumlah: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="jumlahaddDetailLaksKegiatanMdl">
-                            </div>
-                            <div class="col">
-                                <label for="">Total: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="totaladdDetailLaksKegiatanMdl">
+                                <label for="waktu_selesaiaddLaksKegiatanMdl">Waktu Selesai: <i
+                                        class="text-red">*</i></label>
+                                <input type="datetime-local" class="form-control" id="waktu_selesaiaddLaksKegiatanMdl">
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnaddDetailLaksKegiatanMdl" class="btn btn-primary">Tambah</button>
+                    <button type="button" id="btnaddLaksKegiatanMdl" class="btn btn-primary">Tambah</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="updateLaksKegiatanDetailMdl" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ubah Pelaksanaan Kegiatan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formupdateLaksKegiatanDetailMdl">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <input type="hidden" id="id_laksana_kegiatanupdateLaksKegiatanDetailMdl">
+                                <label for="tahunupdateLaksKegiatanDetailMdl">Tahun: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control"
+                                    id="tahunupdateLaksKegiatanDetailMdl">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="waktu_pelaksanaanupdateLaksKegiatanDetailMdl">Waktu Pelakasanaan: <i
+                                        class="text-red">*</i></label>
+                                <input type="datetime-local" class="form-control"
+                                    id="waktu_pelaksanaanupdateLaksKegiatanDetailMdl">
+                            </div>
+                            <div class="col">
+                                <label for="waktu_selesaiupdateLaksKegiatanDetailMdl">Waktu Selesai: <i
+                                        class="text-red">*</i></label>
+                                <input type="datetime-local" class="form-control"
+                                    id="waktu_selesaiupdateLaksKegiatanDetailMdl">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnupdateLaksKegiatanDetailMdl" class="btn btn-primary">Ubah Data</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                 </div>
             </div>
@@ -419,7 +445,7 @@
     <script>
         $(document).ready(function() {
 
-            if("{!! $lockBtnDetailRba !!}" == 'disabled'){
+            if ("{!! $lockBtnDetailRba !!}" == 'disabled') {
                 $('#locked').prop("disabled", true);
             }
 
@@ -431,11 +457,11 @@
                 }
             });
 
-            $(".ckAllDetailLaksKegiatan").change(function() {
+            $(".ckAllLaksKegiatan").change(function() {
                 if (this.checked) {
-                    $('.ckItemDetailLaksKegiatan').prop('checked', true);
+                    $('.ckItemLaksKegiatan').prop('checked', true);
                 } else {
-                    $('.ckItemDetailLaksKegiatan').prop('checked', false);
+                    $('.ckItemLaksKegiatan').prop('checked', false);
                 }
             });
 
@@ -594,30 +620,24 @@
                 });
             });
 
-            $("#addDetailLaksKegiatan").click(function() {
-                $('#addDetailLaksKegiatanMdl').modal('show');
+            $("#addLaksKegiatan").click(function() {
+                $('#addLaksKegiatanMdl').modal('show');
             });
 
-            $("#btnaddDetailLaksKegiatanMdl").click(function() {
-                if (parseInt($('#totaladdDetailLaksKegiatanMdl').val()) > parseInt("{!! $sisaAnggaran !!}")) {
-                    alert("Melampaui sisa anggaran!");
-                } else if ($('#waktu_selesaiaddDetailLaksKegiatanMdl').val() < $(
-                        '#waktu_pelaksanaanaddDetailLaksKegiatanMdl').val()) {
-                    alert("Tanggal pelaksanaan atau selesai kegiatan tidak valid!");
+            $("#btnaddLaksKegiatanMdl").click(function() {
+                if ($('#waktu_selesaiaddLaksKegiatanMdl').val() < $('#waktu_pelaksanaanaddLaksKegiatanMdl')
+                    .val()) {
+                    alert("Tanggal pelaksanaan kegiatan tidak valid!");
                 } else {
                     $.ajax({
                         type: 'POST',
-                        url: "{{ route('kepalabagian.KegiatanMonitoring.apiCreateDetailLaksana') }}",
+                        url: "{{ route('kepalabagian.KegiatanMonitoring.apiCreateLaksana') }}",
                         data: {
                             _token: "{!! csrf_token() !!}",
                             id_kegiatan_divisi: "{!! request()->get('id_kegiatan_divisi') !!}",
-                            id_detail_rba: $('#id_detail_rbaaddDetailLaksKegiatanMdl').val(),
-                            waktu_pelaksanaan: $('#waktu_pelaksanaanaddDetailLaksKegiatanMdl')
-                                .val(),
-                            waktu_selesai: $('#waktu_selesaiaddDetailLaksKegiatanMdl').val(),
-                            tahun: $('#tahunaddDetailLaksKegiatanMdl').val(),
-                            jumlah: $('#jumlahaddDetailLaksKegiatanMdl').val(),
-                            total: $('#totaladdDetailLaksKegiatanMdl').val(),
+                            waktu_pelaksanaan: $('#waktu_pelaksanaanaddLaksKegiatanMdl').val(),
+                            waktu_selesai: $('#waktu_selesaiaddLaksKegiatanMdl').val(),
+                            tahun: $('#tahunaddLaksKegiatanMdl').val(),
                         },
                         beforeSend: function() {
                             $(this).prop("disabled", true);
@@ -655,7 +675,7 @@
                 }
             });
 
-            $("#deleteDetailLaksKegiatan").click(function() {
+            $("#deleteLaksKegiatan").click(function() {
                 $(this).prop("disabled", true);
                 Swal.fire({
                     title: 'Apakah anda yakin?',
@@ -670,10 +690,10 @@
                     if (willDelete.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "{!! route('kepalabagian.KegiatanMonitoring.apiDeleteDetailLaksana') !!}",
+                            url: "{!! route('kepalabagian.KegiatanMonitoring.apiDeleteLaksana') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
-                                id_laksana_kegiatan: getIdDetailLaksKegiatan()
+                                id_laksana_kegiatan: getIdLaksKegiatan()
                             }
                         }).done(function(res) {
                             Swal.fire({
@@ -708,12 +728,21 @@
             return id;
         }
 
-        function getIdDetailLaksKegiatan() {
+        function getIdLaksKegiatan() {
             let id = [];
-            $('.ckItemDetailLaksKegiatan:checked').each(function() {
+            $('.ckItemLaksKegiatan:checked').each(function() {
                 id.push($(this).val());
             });
             return id;
+        }
+
+        function modalUpdateDetailLaks(p1, p2, p3, p4, p5) {
+            $("#id_laksana_kegiatanupdateLaksKegiatanDetailMdl").val(p1);
+            $("#tahunupdateLaksKegiatanDetailMdl").val(p2);
+            $("#tgl_ajuanupdateLaksKegiatanDetailMdl").val(p3);
+            $("#waktu_pelaksanaanupdateLaksKegiatanDetailMdl").val(p4);
+            $("#waktu_selesaiupdateLaksKegiatanDetailMdl").val(p5);
+            $('#updateLaksKegiatanDetailMdl').modal('show');
         }
     </script>
 @endpush

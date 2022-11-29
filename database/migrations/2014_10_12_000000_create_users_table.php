@@ -12,6 +12,7 @@ return new class extends Migration
             $table->uuid('id_user')->primary();
             $table->foreignUuid('id_divisi');
             $table->string('full_name', 255);
+            $table->string('nik', 16)->nullable();
             $table->char('gender', 1);
             $table->string('username', 100)->unique();
             $table->string('password', 100);
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
             $table->dateTime('deleted_at')->nullable();
+            $table->dateTime('last_login')->nullable();
             $table->uuid('id_updater')->nullable();
         });
     }

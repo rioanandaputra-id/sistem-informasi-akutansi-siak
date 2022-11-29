@@ -23,6 +23,7 @@ class User extends Authenticatable
         'id_user',
         'id_divisi',
         'full_name',
+        'nik',
         'username',
         'password',
         'phone',
