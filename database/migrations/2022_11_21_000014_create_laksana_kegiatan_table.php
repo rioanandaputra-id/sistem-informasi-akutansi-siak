@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('laksana_kegiatan', function (Blueprint $table) {
             $table->uuid('id_laksana_kegiatan')->primary();
             $table->foreignUuid('id_kegiatan_divisi');
+            $table->integer('urutan_laksana_kegiatan');
             $table->dateTime('tgl_ajuan')->nullable();
             $table->char('a_verif_bend_kegiatan', 1)->nullable();
             $table->foreignUuid('id_verif_bend_kegiatan')->nullable();

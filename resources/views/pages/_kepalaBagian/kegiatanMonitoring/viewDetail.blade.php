@@ -149,7 +149,7 @@
                             <div class="row bg-success p-2 mb-4">
                                 <div class="col">
                                     <div class="float-left">
-                                        <b>DETAIL RENCANA ANGGARAN BIAYA KEGIATAN</b>
+                                        <b>RINCIAN RENCANA ANGGARAN BIAYA KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
                                         <button {{ $lockBtnDetailRba }} id="addDetailRba"
@@ -162,15 +162,15 @@
                                 </div>
                             </div>
                             <table class="table table-striped teble-bordered" id="tbDetailRba" style="width: 100%">
-                                <thead class="bg-success">
+                                <thead class="bg-info">
                                     <tr>
                                         <th><input type="checkbox" class="ckAllDetailRba"></th>
                                         <th>Akun</th>
                                         <th>Satuan</th>
-                                        <th>Indikator</th>
-                                        <th>Volume</th>
-                                        <th style="text-align:right">Tarif</th>
-                                        <th style="text-align:right">Total</th>
+                                        <th class="text-right">Indikator</th>
+                                        <th class="text-right">Volume</th>
+                                        <th class="text-right">Tarif</th>
+                                        <th class="text-right">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -180,28 +180,27 @@
                                     @foreach ($detailRba as $drba)
                                         <tr>
                                             <th><input class="ckItemDetailRba" type="checkbox"
-                                                    value="{{ $drba->id_detail_rba }}">
-                                            </th>
+                                                    value="{{ $drba->id_detail_rba }}"></th>
                                             <td><a href="javascript:">{{ $drba->no_akun }} - {{ $drba->nm_akun }}</a></td>
                                             <td>{{ $drba->satuan }}</td>
-                                            <td>{{ $drba->indikator }}</td>
-                                            <td>{{ $drba->vol }}</td>
-                                            <td style="text-align:right">
-                                                {{ number_to_currency_without_rp($drba->tarif, 0) }}</td>
-                                            <td style="text-align:right">
-                                                {{ number_to_currency_without_rp($drba->total, 0) }}</td>
+                                            <td class="text-right">{{ $drba->indikator }}</td>
+                                            <td class="text-right">{{ $drba->vol }}</td>
+                                            <td class="text-right">{{ number_to_currency_without_rp($drba->tarif, 0) }}
+                                            </td>
+                                            <td class="text-right">{{ number_to_currency_without_rp($drba->total, 0) }}
+                                            </td>
                                         </tr>
                                         @php
                                             $tbDetailRbaTotal += $drba->total;
                                         @endphp
                                     @endforeach
                                 </tbody>
-                                <tfoot class="bg-success">
+                                <tfoot class="bg-info">
                                     <tr>
                                         <th></th>
                                         <th colspan="5">Total</th>
-                                        <th style="text-align:right">
-                                            {{ number_to_currency_without_rp($tbDetailRbaTotal, 0) }}</th>
+                                        <th class="text-right">{{ number_to_currency_without_rp($tbDetailRbaTotal, 0) }}
+                                        </th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -210,7 +209,7 @@
                     <hr>
                     <div class="row mt-4">
                         <div class="col">
-                            <div class="row bg-purple p-2 mb-4">
+                            <div class="row bg-success p-2 mb-4">
                                 <div class="col">
                                     <div class="float-left">
                                         <b>PELAKSANAAN KEGIATAN</b>
@@ -226,12 +225,13 @@
                                 </div>
                             </div>
                             <table class="table table-striped teble-bordered" id="tbLaksKegiatan" style="width: 100%">
-                                <thead class="bg-purple">
+                                <thead class="bg-info">
                                     <tr>
                                         <th style="width: 5px;"><input type="checkbox" class="ckAllLaksKegiatan"></th>
+                                        <th>Urutan Pengajuan</th>
                                         <th>Status Verifikasi</th>
                                         <th>Waktu Pengajuan</th>
-                                        <th>Waktu Pelaksanaan</th>
+                                        <th class="text-center">Waktu Pelaksanaan</th>
                                         <th class="text-right">Total Anggaran</th>
                                     </tr>
                                 </thead>
@@ -243,14 +243,10 @@
                                         <tr>
                                             <td><input class="ckItemLaksKegiatan" type="checkbox"
                                                     value="{{ $lkgt->id_laksana_kegiatan }}"></td>
-                                            <td>{{ $lkgt->a_verif_bend_kegiatan }}</td>
-                                            <td>{{ tglWaktuIndonesia($lkgt->tgl_ajuan) ?? '-' }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <a href="javascript:" type="button" data-toggle="dropdown">
-                                                        {{ tglWaktuIndonesia($lkgt->waktu_pelaksanaan) }} <span
-                                                            class="ml-2 mr-2">-</span>
-                                                        {{ tglWaktuIndonesia($lkgt->waktu_selesai) }}
+                                                        Pengajuan Ke-{{ $lkgt->urutan_laksana_kegiatan }}
                                                     </a>
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item mb-2"
@@ -258,15 +254,21 @@
                                                             Laksana Kegiatan</a>
                                                         <a class="dropdown-item" href="javascript:"
                                                             onclick="modalUpdateDetailLaks(
-                                                            '{!! $lkgt->id_laksana_kegiatan !!}',
-                                                            '{!! $lkgt->tahun !!}',
-                                                            '{!! $lkgt->tgl_ajuan !!}',
-                                                            '{!! $lkgt->waktu_pelaksanaan !!}',
-                                                            '{!! $lkgt->waktu_selesai !!}',
-                                                        )">Ubah
+                                                                    '{!! $lkgt->id_laksana_kegiatan !!}',
+                                                                    '{!! $lkgt->tahun !!}',
+                                                                    '{!! $lkgt->tgl_ajuan !!}',
+                                                                    '{!! $lkgt->waktu_pelaksanaan !!}',
+                                                                    '{!! $lkgt->waktu_selesai !!}',
+                                                                )">Ubah
                                                             Data</a>
                                                     </div>
-                                                </div>
+                                            </td>
+                                            <td>{{ $lkgt->a_verif_bend_kegiatan }}</td>
+                                            <td>{{ tglWaktuIndonesia($lkgt->tgl_ajuan) ?? '-' }}</td>
+                                            <td class="text-center">
+                                                {{ tglWaktuIndonesia($lkgt->waktu_pelaksanaan) }} <span
+                                                    class="ml-2 mr-2">-</span>
+                                                {{ tglWaktuIndonesia($lkgt->waktu_selesai) }}
                                             </td>
                                             <td class="text-right">
                                                 {{ number_to_currency_without_rp($lkgt->total_anggaran, 0) }}</td>
@@ -278,11 +280,11 @@
                                         @endphp
                                     @endforeach
                                 </tbody>
-                                <tfoot class="bg-purple">
+                                <tfoot class="bg-info">
                                     <tr>
                                         <th></th>
-                                        <th colspan="3">Total</th>
-                                        <th style="text-align:right">
+                                        <th colspan="4">Total</th>
+                                        <th class="text-right">
                                             {{ number_to_currency_without_rp($tbLaksKegiatanTotal, 0) }}</th>
                                     </tr>
                                 </tfoot>
@@ -408,8 +410,7 @@
                             <div class="col">
                                 <input type="hidden" id="id_laksana_kegiatanupdateLaksKegiatanDetailMdl">
                                 <label for="tahunupdateLaksKegiatanDetailMdl">Tahun: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control"
-                                    id="tahunupdateLaksKegiatanDetailMdl">
+                                <input type="number" class="form-control" id="tahunupdateLaksKegiatanDetailMdl">
                             </div>
                         </div>
                         <div class="row mb-2">

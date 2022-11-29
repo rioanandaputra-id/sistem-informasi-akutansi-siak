@@ -18,6 +18,7 @@ class LaksanaKegiatan extends Model
         'id_laksana_kegiatan',
         'id_kegiatan_divisi',
         'tgl_ajuan',
+        'urutan_laksana_kegiatan',
         'a_verif_bend_kegiatan',
         'id_verif_bend_kegiatan',
         'tgl_verif_bend_kegiatan',
