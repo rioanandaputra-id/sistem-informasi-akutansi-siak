@@ -264,7 +264,7 @@
                                                         <a class="dropdown-item mb-2"
                                                             href="{{ route('kepalabagian.KegiatanMonitoring.viewGetAllLaksanaDetail') }}?id_laksana_kegiatan={{ $lkgt->id_laksana_kegiatan }}">Detail
                                                             Pelaksanaan Kegiatan</a>
-                                                        @if (str_contains($lkgt->a_verif_kabag_keuangan, 'Belum'))
+                                                        @if ($lkgt->tgl_ajuan == null)
                                                         <a class="dropdown-item" href="javascript:"
                                                             onclick="modalUpdateDetailLaks(
                                                                     '{!! $lkgt->id_laksana_kegiatan !!}',

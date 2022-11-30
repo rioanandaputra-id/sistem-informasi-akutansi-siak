@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('bku', function (Blueprint $table) {
             $table->uuid('id_bku')->primary();
-            $table->foreignUuid('id_bagian');
+            $table->foreignUuid('id_divisi');
             $table->foreignUuid('id_laksana_kegiatan');
             $table->dateTime('tanggal');
-            $table->foreignUuid('id_akun');
+            $table->foreignUuid('id_akun')->nullable();
             $table->double('masuk')->nullable();
             $table->double('keluar')->nullable();
             $table->double('saldo');

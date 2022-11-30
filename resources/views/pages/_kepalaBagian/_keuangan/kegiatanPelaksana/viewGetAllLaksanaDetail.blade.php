@@ -3,6 +3,9 @@
 @endsection
 
 @section('content')
+@php
+    $lockedBtn = '';
+@endphp
     <div class="row">
         <div class="col">
             <div class="card card-info">
@@ -29,10 +32,16 @@
                                         <button onclick="history.back()" class="btn btn-sm noborder btn-light"><i
                                                 class="fas fa-chevron-circle-left"></i>
                                             Kembali</button>
+                                        <button id="verif" class="btn btn-sm noborder btn-light ml-2"><i
+                                                class="fas fa-sign-in-alt"></i>
+                                            Verifikasi</button>
                                     </div>
                                 </div>
                             </div>
                             @foreach ($kegiatan as $kgt)
+                            @php
+                                $lockedBtn = $kgt->tgl_verif_kabag_keuangan != null ? 'disabled' : '';
+                            @endphp
                                 <table class="mb-3">
                                     <tbody>
                                         <tr>
@@ -85,7 +94,7 @@
                                         <tr>
                                             <td>Status Verifikasi</td>
                                             <td>:</td>
-                                            <td>{!!status_verification_color($kgt->a_verif_kabag_keuangan) ?? '-' !!}</td>
+                                            <td>{!! status_verification_color($kgt->a_verif_kabag_keuangan) !!}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu Verifikasi</td>
@@ -149,10 +158,95 @@
             </div>
         </div>
     </div>
+
+    <div id="VerifMdl" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Verifikasi Kegiatan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formVerifMdl">
+                        <select id="a_verif_kabag_keuanganVerifMdl" class="form-control mb-2">
+                            <option value="">-- Verifikasi --</option>
+                            <option value="2">Disetujui</option>
+                            <option value="3">Ditolak</option>
+                        </select>
+                        <textarea id="catatanVerifMdl" cols="30" rows="10" class="form-control" placeholder="Catataan.."></textarea>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnVerifMdl" class="btn btn-primary">Verifikasi</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 
 @push('css')
+    <link rel="stylesheet" href="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.css') }}">
 @endpush
 @push('js')
+    <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            if ("{!! $lockedBtn !!}" == 'disabled') {
+                $('#verif').prop("disabled", true);
+            }
+
+            $("#verif").click(function() {
+                $('#VerifMdl').modal('show');
+            });
+
+            $("#btnVerifMdl").click(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('kepalabagian.KegiatanPelaksana.apiUpdate') }}",
+                    data: {
+                        _token: "{!! csrf_token() !!}",
+                        id_laksana_kegiatan: ["{!! request()->get('id_laksana_kegiatan') !!}"],
+                        a_verif_kabag_keuangan: $('#a_verif_kabag_keuanganVerifMdl').val(),
+                        catatan: $('#catatanVerifMdl').val(),
+                    },
+                    beforeSend: function() {
+                        $(this).prop("disabled", true);
+                    },
+                }).done(function(res) {
+                    if (res.status) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Verifikasi Pelaksanaan Kegiatan Berhasil',
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Verifikasi Pelaksanaan Kegiatan Gagal',
+                            showConfirmButton: true,
+                        });
+                        console.log(res);
+                        $(this).prop("disabled", false);
+                    }
+                }).fail(function(res) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Verifikasi Pelaksanaan Kegiatan Gagal',
+                        showConfirmButton: true,
+                    });
+                    console.log(res);
+                    $(this).prop("disabled", false);
+                });
+            });
+        });
+    </script>
 @endpush

@@ -14,15 +14,18 @@ use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegi
 use App\Http\Controllers\TimRba\KegiatanMonitoringController as TimRbaKegiatanMonitoringController;
 use App\Http\Controllers\KepalaBagian\KegiatanController as KepalaBagianKegiatanController;
 use App\Http\Controllers\KepalaBagian\KegiatanMonitoringController as KepalaBagianKegiatanMonitoringController;
+use App\Http\Controllers\KepalaBagian\Keuangan\KegiatanPelaksanaanController AS KepalaBagianKegiatanPelaksanaanController;
 use App\Http\Controllers\KepalaBagian\ManajemenKeuangan;
 use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
 
 Auth::routes();
+Auth::routes(['verify' => true]);
 Route::get('/', function () {
     return view('auth.login');
 });
-Route::middleware('auth')->group(function () {
-    Route::controller(DashboardController::class)->prefix('dashboard')->group(function () {
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'dashboard')->name('dashboard');
     });
     // =====================================KEPALA UUD========================================
@@ -144,6 +147,13 @@ Route::middleware('auth')->group(function () {
         Route::post('apiUpdateDetailLaksana', 'apiUpdateDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiUpdateDetailLaksana');
         Route::post('apiDeleteDetailLaksana', 'apiDeleteDetailLaksana')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailLaksana');
         Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('kepalabagian.KegiatanMonitoring.viewGetAllLaksanaDetail');
+    });
+    Route::controller(KepalaBagianKegiatanPelaksanaanController::class)->prefix('kepalabagian/KegiatanPelaksana')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.KegiatanPelaksana.apiGetAll');
+        Route::post('apiCreate', 'apiCreate')->name('kepalabagian.KegiatanPelaksana.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalabagian.KegiatanPelaksana.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.KegiatanPelaksana.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('kepalabagian.KegiatanPelaksana.viewDetail');
     });
     // =====================================KEPALA KEUANGAN========================================
     Route::controller(ManajemenKeuangan::class)->prefix('kepalabagian/ManajemenKeuangan')->group(function () {

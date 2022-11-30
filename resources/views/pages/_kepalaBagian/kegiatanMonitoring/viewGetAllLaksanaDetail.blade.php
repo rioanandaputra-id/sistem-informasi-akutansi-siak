@@ -94,12 +94,12 @@
                                         <tr>
                                             <td>Status Verifikasi</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->a_verif_kabag_keuangan ?? '-' }}</td>
+                                            <td>{!!status_verification_color($kgt->a_verif_kabag_keuangan) ?? '-' !!}</td>
                                         </tr>
                                         <tr>
                                             <td>Waktu Verifikasi</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->tgl_verif_kabag_keuangan ?? '-' }}</td>
+                                            <td>{{ tglWaktuIndonesia($kgt->tgl_verif_kabag_keuangan) ?? '-' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Catatan Verifikasi</td>

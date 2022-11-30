@@ -124,9 +124,9 @@
                 @endcan
                 @can('kepalabagian')
                     <li
-                        class="nav-item {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' ? 'menu-open' : '' }}">
+                        class="nav-item {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' || $info['site_active'] == 'KegiatanPelaksana' ? 'menu-open' : '' }}">
                         <a href="#"
-                            class="nav-link {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' ? 'active' : '' }}">
+                            class="nav-link {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' || $info['site_active'] == 'KegiatanPelaksana' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>
                                 Kegiatan
@@ -150,7 +150,7 @@
                             </li>
                             @if (Auth::user()->id_divisi == 'f270590c-78f2-4980-be9a-edf0becc3f4f')
                             <li class="nav-item">
-                                <a href="#"
+                                <a href="{{ route('kepalabagian.KegiatanPelaksana.viewGetAll') }}"
                                     class="nav-link {{ $info['site_active'] == 'KegiatanPelaksana' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Pelaksanaan Kegiatan</p>
