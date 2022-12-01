@@ -15,6 +15,7 @@ class Spj extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
+        'id_spj',
         'id_laksana_kegiatan',
         'a_verif_bendahara_pengeluaran',
         'id_verif_bendahara_pengeluaran',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\KepalaBagian\Keuangan;
 use App\Http\Controllers\Controller;
 use App\Models\Bku;
 use App\Models\LaksanaKegiatan;
+use App\Models\Spj;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables as DaTables;
@@ -25,6 +26,8 @@ class KegiatanPelaksanaanController extends Controller
     public function apiGetAll()
     {
         $a_verif_kabag_keuangan = ($this->request->a_verif_kabag_keuangan) ? " AND  lkgt.a_verif_kabag_keuangan = '" . $this->request->a_verif_kabag_keuangan . "'" : "";
+        $id_kegiatan = ($this->request->id_kegiatan) ? " AND  kgt.id_kegiatan = '" . $this->request->id_kegiatan . "'" : "";
+        $id_divisi = ($this->request->id_divisi) ? " AND  div.id_divisi = '" . $this->request->id_divisi . "'" : "";
         $apiGetAll = DB::select("
             SELECT
                 lkgt.id_laksana_kegiatan,
@@ -58,6 +61,8 @@ class KegiatanPelaksanaanController extends Controller
                 lkgt.deleted_at IS NULL
                 AND lkgt.tgl_ajuan IS NOT NULL
                 " . $a_verif_kabag_keuangan . "
+                " . $id_kegiatan . "
+                " . $id_divisi . "
             ORDER BY
                 div.nm_divisi, lkgt.tgl_ajuan ASC
         ");
@@ -118,13 +123,27 @@ class KegiatanPelaksanaanController extends Controller
                     kdiv.id_divisi,
                     (
                         SELECT
-                            SUM(dkgt.total)
+                            SUM(dlkgt.total)
                         FROM
-                            detail_laksana_kegiatan AS dkgt
+                            detail_laksana_kegiatan AS dlkgt
+                            JOIN laksana_kegiatan AS llkgt ON dlkgt.id_laksana_kegiatan = llkgt.id_laksana_kegiatan
+                            AND llkgt.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                            AND llkgt.deleted_at IS NULL
                         WHERE
-                            dkgt.deleted_at IS NULL
-                            AND dkgt.id_laksana_kegiatan = lkgt.id_laksana_kegiatan
-                    ) AS total_anggaran_diajukan
+                            dlkgt.deleted_at IS NULL
+                    ) AS total_anggaran_terpakai,
+                    (
+                        SELECT
+                            SUM(drba.total)
+                        FROM
+                            rba AS rba
+                            JOIN detail_rba AS drba ON drba.id_rba = rba.id_rba
+                            AND drba.deleted_at IS NULL
+                        WHERE
+                            rba.deleted_at IS NULL
+                            AND rba.a_verif_wilayah = '2'
+                            AND rba.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                    ) AS total_anggaran_tersedia
                 FROM
                     laksana_kegiatan AS lkgt
                     JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
@@ -140,9 +159,16 @@ class KegiatanPelaksanaanController extends Controller
                     'id_divisi' => $lk->id_divisi,
                     'id_laksana_kegiatan' => $lk->id_laksana_kegiatan,
                     'tanggal' => $lk->tgl_verif_kabag_keuangan,
-                    'masuk' => $lk->total_anggaran_diajukan,
+                    'masuk' => $lk->total_anggaran_tersedia,
                     'keluar' => 0,
-                    'saldo' => $lk->total_anggaran_diajukan,
+                    'saldo' => $lk->total_anggaran_terpakai,
+                    'created_at' => $updated_at,
+                    'id_updater' => $id_updater,
+                ]);
+
+                Spj::create([
+                    'id_spj' => guid(),
+                    'id_laksana_kegiatan' => $lk->id_laksana_kegiatan,
                     'created_at' => $updated_at,
                     'id_updater' => $id_updater,
                 ]);
@@ -185,7 +211,31 @@ class KegiatanPelaksanaanController extends Controller
             'title' => 'Pelaksanaan Kegiatan',
             'site_active' => 'KegiatanPelaksana',
         ];
-        return view('pages._kepalaBagian._keuangan.kegiatanPelaksana.viewGetAll', compact('info'));
+        $kegiatan = DB::select("
+            SELECT
+                kgt.id_kegiatan,
+                kgt.nm_kegiatan
+            FROM
+                kegiatan AS kgt
+            WHERE
+                kgt.deleted_at IS NULL
+                AND kgt.a_aktif = '1'
+            ORDER BY
+                kgt.nm_kegiatan ASC
+        ");
+        $divisi = DB::select("
+            SELECT
+                div.id_divisi,
+                div.nm_divisi
+            FROM
+                divisi AS div
+            WHERE
+                div.deleted_at IS NULL
+                AND div.id_divisi != 'da138a9a-23ed-4941-932d-d1a457db0cdf'
+            ORDER BY
+                div.nm_divisi ASC
+        ");
+        return view('pages._kepalaBagian._keuangan.kegiatanPelaksana.viewGetAll', compact('info', 'kegiatan', 'divisi'));
     }
 
     public function viewDetail()

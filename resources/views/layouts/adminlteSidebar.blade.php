@@ -259,13 +259,6 @@
                 @endcan
                 @can('bendkegiatan')
                     <li class="nav-item">
-                        <a href="#"
-                            class="nav-link {{ $info['site_active'] == 'Verifikasi Kegiatan' ? 'active' : '' }}">
-                            <i class="nav-icon fas fa-list"></i>
-                            <p>Verifikasi Kegiatan</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a href="#" class="nav-link {{ $info['site_active'] == 'SPJ' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>SPJ</p>

@@ -653,6 +653,7 @@ class KegiatanMonitoringController extends Controller
 
             $this->mLaksanaKegiatan->where('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
                 'tgl_ajuan' => $type_request == 'ajuan' ? now() : DB::raw('tgl_ajuan'),
+                'a_verif_kabag_keuangan' => $type_request == 'ajuan' ? '1' : DB::raw('a_verif_kabag_keuangan'),
                 'waktu_pelaksanaan' => $waktu_pelaksanaan ?? DB::raw('waktu_pelaksanaan'),
                 'waktu_selesai' => $waktu_selesai ?? DB::raw('waktu_selesai'),
                 'tahun' => $tahun ?? DB::raw('tahun'),
