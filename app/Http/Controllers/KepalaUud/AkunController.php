@@ -283,7 +283,6 @@ class AkunController extends Controller
                 akun AS akn
             WHERE
                 akn.deleted_at IS NULL
-                AND akn.no_akun_induk = '' OR akn.no_akun_induk IS NULL
             ORDER BY akn.no_akun ASC
         ");
         return view('pages._kepalaUud.akun.viewCreate', compact('info', 'noInduk'));
@@ -304,7 +303,6 @@ class AkunController extends Controller
                 akun AS akn
             WHERE
                 akn.deleted_at IS NULL
-                AND akn.no_akun_induk = '' OR akn.no_akun_induk IS NULL
             ORDER BY akn.no_akun ASC
         ");
         $akun = $this->apiGetById()['response'];

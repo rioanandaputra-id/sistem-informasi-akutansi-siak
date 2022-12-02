@@ -114,8 +114,8 @@
                         title: 'Kegiatan',
                     },
                     {
-                        data: 'a_aktif',
-                        name: 'a_aktif',
+                        data: 'verifikator',
+                        name: 'verifikator',
                         title: 'Status',
                     }
                 ]

@@ -33,19 +33,32 @@ class ManajemenKeuangan extends Controller
     public function perencanaanApiGetAll()
     {
         try {
-            $id_misi = " AND  prog.id_misi = '".$this->request->misi."'";
+            $id_misi = " AND kdiv.id_divisi = '".Auth::user()->id_divisi."' AND prog.id_misi = '".$this->request->misi."' ";
             $apiGetAll = DB::select("
                 SELECT
                     kgt.id_kegiatan,
                     kgt.nm_kegiatan,
                     CASE
                         WHEN kgt.a_aktif = '1' THEN
-                        'Aktif' ELSE'Non Aktif'
-                    END AS a_aktif
+                        'Aktif' ELSE 'Non Aktif'
+                    END AS a_aktif,
+                    CASE
+                        WHEN verif.a_verif_kepala_uud = '1' THEN 'Menunggu Verifikator UDD'
+                        WHEN verif.a_verif_wilayah = '1' THEN 'Menunggu Verifikator Wilayah'
+                        ELSE 'Terverifikasi untuk dilaksanakan'
+                    END AS verifikator
                 FROM
                     kegiatan AS kgt
                 JOIN
                     program AS prog ON prog.id_program=kgt.id_program
+                JOIN
+                    kegiatan_divisi AS kdiv ON kdiv.id_kegiatan=kgt.id_kegiatan
+                LEFT JOIN (
+                    SELECT
+                        id_kegiatan_divisi, a_verif_rba AS a_verif_kepala_uud, a_verif_wilayah
+                    FROM
+                        rba
+                ) AS verif ON verif.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
                 WHERE
                     kgt.a_aktif = '1' AND prog.a_aktif = '1'
                     ".$id_misi."
@@ -80,8 +93,7 @@ class ManajemenKeuangan extends Controller
             'title' => 'Penganggaran',
             'site_active' => 'Penganggaran',
             'kegiatan' => [
-                'Program',
-                'Rutin'
+                'Program'
             ]
         ];
         $akun = \App\Models\Akun::where('no_akun_induk', 5)->orderBy('no_akun')->get();
@@ -94,9 +106,12 @@ class ManajemenKeuangan extends Controller
             if($this->request->program == "Program") {
                 $apiGetAll = DB::select("
                     SELECT
+                        kdiv.id_kegiatan_divisi,
                         kgt.id_kegiatan,
                         kgt.nm_kegiatan,
+                        prog.nm_program,
                         dvs.nm_divisi,
+                        rba.total AS total_anggaran,
                         CASE
                             WHEN kgt.a_aktif = '1' THEN
                             'Aktif' ELSE'Non Aktif'
@@ -106,11 +121,23 @@ class ManajemenKeuangan extends Controller
                     JOIN
                         program AS prog ON prog.id_program=kgt.id_program
                     JOIN
-                        kegiatan_divisi AS kgt_dvs ON kgt_dvs.id_kegiatan=kgt.id_kegiatan
+                        kegiatan_divisi AS kdiv ON kdiv.id_kegiatan=kgt.id_kegiatan
                     JOIN
-                        divisi AS dvs ON dvs.id_divisi=kgt_dvs.id_divisi
+                        divisi AS dvs ON dvs.id_divisi=kdiv.id_divisi
+                    LEFT JOIN (
+                        SELECT
+                            rba.id_kegiatan_divisi, rba.a_verif_wilayah, SUM(detrba.total) AS total
+                        FROM
+                            rba
+                        JOIN
+                            detail_rba AS detrba ON detrba.id_rba=rba.id_rba
+                        WHERE
+                            detrba.deleted_at IS NULL
+                        GROUP BY
+                            rba.id_kegiatan_divisi, rba.a_verif_wilayah
+                    ) AS rba ON rba.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
                     WHERE
-                        kgt.a_aktif = '1' AND prog.periode = '".$this->request->tahun."'
+                        kdiv.id_divisi = '".Auth::user()->id_divisi."' AND kgt.a_aktif = '1' AND prog.periode = '".$this->request->tahun."' AND rba.a_verif_wilayah = '2'
                     ORDER BY
                         kgt.created_at ASC
                 ");

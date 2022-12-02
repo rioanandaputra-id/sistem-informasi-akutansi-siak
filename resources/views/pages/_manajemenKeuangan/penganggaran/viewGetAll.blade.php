@@ -28,7 +28,7 @@
                                         @endfor
                                     </select>
                                     <select class="form-control" id="program">
-                                        <option value="-" selected disabled>Pilih</option>
+                                        <option value="-" selected>Pilih</option>
                                         @foreach ($info['kegiatan'] as $kgt)
                                         <option value="{{ $kgt }}">
                                             {{ $kgt }}
@@ -214,19 +214,26 @@
                         render: function(data, type, row) {
                             return `<input type="checkbox" class="ckItem" value="${data}" />`;
                         }
-                    }, {
+                    },
+                    {
                         data: 'nm_kegiatan',
                         name: 'nm_kegiatan',
                         title: 'Kegiatan',
-                    }, {
+                        render: function(data, type, row, meta) {
+                            return `<a href="{!! route('kepalabagian.KegiatanMonitoring.viewDetail') !!}?id_kegiatan_divisi=${row.id_kegiatan_divisi}">${data}</a>`;
+                        }
+                    },
+                    {
                         data: 'nm_divisi',
                         name: 'nm_divisi',
                         title: 'Bagian',
                     },
                     {
-                        data: 'a_aktif',
-                        name: 'a_aktif',
-                        title: 'Status',
+                        data: 'total_anggaran',
+                        name: 'total_anggaran',
+                        title: 'Total Anggaran',
+                        className: 'dt-right',
+                        render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
                     }
                 ]
             });

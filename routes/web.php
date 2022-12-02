@@ -161,8 +161,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('perencanaan/apiGetAll', 'perencanaanApiGetAll')->name('kepalabagian.ManajemenKeuangan.perencanaan.apiGetAll');
         Route::get('perencanaan/viewGetAll', 'perencanaanViewGetAll')->name('kepalabagian.ManajemenKeuangan.perencanaan.viewGetAll');
         // PENGANGGARAN
-        Route::get('penganggaran/apiGetAll', 'penganggaranApiGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaran.apiGetAll');
-        Route::post('penganggaran/apiUpdate', 'penganggaranApiUpdate')->name('kepalabagian.ManajemenKeuangan.penganggaran.apiUpdate');
         Route::get('penganggaran/viewGetAll', 'penganggaranViewGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaran.viewGetAll');
+        Route::get('penganggaran/apiGetAll', 'penganggaranApiGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaran.apiGetAll');
+        Route::get('penganggaran/viewDetail', 'penganggaranViewDetail')->name('kepalabagian.ManajemenKeuangan.penganggaran.viewDetail');
+        Route::post('penganggaran/apiUpdate', 'penganggaranApiUpdate')->name('kepalabagian.ManajemenKeuangan.penganggaran.apiUpdate');
     });
 });
