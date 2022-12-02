@@ -22,15 +22,10 @@
                         <div class="col">
                             <div class="float-left">
                                 <div class="input-group">
-                                    <select id="status" class="form-control">
-                                        <option value="1">Belum Diverifikasi</option>
-                                        <option value="2">Disetujui</option>
-                                        <option value="3">Ditolak</option>
-                                    </select>
-                                    <button id="refresh" type="button" class="btn btn-info noborder ml-2">
+                                    <button id="refresh" type="button" class="btn btn-info noborder">
                                         <i class="fas fa-sync"></i> Refresh
                                     </button>
-                                    <button id="verif" type="button" class="btn btn-info noborder ml-2">
+                                    <button disabled id="verif" type="button" class="btn btn-info noborder ml-2">
                                         <i class="fas fa-sign-in-alt"></i> Verifikasi
                                     </button>
                                 </div>
@@ -38,6 +33,33 @@
                             <div class="float-right text-bold">
                                 <b>Daftar Kegiatan</b>
                             </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <select id="status" class="form-control filter">
+                                <option value="">-- Status --</option>
+                                <option value="1">Belum Diverifikasi</option>
+                                <option value="2">Disetujui</option>
+                                <option value="3">Ditolak</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id="divisi" class="form-control filter">
+                                <option value="">-- Divisi --</option>
+                                @foreach ($divisi as $div)
+                                    <option value="{{ $div->id_divisi }}">{{ $div->nm_divisi }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id="kegiatan" class="form-control filter">
+                                <option value="">-- Kegiatan --</option>
+                                @foreach ($kegiatan as $kgt)
+                                    <option value="{{ $kgt->id_kegiatan }}">{{ $kgt->nm_kegiatan }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <hr>
@@ -110,11 +132,11 @@
                 $('#tbkegiatandivisi').DataTable().ajax.reload();
             });
 
-            $('#status').on('change', function() {
-                if($(this).val() != 1){
-                    $('#verif').prop("disabled", true);
-                } else {
+            $('.filter').on('change', function() {
+                if ($(this).val() == 1) {
                     $('#verif').prop("disabled", false);
+                } else {
+                    $('#verif').prop("disabled", true);
                 }
                 $('#tbkegiatandivisi').DataTable().clear().destroy();
                 tbkegiatandivisi();
@@ -192,7 +214,9 @@
                     url: '{{ route('kepalauud.kegiatanMonitoring.apiGetAll') }}',
                     type: 'GET',
                     data: {
-                        rba_a_verif_rba: $('#status').val()
+                        rba_a_verif_rba: $('#status').val(),
+                        id_kegiatan: $('#kegiatan').val(),
+                        id_divisi: $('#divisi').val(),
                     },
                 },
                 columns: [{

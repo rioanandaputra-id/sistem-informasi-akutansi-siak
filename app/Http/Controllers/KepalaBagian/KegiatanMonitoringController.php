@@ -856,9 +856,11 @@ class KegiatanMonitoringController extends Controller
                 akn.nm_akun
             FROM
                 laksana_kegiatan AS lkgt
+                JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+                AND kdiv.deleted_at IS NULL
                 JOIN rba AS rba ON rba.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
                 AND rba.deleted_at IS NULL
-                JOIN detail_rba AS drba ON drba.id_rba = drba.id_rba
+                JOIN detail_rba AS drba ON drba.id_rba = rba.id_rba
                 AND drba.deleted_at IS NULL
                 JOIN akun AS akn ON akn.id_akun = drba.id_akun
                 AND akn.deleted_at IS NULL

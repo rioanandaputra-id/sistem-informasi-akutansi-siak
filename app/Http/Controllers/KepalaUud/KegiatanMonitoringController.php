@@ -26,6 +26,8 @@ class KegiatanMonitoringController extends Controller
     public function apiGetAll()
     {
         $rba_a_verif_rba = ($this->request->rba_a_verif_rba) ? " AND  rba.a_verif_rba = '".$this->request->rba_a_verif_rba."'" : "";
+        $id_kegiatan = ($this->request->id_kegiatan) ? " AND  kgt.id_kegiatan = '" . $this->request->id_kegiatan . "'" : "";
+        $id_divisi = ($this->request->id_divisi) ? " AND  div.id_divisi = '" . $this->request->id_divisi . "'" : "";
         $apiGetAll = DB::select("
             SELECT
                 kdiv.id_kegiatan_divisi,
@@ -81,6 +83,8 @@ class KegiatanMonitoringController extends Controller
                 AND rba.tgl_submit IS NOT NULL
                 AND kdiv.a_verif_rba = '2'
                 ".$rba_a_verif_rba."
+                " . $id_kegiatan . "
+                " . $id_divisi . "
         ");
         return DaTables::of($apiGetAll)->make(true);
     }
@@ -220,7 +224,31 @@ class KegiatanMonitoringController extends Controller
             'title' => 'Monitoring Kegiatan',
             'site_active' => 'MonitoringKegiatan',
         ];
-        return view('pages._kepalaUud.kegiatanMonitoring.viewGetAll', compact('info'));
+        $kegiatan = DB::select("
+            SELECT
+                kgt.id_kegiatan,
+                kgt.nm_kegiatan
+            FROM
+                kegiatan AS kgt
+            WHERE
+                kgt.deleted_at IS NULL
+                AND kgt.a_aktif = '1'
+            ORDER BY
+                kgt.nm_kegiatan ASC
+        ");
+        $divisi = DB::select("
+            SELECT
+                div.id_divisi,
+                div.nm_divisi
+            FROM
+                divisi AS div
+            WHERE
+                div.deleted_at IS NULL
+                AND div.id_divisi != 'da138a9a-23ed-4941-932d-d1a457db0cdf'
+            ORDER BY
+                div.nm_divisi ASC
+        ");
+        return view('pages._kepalaUud.kegiatanMonitoring.viewGetAll', compact('info', 'kegiatan', 'divisi'));
     }
 
     public function viewDetail()

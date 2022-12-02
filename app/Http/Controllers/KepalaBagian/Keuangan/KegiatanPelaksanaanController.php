@@ -159,7 +159,7 @@ class KegiatanPelaksanaanController extends Controller
                     'id_divisi' => $lk->id_divisi,
                     'id_laksana_kegiatan' => $lk->id_laksana_kegiatan,
                     'tanggal' => $lk->tgl_verif_kabag_keuangan,
-                    'masuk' => $lk->total_anggaran_tersedia,
+                    'masuk' => $lk->total_anggaran_terpakai,
                     'keluar' => 0,
                     'saldo' => $lk->total_anggaran_terpakai,
                     'created_at' => $updated_at,

@@ -24,12 +24,12 @@
                                 <button id="refresh" type="button" class="btn btn-info noborder">
                                     <i class="fas fa-sync"></i> Refresh
                                 </button>
-                                <button id="verif" type="button" class="btn btn-info noborder ml-2">
+                                <button disabled id="verif" type="button" class="btn btn-info noborder ml-2">
                                     <i class="fas fa-sign-in-alt"></i> Verifikasi
                                 </button>
                             </div>
                             <div class="float-right text-bold">
-                                <span>Daftar Kegiatan Pelaksana</span>
+                                <span>Daftar Kegiatan</span>
                             </div>
                         </div>
                     </div>
@@ -44,18 +44,18 @@
                             </select>
                         </div>
                         <div class="col">
-                            <select id="kegiatan" class="form-control filter">
-                                <option value="">-- Kegiatan --</option>
-                                @foreach ($kegiatan as $kgt)
-                                    <option value="{{ $kgt->id_kegiatan }}">{{ $kgt->nm_kegiatan }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col">
                             <select id="divisi" class="form-control filter">
                                 <option value="">-- Divisi --</option>
                                 @foreach ($divisi as $div)
                                     <option value="{{ $div->id_divisi }}">{{ $div->nm_divisi }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select id="kegiatan" class="form-control filter">
+                                <option value="">-- Kegiatan --</option>
+                                @foreach ($kegiatan as $kgt)
+                                    <option value="{{ $kgt->id_kegiatan }}">{{ $kgt->nm_kegiatan }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -131,10 +131,10 @@
             });
 
             $('.filter').on('change', function() {
-                if ($(this).val() != 1) {
-                    $('#verif').prop("disabled", true);
-                } else {
+                if ($(this).val() == 1) {
                     $('#verif').prop("disabled", false);
+                } else {
+                    $('#verif').prop("disabled", true);
                 }
                 $('#tbkegiatandivisi').DataTable().clear().destroy();
                 tbkegiatandivisi();
