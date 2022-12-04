@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\KepalaBagian;
+namespace App\Http\Controllers\BendaharaKegiatan;
 
 use App\Http\Controllers\Controller;
 
@@ -12,6 +12,6 @@ class KegiatanController extends Controller
             'title' => 'Dashboard',
             'site_active' => 'Dashboard',
         ];
-        return view('pages._kepalaBagian.dashboard.dashboard', compact('info'));
+        return view('pages._bendaharaKegiatan.dashboard.dashboard', compact('info'));
     }
 }

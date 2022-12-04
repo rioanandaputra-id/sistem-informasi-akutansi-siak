@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\KepalaUud\AkunController as KepalaUudAkunController;
 use App\Http\Controllers\KepalaUud\DivisiController as KepalaUudDivisiController;
 use App\Http\Controllers\KepalaUud\ManAksesController as KepalaUudManAksesController;
@@ -11,11 +12,14 @@ use App\Http\Controllers\KepalaUud\KegiatanController as KepalaUudKegiatanContro
 use App\Http\Controllers\KepalaUud\MisiController as KepalaUudMisiController;
 use App\Http\Controllers\KepalaUud\ProgramController as KepalaUudProgramController;
 use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegiatanMonitoringController;
-use App\Http\Controllers\TimRba\KegiatanMonitoringController as TimRbaKegiatanMonitoringController;
+
 use App\Http\Controllers\KepalaBagian\KegiatanController as KepalaBagianKegiatanController;
 use App\Http\Controllers\KepalaBagian\KegiatanMonitoringController as KepalaBagianKegiatanMonitoringController;
 use App\Http\Controllers\KepalaBagian\Keuangan\KegiatanPelaksanaanController AS KepalaBagianKegiatanPelaksanaanController;
+use App\Http\Controllers\KepalaBagian\BkuMonitoringController as KepalaBagianBkuMonitoringController;
 use App\Http\Controllers\KepalaBagian\ManajemenKeuangan;
+
+use App\Http\Controllers\TimRba\KegiatanMonitoringController as TimRbaKegiatanMonitoringController;
 use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
 
 Auth::routes();
@@ -154,6 +158,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('apiUpdate', 'apiUpdate')->name('kepalabagian.KegiatanPelaksana.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.KegiatanPelaksana.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('kepalabagian.KegiatanPelaksana.viewDetail');
+    });
+    Route::controller(KepalaBagianBkuMonitoringController::class)->prefix('kepalabagian/BkuMonitoring')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.BkuMonitoring.apiGetAll');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.BkuMonitoring.viewGetAll');
     });
     // =====================================KEPALA KEUANGAN========================================
     Route::controller(ManajemenKeuangan::class)->prefix('kepalabagian/ManajemenKeuangan')->group(function () {

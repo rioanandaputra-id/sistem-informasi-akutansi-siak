@@ -160,12 +160,12 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ $info['site_active'] == 'Monitoring BKU' ? 'active' : '' }}">
+                        <a href="{{ route('kepalabagian.BkuMonitoring.viewGetAll') }}" class="nav-link {{ $info['site_active'] == 'MonitoringBKU' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>Monitoring BKU</p>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item {{ $info['site_active'] == 'Manajemen Keuangan' || $info['site_active'] == 'ManajemenKeuangan' ? 'menu-open' : '' }}">
                         <a href="#"
                             class="nav-link {{ $info['site_active'] == 'Manajemen Keuangan' || $info['site_active'] == 'ManajemenKeuangan' ? 'active' : '' }}">

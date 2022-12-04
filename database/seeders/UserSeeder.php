@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
             [
                 'id_user' => '0c289cce-4442-4c93-8923-b9c816dd17ed',
@@ -35,6 +36,7 @@ class UserSeeder extends Seeder
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
             [
                 'id_user' => 'c640133b-a0ce-408f-a563-31405371ecf1',
@@ -48,20 +50,22 @@ class UserSeeder extends Seeder
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
             // ==================BAGIAN KEUANGAN====================
             [
                 'id_user' => 'f0bc8307-0005-47d3-9e60-bdeca5c5dc07',
                 'id_divisi' => 'f270590c-78f2-4980-be9a-edf0becc3f4f',
-                'email' => 'kepalabagiankeauangan@siak.com',
-                'username' => 'kepalabagiankeauangan',
-                'password' => bcrypt('kepalabagiankeauangan'),
+                'email' => 'kepalabagiankeuangan@siak.com',
+                'username' => 'kepalabagiankeuangan',
+                'password' => bcrypt('kepalabagiankeuangan'),
                 'full_name' => 'Kepala Bagian',
                 'nik' => rand(1000000000000000, 9999999999999999),
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
             [
                 'id_user' => 'f13d4957-eaf3-4a89-981a-f57364488867',
@@ -75,6 +79,7 @@ class UserSeeder extends Seeder
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
             [
                 'id_user' => 'bdfd7d92-7b58-4005-ac6a-d194c8e1f3a7',
@@ -88,6 +93,7 @@ class UserSeeder extends Seeder
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
             [
                 'id_user' => '9c2f46e8-b86b-474f-bfdf-5ad80c564107',
@@ -101,6 +107,7 @@ class UserSeeder extends Seeder
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
             // ==================BAGIAN IT====================
             [
@@ -115,6 +122,7 @@ class UserSeeder extends Seeder
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
             [
                 'id_user' => 'e94dd496-6864-4424-9abd-ab0218106844',
@@ -128,6 +136,7 @@ class UserSeeder extends Seeder
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
                 'created_at' => now(),
+                'email_verified_at' => now(),
             ],
         ]);
     }
