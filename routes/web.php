@@ -162,6 +162,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::controller(KepalaBagianBkuMonitoringController::class)->prefix('kepalabagian/BkuMonitoring')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.BkuMonitoring.apiGetAll');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.BkuMonitoring.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('kepalabagian.BkuMonitoring.viewDetail');
     });
     // =====================================KEPALA KEUANGAN========================================
     Route::controller(ManajemenKeuangan::class)->prefix('kepalabagian/ManajemenKeuangan')->group(function () {
