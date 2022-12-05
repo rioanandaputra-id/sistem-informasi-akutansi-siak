@@ -177,7 +177,7 @@ class KegiatanMonitoringController extends Controller
                 return [
                     'status' => false,
                     'latency' => AppLatency(),
-                    'message' => 'Rincian Rencana Anggaran Biaya Kegiatan Belum Anda Tambahkan!',
+                    'message' => 'Rincian RENCANA BISNIS & ANGGARAN Kegiatan Belum Anda Tambahkan!',
                     'error' => null,
                     'response' => ['id_rba' => $id_rba]
                 ];

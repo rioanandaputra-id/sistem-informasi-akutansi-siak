@@ -9,6 +9,7 @@ class RoleUserSeeder extends Seeder
 {
     public function run()
     {
+        RoleUser::truncate();
         RoleUser::insert([
             [
                 'id_role_user' => '1c97b173-c956-4224-9150-6504086920ff',

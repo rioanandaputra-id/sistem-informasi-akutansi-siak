@@ -248,7 +248,7 @@ class KegiatanMonitoringController extends Controller
             ORDER BY
                 div.nm_divisi ASC
         ");
-        return view('pages._kepalawilayah.kegiatanMonitoring.viewGetAll', compact('info', 'kegiatan', 'divisi'));
+        return view('pages._kepalaWilayah.kegiatanMonitoring.viewGetAll', compact('info', 'kegiatan', 'divisi'));
     }
 
     public function viewDetail()
@@ -332,7 +332,7 @@ class KegiatanMonitoringController extends Controller
             ORDER BY lkgt.created_at ASC
         ");
         $akun = DB::select("SELECT * FROM akun WHERE no_akun_induk = '5'");
-        return view('pages._kepalawilayah.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
+        return view('pages._kepalaWilayah.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
     }
 
     public function viewGetAllLaksanaDetail()
@@ -448,6 +448,6 @@ class KegiatanMonitoringController extends Controller
             ORDER BY akn.no_akun ASC
         ");
 
-        return view('pages._kepalawilayah.kegiatanMonitoring.viewGetAllLaksanaDetail', compact('info', 'kegiatan', 'detailLaks', 'akun'));
+        return view('pages._kepalaWilayah.kegiatanMonitoring.viewGetAllLaksanaDetail', compact('info', 'kegiatan', 'detailLaks', 'akun'));
     }
 }

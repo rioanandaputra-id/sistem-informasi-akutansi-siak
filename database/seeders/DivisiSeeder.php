@@ -9,6 +9,7 @@ class DivisiSeeder extends Seeder
 {
     public function run()
     {
+        Divisi::truncate();
         Divisi::insert([
             [
                 'id_divisi' => 'da138a9a-23ed-4941-932d-d1a457db0cdf',

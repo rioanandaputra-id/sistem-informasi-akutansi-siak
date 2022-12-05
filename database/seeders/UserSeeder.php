@@ -9,6 +9,7 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
+        User::truncate();
         User::insert([
             [
                 'id_user' => 'e1333e2a-40bf-4ad7-94d5-22d72f6c4e69',
@@ -21,6 +22,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
@@ -35,6 +37,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
@@ -49,6 +52,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
@@ -64,6 +68,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
@@ -78,6 +83,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
@@ -92,6 +98,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
@@ -106,6 +113,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
@@ -121,6 +129,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
@@ -135,6 +144,7 @@ class UserSeeder extends Seeder
                 'gender' => 'L',
                 'address' => '-',
                 'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],

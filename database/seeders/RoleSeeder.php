@@ -9,6 +9,7 @@ class RoleSeeder extends Seeder
 {
     public function run()
     {
+        Role::truncate();
         Role::insert([
             [
                 'id_role' => 1,
