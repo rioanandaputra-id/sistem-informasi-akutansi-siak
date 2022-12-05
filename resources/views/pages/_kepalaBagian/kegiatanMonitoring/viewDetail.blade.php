@@ -28,7 +28,7 @@
                             <div class="row bg-success p-2 mb-3">
                                 <div class="col">
                                     <div class="float-left">
-                                        <b>RENCANA ANGGARAN BIAYA KEGIATAN</b>
+                                        <b>RENCANA BISNIS & ANGGARAN KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
                                         <button onclick="history.back()" class="btn btn-sm noborder btn-light"><i
@@ -148,7 +148,7 @@
                             <div class="row bg-success p-2 mb-4">
                                 <div class="col">
                                     <div class="float-left">
-                                        <b>RINCIAN RENCANA ANGGARAN BIAYA KEGIATAN</b>
+                                        <b>RINCIAN RENCANA BISNIS & ANGGARAN KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
                                         <button id="addDetailRba"
@@ -314,7 +314,7 @@
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Detail Rencana Anggaran Biaya</h5>
+                    <h5 class="modal-title">Tambah Detail RENCANA BISNIS & ANGGARAN</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -372,7 +372,7 @@
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Ubah Detail Rencana Anggaran Biaya</h5>
+                    <h5 class="modal-title">Ubah Detail RENCANA BISNIS & ANGGARAN</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -587,7 +587,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'Tambah Rincian Rencana Anggaran Biaya Kegiatan Berhasil',
+                            title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Berhasil',
                             showConfirmButton: false,
                             timer: 1000,
                         });
@@ -596,7 +596,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'error',
-                            title: 'Tambah Rincian Rencana Anggaran Biaya Kegiatan Gagal',
+                            title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Gagal',
                             showConfirmButton: false,
                             timer: 1000,
                         });
@@ -605,7 +605,7 @@
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
-                        title: 'Tambah Rincian Rencana Anggaran Biaya Kegiatan Gagal',
+                        title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Gagal',
                         showConfirmButton: false,
                         timer: 1000,
                     });
@@ -662,7 +662,7 @@
                 $("#locked").prop("disabled", true);
                 Swal.fire({
                     title: 'Apakah anda yakin?',
-                    text: "Rencana Anggaran Biaya Kegiatan Akan Diajukan Kepada Verifikator, Anda Tidak Dapat Melakukan Perubahan Rencana Anggaran Biaya Kegiatan Setelahnya!",
+                    text: "RENCANA BISNIS & ANGGARAN Kegiatan Akan Diajukan Kepada Verifikator, Anda Tidak Dapat Melakukan Perubahan RENCANA BISNIS & ANGGARAN Kegiatan Setelahnya!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -833,7 +833,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'Ubah Rincian Rencana Anggaran Biaya Kegiatan Berhasil',
+                            title: 'Ubah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Berhasil',
                             showConfirmButton: false,
                             timer: 1000,
                         });
@@ -842,7 +842,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'error',
-                            title: 'Ubah Rincian Rencana Anggaran Biaya Kegiatan Gagal',
+                            title: 'Ubah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Gagal',
                             showConfirmButton: false,
                             timer: 1000,
                         });
@@ -851,7 +851,7 @@
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
-                        title: 'Ubah Rincian Rencana Anggaran Biaya Kegiatan Gagal',
+                        title: 'Ubah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Gagal',
                         showConfirmButton: false,
                         timer: 1000,
                     });

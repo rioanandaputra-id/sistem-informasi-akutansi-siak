@@ -26,7 +26,7 @@
                             <div class="row bg-success p-2 mb-3">
                                 <div class="col">
                                     <div class="float-left">
-                                        <b>RENCANA ANGGARAN BIAYA KEGIATAN</b>
+                                        <b>RENCANA BISNIS & ANGGARAN KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
                                         <button onclick="history.back()" class="btn btn-sm noborder btn-light"><i
@@ -144,7 +144,7 @@
                             <div class="row bg-success p-2 mb-4">
                                 <div class="col">
                                     <div class="float-left">
-                                        <b>RINCIAN RENCANA ANGGARAN BIAYA KEGIATAN</b>
+                                        <b>RINCIAN RENCANA BISNIS & ANGGARAN KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
                                     </div>

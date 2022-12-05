@@ -9,6 +9,7 @@ class PeranPenggunaSeeder extends Seeder
 {
     public function run()
     {
+        PeranPengguna::truncate();
         PeranPengguna::insert([
             [
                 'id_peran_pengguna' => guid(),
