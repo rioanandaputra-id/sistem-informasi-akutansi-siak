@@ -107,7 +107,7 @@ class UserSeeder extends Seeder
                 'id_divisi' => 'f270590c-78f2-4980-be9a-edf0becc3f4f',
                 'email' => 'bendpengeluarankeuangan@siak.com',
                 'username' => 'bendpengeluarankeuangan',
-                'password' => bcrypt('bendpengeluaran'),
+                'password' => bcrypt('bendpengeluarankeuangan'),
                 'full_name' => 'Bendahara Pengeluran',
                 'nik' => rand(1000000000000000, 9999999999999999),
                 'gender' => 'L',

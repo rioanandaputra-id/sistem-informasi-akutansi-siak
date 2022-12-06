@@ -35,34 +35,35 @@
                             <table class="mb-3" style="width: 100%">
                                 <tbody>
                                     @foreach ($bku as $bk)
-                                    <tr>
-                                        <th colspan="3">Info BKU</th>
-                                    </tr>
-                                    <tr>
-                                        <td style="min-width: 100px">Pengajuan</td>
-                                        <td>:</td>
-                                        <td>Pelaksanaan Ke-{{ $bk->urutan_laksana_kegiatan }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Kegiatan</td>
-                                        <td>:</td>
-                                        <td>{{ $bk->nm_kegiatan }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Program</td>
-                                        <td>:</td>
-                                        <td>{{ $bk->nm_program }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Misi</td>
-                                        <td>:</td>
-                                        <td>{{ $bk->nm_misi }}</td>
-                                    </tr>
-                                    <tr class="bg-purple">
-                                        <td>Total Anggaran</td>
-                                        <td>:</td>
-                                        <td>{{ number_to_currency_without_rp($bk->masuk, 0) }}</td>
-                                    </tr>
+                                        <tr>
+                                            <th colspan="3">Info BKU</th>
+                                        </tr>
+                                        <tr>
+                                            <td style="min-width: 100px">Pengajuan</td>
+                                            <td>:</td>
+                                            <td>Pelaksanaan Ke-{{ $bk->urutan_laksana_kegiatan }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kegiatan</td>
+                                            <td>:</td>
+                                            <td>{{ $bk->nm_kegiatan }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Program</td>
+                                            <td>:</td>
+                                            <td>{{ $bk->nm_program }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Misi</td>
+                                            <td>:</td>
+                                            <td>{{ $bk->nm_misi }}</td>
+                                        </tr>
+                                        <tr class="bg-purple">
+                                            <td>Total Anggaran</td>
+                                            <td>:</td>
+                                            <td>{{ number_to_currency_without_rp($bk->total_masuk - $bk->total_keluar, 0) }}
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -78,6 +79,7 @@
                             <table class="table table-striped teble-bordered" id="tbRincianBku" style="width: 100%">
                                 <thead class="bg-info">
                                     <tr>
+                                        <th>Waktu</th>
                                         <th>Akun</th>
                                         <th>Uraian</th>
                                         <th class="text-right">Masuk</th>
@@ -86,7 +88,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($rincBku as $rbk)
+                                        <tr>
+                                            <td>{{ tglWaktuIndonesia($rbk->tanggal) }}</td>
+                                            <td>{{ $rbk->no_akun ?? '-'}}</td>
+                                            <td>{{ $rbk->nm_akun ?? '-'}}</td>
+                                            <td class="text-right">{{ number_to_currency_without_rp($rbk->masuk, 0) }}</td>
+                                            <td class="text-right">{{ number_to_currency_without_rp($rbk->keluar, 0) }}</td>
+                                            <td class="text-right">{{ number_to_currency_without_rp($rbk->saldo, 0) }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

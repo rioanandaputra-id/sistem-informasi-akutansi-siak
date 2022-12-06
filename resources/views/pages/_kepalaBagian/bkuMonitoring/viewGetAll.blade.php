@@ -84,7 +84,7 @@
                     name: 'urutan_laksana_kegiatan',
                     title: 'Pengajuan',
                     render: function(data, type, row) {
-                        return `<a href="{!! route('kepalabagian.BkuMonitoring.viewDetail') !!}?id_bku=${row.id_bku}">Pelaksanaan Ke-${row.urutan_laksana_kegiatan}</a>`;
+                        return `<a href="{!! route('kepalabagian.BkuMonitoring.viewDetail') !!}?id_laksana_kegiatan=${row.id_laksana_kegiatan}">Pelaksanaan Ke-${row.urutan_laksana_kegiatan}</a>`;
                     }
                 }, {
                     data: 'nm_kegiatan',
@@ -95,13 +95,13 @@
                     }
                 },
                 {
-                    data: 'masuk',
-                    name: 'masuk',
+                    data: 'total_masuk',
+                    name: 'total_masuk',
                     title: 'Total Anggaran',
                 },
                 {
-                    data: 'saldo',
-                    name: 'saldo',
+                    data: 'total_saldo',
+                    name: 'total_saldo',
                     title: 'Total Tersisa',
                 },]
             });
