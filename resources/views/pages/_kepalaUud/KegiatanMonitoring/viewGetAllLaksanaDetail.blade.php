@@ -118,7 +118,6 @@
                                     <tr>
                                         <th>No. Akun</th>
                                         <th>Uraian</th>
-                                        <th class="text-right">Jumlah</th>
                                         <th class="text-right">Total</th>
                                     </tr>
                                 </thead>
@@ -130,7 +129,6 @@
                                         <tr>
                                             <td>{{ $dlk->no_akun }}</td>
                                             <td>{{ $dlk->nm_akun }}</td>
-                                            <td class="text-right">{{ number_to_currency_without_rp($dlk->jumlah) }}</td>
                                             <td class="text-right">{{ number_to_currency_without_rp($dlk->total) }}</td>
                                         </tr>
                                         @php
@@ -139,7 +137,7 @@
                                     @endforeach
                                 </tbody>
                                 <tfoot class="bg-info">
-                                    <th colspan="3">Total</th>
+                                    <th colspan="2">Total</th>
                                     <th class="text-right">{{ number_to_currency_without_rp($tfDetailLaks) }}</th>
                                 </tfoot>
                             </table>

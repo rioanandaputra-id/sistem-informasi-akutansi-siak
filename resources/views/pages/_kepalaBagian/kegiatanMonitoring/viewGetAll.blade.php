@@ -31,6 +31,17 @@
                         </div>
                     </div>
                     <hr>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <select id="id_program" class="form-control filter">
+                                <option value="">-- program --</option>
+                                @foreach ($program as $kgt)
+                                    <option value="{{ $kgt->id_program }}">[ {{ $kgt->periode }} ] {{ $kgt->nm_program }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
                     <div class="row">
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatandivisi" style="width: 100%">
@@ -72,6 +83,11 @@
             $("#refresh").click(function() {
                 $('#tbkegiatandivisi').DataTable().ajax.reload();
             });
+
+            $('.filter').on('change', function() {
+                $('#tbkegiatandivisi').DataTable().clear().destroy();
+                tbkegiatandivisi();
+            });
         });
 
         function getId() {
@@ -94,6 +110,9 @@
                 ajax: {
                     url: '{{ route('kepalabagian.KegiatanMonitoring.apiGetAll') }}',
                     type: 'GET',
+                    data: {
+                        id_program: $('#id_program').val()
+                    }
                 },
                 columns: [{
                         data: 'id_kegiatan_divisi',
@@ -120,6 +139,13 @@
                         data: 'nm_misi',
                         name: 'nm_misi',
                         title: 'Misi',
+                        render: function(data, type, row) {
+                            if (row.id_misi === null) {
+                                return '-';
+                            } else {
+                                return row.nm_misi;
+                            }
+                        }
                     }, {
                         data: 'nm_divisi',
                         name: 'nm_divisi',

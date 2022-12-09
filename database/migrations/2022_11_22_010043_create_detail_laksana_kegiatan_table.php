@@ -12,7 +12,7 @@ return new class extends Migration
             $table->uuid('id_detail_laksana_kegiatan')->primary();
             $table->foreignUuid('id_laksana_kegiatan');
             $table->foreignUuid('id_detail_rba');
-            $table->integer('jumlah');
+            // $table->integer('jumlah');
             $table->double('total');
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('program', function (Blueprint $table) {
             $table->uuid('id_program')->primary();
-            $table->foreignUuid('id_misi');
+            $table->foreignUuid('id_misi')->nullable();
             $table->string('nm_program', 255);
             $table->char('periode', 4);
             $table->char('a_aktif', 1);

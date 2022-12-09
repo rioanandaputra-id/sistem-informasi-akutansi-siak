@@ -4,7 +4,7 @@ namespace App\Http\Controllers\BendaharaKegiatan;
 
 use App\Http\Controllers\Controller;
 
-class KegiatanController extends Controller
+class DashboardController extends Controller
 {
     public function index()
     {

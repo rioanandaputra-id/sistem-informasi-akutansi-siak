@@ -25,13 +25,14 @@ class KegiatanController extends Controller
     public function apiGetAll()
     {
         try {
+            $id_program = ($this->request->id_program) ? " AND  pgm.id_program = '" . $this->request->id_program . "'" : "";
             $apiGetAll = DB::select("
                 SELECT
                     pgm.id_misi,
                     kgt.id_program,
                     kgt.id_kegiatan,
-                    CONCAT('( ', msi.periode, ' ) ', msi.nm_misi) AS nm_misi,
-                    CONCAT('( ', pgm.periode, ' ) ', pgm.nm_program) AS nm_program,
+                    CONCAT('[ ', msi.periode, ' ] ', msi.nm_misi) AS nm_misi,
+                    CONCAT('[ ', pgm.periode, ' ] ', pgm.nm_program) AS nm_program,
                     kgt.nm_kegiatan,
                     kgt.created_at,
                     kgt.updated_at,
@@ -41,7 +42,7 @@ class KegiatanController extends Controller
                     JOIN program AS pgm ON pgm.id_program = kgt.id_program
                     AND pgm.deleted_at IS NULL
                     AND pgm.a_aktif = '1'
-                    JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                    LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                     AND msi.deleted_at IS NULL
                     AND msi.a_aktif = '1'
                 WHERE
@@ -49,12 +50,18 @@ class KegiatanController extends Controller
                     AND kgt.a_aktif = '1'
                     AND kgt.id_kegiatan NOT IN(
                         SELECT
-                            id_kegiatan
+                            kkdiv.id_kegiatan
                         FROM
-                            kegiatan_divisi
+                            kegiatan_divisi AS kkdiv
+                            JOIN kegiatan AS kkgt ON kkgt.id_kegiatan = kkdiv.id_kegiatan
+                            AND kkgt.deleted_at IS NULL
+                            JOIN program AS pgm ON pgm.id_program = kkgt.id_program
+                            AND pgm.deleted_at IS NULL
+                            AND pgm.id_misi IS NOT NULL
                         WHERE
-                            deleted_at IS NULL
+                            kkdiv.deleted_at IS NULL
                     )
+                    " . $id_program . "
                 ORDER BY
                     msi.periode,
                     msi.nm_misi,
@@ -196,6 +203,18 @@ class KegiatanController extends Controller
             'title' => 'Pengajuan Kegiatan Baru',
             'site_active' => 'KegiatanBaru',
         ];
-        return view('pages._kepalaBagian.kegiatan.viewGetAll', compact('info'));
+        $program = DB::select("
+            SELECT
+                pgm.id_program,
+                pgm.nm_program,
+                pgm.periode
+            FROM
+                program AS pgm
+            WHERE
+                pgm.deleted_at IS NULL
+                AND pgm.a_aktif = '1'
+                ORDER BY pgm.periode DESC, pgm.nm_program ASC
+        ");
+        return view('pages._kepalaBagian.kegiatan.viewGetAll', compact('info', 'program'));
     }
 }

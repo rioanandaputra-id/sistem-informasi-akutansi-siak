@@ -91,7 +91,7 @@
                     name: 'nm_kegiatan',
                     title: 'Kegiatan, Program, Misi',
                     render: function(data, type, row) {
-                        return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}.`;
+                        return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
                     }
                 },
                 {

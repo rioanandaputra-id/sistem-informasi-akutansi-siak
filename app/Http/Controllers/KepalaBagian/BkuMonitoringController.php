@@ -25,8 +25,8 @@ class BkuMonitoringController extends Controller
                 bku.id_divisi,
                 lkgt.urutan_laksana_kegiatan,
                 kgt.nm_kegiatan,
-                pgm.nm_program,
-                msi.nm_misi,
+                CONCAT('[ ', pgm.periode ,' ] ', pgm.nm_program) AS nm_program,
+                CONCAT('[ ', msi.periode ,' ] ', msi.nm_misi) AS nm_misi,
                 (
                     SELECT
                         SUM(bbku.masuk)
@@ -45,17 +45,6 @@ class BkuMonitoringController extends Controller
                         bbbku.id_laksana_kegiatan = bku.id_laksana_kegiatan
                         AND bbbku.deleted_at IS NULL
                 ) AS total_keluar
-
-                    --     (
-                    --         SELECT
-                    --             SUM(bbbbku.saldo)
-                    --         FROM
-                    --             bku AS bbbbku
-                    --         WHERE
-                    --             bbbbku.id_laksana_kegiatan = bku.id_laksana_kegiatan
-                    --             AND bbbbku.deleted_at IS NULL
-                    --     ) AS total_saldo
-
             FROM
                 bku AS bku
                 JOIN laksana_kegiatan AS lkgt ON lkgt.id_laksana_kegiatan = bku.id_laksana_kegiatan
@@ -66,7 +55,7 @@ class BkuMonitoringController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
             WHERE
                 bku.deleted_at IS NULL
@@ -130,15 +119,6 @@ class BkuMonitoringController extends Controller
                         bbbku.id_laksana_kegiatan = bku.id_laksana_kegiatan
                         AND bbbku.deleted_at IS NULL
                 ) AS total_keluar
-                    --     (
-                    --         SELECT
-                    --             SUM(bbbbku.saldo)
-                    --         FROM
-                    --             bku AS bbbbku
-                    --         WHERE
-                    --             bbbbku.id_laksana_kegiatan = bku.id_laksana_kegiatan
-                    --             AND bbbbku.deleted_at IS NULL
-                    --     ) AS total_saldo
             FROM
                 bku AS bku
                 JOIN laksana_kegiatan AS lkgt ON lkgt.id_laksana_kegiatan = bku.id_laksana_kegiatan
@@ -149,7 +129,7 @@ class BkuMonitoringController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
             WHERE
                 bku.deleted_at IS NULL

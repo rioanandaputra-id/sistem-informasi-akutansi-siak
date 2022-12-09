@@ -55,12 +55,12 @@
                                         <tr>
                                             <td style="min-width: 200px">Misi</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->nm_misi }}</td>
+                                            <td>[ {{ $kgt->periode_misi }} ] {{ $kgt->nm_misi }}</td>
                                         </tr>
                                         <tr>
                                             <td>Program</td>
                                             <td>:</td>
-                                            <td>{{ $kgt->nm_program }}</td>
+                                            <td>[ {{ $kgt->periode_program }} ] {{ $kgt->nm_program }}</td>
                                         </tr>
                                         <tr>
                                             <td>Kegiatan</td>
@@ -134,7 +134,6 @@
                                         <th><input type="checkbox" class="ckAllDetailLaks"></th>
                                         <th>No. Akun</th>
                                         <th>Uraian</th>
-                                        <th class="text-right">Jumlah</th>
                                         <th class="text-right">Total</th>
                                     </tr>
                                 </thead>
@@ -153,11 +152,9 @@
                                                 <td><a href="javascript:" onclick="updateDetailLaks(
                                                     '{!! $dlk->id_detail_laksana_kegiatan !!}',
                                                     '{!! $dlk->id_detail_rba !!}',
-                                                    '{!! $dlk->jumlah !!}',
                                                     '{!! $dlk->total !!}',
                                                 )">{{ $dlk->nm_akun }}</a></td>
                                             @endif
-                                            <td class="text-right">{{ number_to_currency_without_rp($dlk->jumlah) }}</td>
                                             <td class="text-right">{{ number_to_currency_without_rp($dlk->total) }}</td>
                                         </tr>
                                         @php
@@ -167,7 +164,7 @@
                                 </tbody>
                                 <tfoot class="bg-info">
                                     <th></th>
-                                    <th colspan="3">Total</th>
+                                    <th colspan="2">Total</th>
                                     <th class="text-right">{{ number_to_currency_without_rp($tfDetailLaks) }}</th>
                                 </tfoot>
                             </table>
@@ -202,10 +199,6 @@
                             </div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col">
-                                <label for="jumlahaddDetailLaksMdl">Jumlah: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="jumlahaddDetailLaksMdl">
-                            </div>
                             <div class="col">
                                 <label for="totaladdDetailLaksMdl">Total: <i class="text-red">*</i></label>
                                 <input type="number" class="form-control" id="totaladdDetailLaksMdl">
@@ -246,10 +239,6 @@
                             </div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col">
-                                <label for="jumlahupdateDetailLaksMdl">Jumlah: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="jumlahupdateDetailLaksMdl">
-                            </div>
                             <div class="col">
                                 <label for="totalupdateDetailLaksMdl">Total: <i class="text-red">*</i></label>
                                 <input type="number" class="form-control" id="totalupdateDetailLaksMdl">
@@ -293,7 +282,6 @@
                         _token: "{!! csrf_token() !!}",
                         id_laksana_kegiatan: "{!! request()->get('id_laksana_kegiatan') !!}",
                         id_detail_rba: $("#id_detail_rbaaddDetailLaksMdl").val(),
-                        jumlah: $("#jumlahaddDetailLaksMdl").val(),
                         total: $("#totaladdDetailLaksMdl").val(),
                     },
                     beforeSend: function() {
@@ -390,7 +378,6 @@
                         id_detail_laksana_kegiatan: $("#id_detail_laksana_kegiatanupdateDetailLaksMdl").val(),
                         id_laksana_kegiatan: "{!! request()->get('id_laksana_kegiatan') !!}",
                         id_detail_rba: $("#id_detail_rbaupdateDetailLaksMdl").val(),
-                        jumlah: $("#jumlahupdateDetailLaksMdl").val(),
                         total: $("#totalupdateDetailLaksMdl").val(),
                     },
                     beforeSend: function() {
@@ -490,11 +477,10 @@
             return id;
         }
 
-        function updateDetailLaks(p1,p2,p3,p4){
+        function updateDetailLaks(p1,p2,p3){
             $('#id_detail_laksana_kegiatanupdateDetailLaksMdl').val(p1);
             $('#id_detail_rbaupdateDetailLaksMdl').val(p2);
-            $('#jumlahupdateDetailLaksMdl').val(p3);
-            $('#totalupdateDetailLaksMdl').val(p4);
+            $('#totalupdateDetailLaksMdl').val(p3);
             $("#updateDetailLaksMdl").modal('show');
         }
     </script>

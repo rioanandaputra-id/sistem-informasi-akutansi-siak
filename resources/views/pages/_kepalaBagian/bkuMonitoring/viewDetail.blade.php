@@ -1,7 +1,4 @@
 @extends('layouts.adminlteMaster')
-@section('breadcrumb')
-@endsection
-
 @section('content')
     <div class="row">
         <div class="col">
@@ -39,8 +36,8 @@
                                             <th colspan="3">Info BKU</th>
                                         </tr>
                                         <tr>
-                                            <td style="min-width: 100px">Pengajuan</td>
-                                            <td>:</td>
+                                            <td style="width: 200px">Pengajuan</td>
+                                            <td style="width: 10px;">:</td>
                                             <td>Pelaksanaan Ke-{{ $bk->urutan_laksana_kegiatan }}</td>
                                         </tr>
                                         <tr>
@@ -107,12 +104,3 @@
         </div>
     </div>
 @endsection
-
-
-@push('css')
-@endpush
-@push('js')
-    <script>
-        $(document).ready(function() {});
-    </script>
-@endpush

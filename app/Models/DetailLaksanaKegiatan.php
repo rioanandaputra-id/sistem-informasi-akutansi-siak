@@ -18,7 +18,6 @@ class DetailLaksanaKegiatan extends Model
         'id_detail_laksana_kegiatan',
         'id_laksana_kegiatan',
         'id_detail_rba',
-        'jumlah',
         'total',
         'created_at',
         'updated_at',

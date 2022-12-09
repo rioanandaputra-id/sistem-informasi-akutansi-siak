@@ -34,14 +34,16 @@ class KegiatanMonitoringController extends Controller
 
     public function apiGetAll()
     {
+        $id_program = ($this->request->id_program) ? " AND  pgm.id_program = '" . $this->request->id_program . "'" : "";
         $apiGetAll = DB::select("
             SELECT
                 kdiv.id_kegiatan_divisi,
                 kdiv.id_divisi,
                 div.nm_divisi,
                 kdiv.id_kegiatan,
-                CONCAT('( ', msi.periode, ' ) ', msi.nm_misi) AS nm_misi,
-                CONCAT('( ', pgm.periode, ' ) ', pgm.nm_program) AS nm_program,
+                msi.id_misi,
+                CONCAT('[ ', msi.periode, ' ] ', msi.nm_misi) AS nm_misi,
+                CONCAT('[ ', pgm.periode, ' ] ', pgm.nm_program) AS nm_program,
                 kgt.nm_kegiatan,
                 rba.id_rba,
                 rba.tgl_submit,
@@ -80,13 +82,14 @@ class KegiatanMonitoringController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
                 LEFT JOIN rba AS rba ON rba.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
                 AND rba.deleted_at IS NULL
             WHERE
                 kdiv.deleted_at IS NULL
                 AND kdiv.id_divisi = '" . Auth::user()->id_divisi . "'
+                " . $id_program . "
         ");
         return DaTables::of($apiGetAll)->make(true);
     }
@@ -100,8 +103,9 @@ class KegiatanMonitoringController extends Controller
                 kdiv.id_divisi,
                 div.nm_divisi,
                 kdiv.id_kegiatan,
-                CONCAT('( ', msi.periode, ' ) ', msi.nm_misi) AS nm_misi,
-                CONCAT('( ', pgm.periode, ' ) ', pgm.nm_program) AS nm_program,
+                msi.id_misi,
+                CONCAT('[ ', msi.periode, ' ] ', msi.nm_misi) AS nm_misi,
+                CONCAT('[ ', pgm.periode, ' ] ', pgm.nm_program) AS nm_program,
                 kgt.nm_kegiatan,
                 rba.id_rba,
                 rba.tgl_submit,
@@ -140,7 +144,7 @@ class KegiatanMonitoringController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
                 JOIN rba AS rba ON rba.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
                 AND rba.deleted_at IS NULL
@@ -225,7 +229,19 @@ class KegiatanMonitoringController extends Controller
             'title' => 'Kegiatan Telah Diajukan',
             'site_active' => 'KegiatanDiajukan',
         ];
-        return view('pages._kepalaBagian.kegiatanMonitoring.viewGetAll', compact('info'));
+        $program = DB::select("
+            SELECT
+                pgm.id_program,
+                pgm.nm_program,
+                pgm.periode
+            FROM
+                program AS pgm
+            WHERE
+                pgm.deleted_at IS NULL
+                AND pgm.a_aktif = '1'
+                ORDER BY pgm.periode DESC, pgm.nm_program ASC
+        ");
+        return view('pages._kepalaBagian.kegiatanMonitoring.viewGetAll', compact('info', 'program'));
     }
 
     public function viewDetail()
@@ -271,10 +287,19 @@ class KegiatanMonitoringController extends Controller
                 lkgt.tgl_ajuan,
                 lkgt.urutan_laksana_kegiatan,
                 CASE
-                    lkgt.a_verif_kabag_keuangan
-                    WHEN '2' THEN 'Disetujui Kabag. Keuangan'
-                    WHEN '3' THEN 'Ditolak Kabag. Keuangan'
-                    ELSE 'Belum Diverifikasi Kabag. Keuangan'
+                    WHEN lkgt.a_verif_kabag_keuangan = '1'
+                    AND pgm.id_misi IS NULL THEN 'Belum Diverifikasi Bend. Pengeluaran'
+                    WHEN lkgt.a_verif_kabag_keuangan = '2'
+                    AND pgm.id_misi IS NULL THEN 'Disetujui Bend. Pengeluaran'
+                    WHEN lkgt.a_verif_kabag_keuangan = '3'
+                    AND pgm.id_misi IS NULL THEN 'Ditolak Bend. Pengeluaran'
+                    WHEN lkgt.a_verif_kabag_keuangan = '1'
+                    AND pgm.id_misi IS NOT NULL THEN 'Belum Diverifikasi Kabag. Keuangan'
+                    WHEN lkgt.a_verif_kabag_keuangan = '2'
+                    AND pgm.id_misi IS NOT NULL THEN 'Disetujui Kabag. Keuangan'
+                    WHEN lkgt.a_verif_kabag_keuangan = '3'
+                    AND pgm.id_misi IS NOT NULL THEN 'Ditolak Kabag. Keuangan'
+                    ELSE 'Belum Diverifikasi'
                 END AS a_verif_kabag_keuangan,
                 lkgt.id_verif_kabag_keuangan,
                 lkgt.tgl_verif_kabag_keuangan,
@@ -303,6 +328,9 @@ class KegiatanMonitoringController extends Controller
                 AND kdiv.deleted_at IS NULL
                 JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
                 AND kgt.deleted_at IS NULL
+                JOIN program AS pgm ON pgm.id_program = kgt.id_program
+                AND pgm.deleted_at IS NULL
+                AND pgm.a_aktif = '1'
             WHERE
                 lkgt.deleted_at IS NULL
                 AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
@@ -768,17 +796,28 @@ class KegiatanMonitoringController extends Controller
                 lkgt.id_laksana_kegiatan,
                 div.nm_divisi,
                 msi.nm_misi,
+                msi.periode AS periode_misi,
                 pgm.nm_program,
+                pgm.periode AS periode_program,
                 kgt.nm_kegiatan,
                 lkgt.urutan_laksana_kegiatan,
                 lkgt.tgl_ajuan,
                 lkgt.waktu_pelaksanaan,
                 lkgt.waktu_selesai,
                 CASE
-                    lkgt.a_verif_kabag_keuangan
-                    WHEN '2' THEN 'Disetujui Kabag. Keuangan'
-                    WHEN '3' THEN 'Ditolak Kabag. Keuangan'
-                    ELSE 'Belum Diverifikasi Kabag. Keuangan'
+                    WHEN lkgt.a_verif_kabag_keuangan = '1'
+                    AND pgm.id_misi IS NULL THEN 'Belum Diverifikasi Bend. Pengeluaran'
+                    WHEN lkgt.a_verif_kabag_keuangan = '2'
+                    AND pgm.id_misi IS NULL THEN 'Disetujui Bend. Pengeluaran'
+                    WHEN lkgt.a_verif_kabag_keuangan = '3'
+                    AND pgm.id_misi IS NULL THEN 'Ditolak Bend. Pengeluaran'
+                    WHEN lkgt.a_verif_kabag_keuangan = '1'
+                    AND pgm.id_misi IS NOT NULL THEN 'Belum Diverifikasi Kabag. Keuangan'
+                    WHEN lkgt.a_verif_kabag_keuangan = '2'
+                    AND pgm.id_misi IS NOT NULL THEN 'Disetujui Kabag. Keuangan'
+                    WHEN lkgt.a_verif_kabag_keuangan = '3'
+                    AND pgm.id_misi IS NOT NULL THEN 'Ditolak Kabag. Keuangan'
+                    ELSE 'Belum Diverifikasi'
                 END AS a_verif_kabag_keuangan,
                 lkgt.tgl_verif_kabag_keuangan,
                 lkgt.catatan,
@@ -815,7 +854,7 @@ class KegiatanMonitoringController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
             WHERE
                 lkgt.deleted_at IS NULL
@@ -827,7 +866,6 @@ class KegiatanMonitoringController extends Controller
                 dlkgt.id_detail_laksana_kegiatan,
                 dlkgt.id_laksana_kegiatan,
                 dlkgt.id_detail_rba,
-                dlkgt.jumlah,
                 dlkgt.total,
                 dlkgt.created_at,
                 dlkgt.updated_at,
@@ -880,7 +918,6 @@ class KegiatanMonitoringController extends Controller
             $rules = [
                 'id_laksana_kegiatan' => 'required',
                 'id_detail_rba' => 'required',
-                'jumlah' => 'required',
                 'total' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
@@ -897,7 +934,6 @@ class KegiatanMonitoringController extends Controller
             $id_detail_laksana_kegiatan = guid();
             $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
             $id_detail_rba = $this->request->id_detail_rba;
-            $jumlah = $this->request->jumlah;
             $total = $this->request->total;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
@@ -906,7 +942,6 @@ class KegiatanMonitoringController extends Controller
                 'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,
                 'id_laksana_kegiatan' => $id_laksana_kegiatan,
                 'id_detail_rba' => $id_detail_rba,
-                'jumlah' => $jumlah,
                 'total' => $total,
                 'created_at' => $created_at,
                 'id_updater' => $id_updater,
@@ -951,7 +986,6 @@ class KegiatanMonitoringController extends Controller
                 'id_detail_laksana_kegiatan' => 'required',
                 'id_laksana_kegiatan' => 'required',
                 'id_detail_rba' => 'required',
-                'jumlah' => 'required',
                 'total' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
@@ -968,7 +1002,6 @@ class KegiatanMonitoringController extends Controller
             $id_detail_laksana_kegiatan = $this->request->id_detail_laksana_kegiatan;
             $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
             $id_detail_rba = $this->request->id_detail_rba;
-            $jumlah = $this->request->jumlah;
             $total = $this->request->total;
             $updated_at = now();
             $id_updater = Auth::user()->id_user;
@@ -977,7 +1010,6 @@ class KegiatanMonitoringController extends Controller
                 'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,
                 'id_laksana_kegiatan' => $id_laksana_kegiatan,
                 'id_detail_rba' => $id_detail_rba,
-                'jumlah' => $jumlah,
                 'total' => $total,
                 'updated_at' => $updated_at,
                 'id_updater' => $id_updater,

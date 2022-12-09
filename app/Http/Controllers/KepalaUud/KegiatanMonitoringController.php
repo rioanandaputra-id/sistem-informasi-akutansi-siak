@@ -34,8 +34,8 @@ class KegiatanMonitoringController extends Controller
                 kdiv.id_divisi,
                 div.nm_divisi,
                 kdiv.id_kegiatan,
-                CONCAT('( ', msi.periode, ' ) ', msi.nm_misi) AS nm_misi,
-                CONCAT('( ', pgm.periode, ' ) ', pgm.nm_program) AS nm_program,
+                CONCAT('[ ', msi.periode, ' ] ', msi.nm_misi) AS nm_misi,
+                CONCAT('[ ', pgm.periode, ' ] ', pgm.nm_program) AS nm_program,
                 kgt.nm_kegiatan,
                 rba.id_rba,
                 rba.tgl_submit,
@@ -74,7 +74,7 @@ class KegiatanMonitoringController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
                 LEFT JOIN rba AS rba ON rba.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
                 AND rba.deleted_at IS NULL
@@ -98,8 +98,8 @@ class KegiatanMonitoringController extends Controller
                 kdiv.id_divisi,
                 div.nm_divisi,
                 kdiv.id_kegiatan,
-                CONCAT('( ', msi.periode, ' ) ', msi.nm_misi) AS nm_misi,
-                CONCAT('( ', pgm.periode, ' ) ', pgm.nm_program) AS nm_program,
+                CONCAT('[ ', msi.periode, ' ] ', msi.nm_misi) AS nm_misi,
+                CONCAT('[ ', pgm.periode, ' ] ', pgm.nm_program) AS nm_program,
                 kgt.nm_kegiatan,
                 rba.id_rba,
                 rba.tgl_submit,
@@ -138,7 +138,7 @@ class KegiatanMonitoringController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
                 JOIN rba AS rba ON rba.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
                 AND rba.deleted_at IS NULL
@@ -395,7 +395,7 @@ class KegiatanMonitoringController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
             WHERE
                 lkgt.deleted_at IS NULL
@@ -407,7 +407,6 @@ class KegiatanMonitoringController extends Controller
                 dlkgt.id_detail_laksana_kegiatan,
                 dlkgt.id_laksana_kegiatan,
                 dlkgt.id_detail_rba,
-                dlkgt.jumlah,
                 dlkgt.total,
                 dlkgt.created_at,
                 dlkgt.updated_at,
