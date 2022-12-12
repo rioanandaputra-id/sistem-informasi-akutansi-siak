@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('dokumen', function (Blueprint $table) {
-            $table->increments('id_dokumen')->primary();
+            $table->increments('id_dokumen');
             $table->text('nm_dokumen');
             $table->string('mimee_type');
             $table->text('nm_asli_dokumen');
