@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('detail_spj', function (Blueprint $table) {
-            $table->uuid('id_detail_spj')->primary();
-            $table->foreignUuid('id_spj');
-            $table->foreignUuid('id_detail_laksana_kegiatan');
-            $table->foreignUuid('id_akun');
-            $table->double('total');
-            $table->foreignUuid('id_dokumen');
+        Schema::create('dokumen', function (Blueprint $table) {
+            $table->increments('id_dokumen')->primary();
+            $table->text('nm_dokumen');
+            $table->string('mimee_type');
+            $table->text('nm_asli_dokumen');
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
             $table->dateTime('deleted_at')->nullable();
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detail_spj');
+        Schema::dropIfExists('dokumen');
     }
 };

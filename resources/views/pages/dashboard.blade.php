@@ -22,7 +22,7 @@
         <div class="col">
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>{{ \App\Models\SPJ::whereNull('deleted_at')->whereDay('created_at', date('d'))->count() }}</h3>
+                    <h3>{{ \App\Models\Spj::whereNull('deleted_at')->whereDay('created_at', date('d'))->count() }}</h3>
                     <h5>SPJ Hari Ini</h5>
                 </div>
                 <div class="icon">
@@ -33,7 +33,7 @@
         <div class="col">
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>{{ \App\Models\SPJ::whereNull('deleted_at')->whereMonth('created_at', date('m'))->count() }}</h3>
+                    <h3>{{ \App\Models\Spj::whereNull('deleted_at')->whereMonth('created_at', date('m'))->count() }}</h3>
                     <h5>SPJ Bulan Ini</h5>
                 </div>
                 <div class="icon">
@@ -44,7 +44,7 @@
         <div class="col">
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>{{ \App\Models\SPJ::whereNull('deleted_at')->whereYear('created_at', date('Y'))->count() }}</h3>
+                    <h3>{{ \App\Models\Spj::whereNull('deleted_at')->whereYear('created_at', date('Y'))->count() }}</h3>
                     <h5>SPJ Tahun Ini</h5>
                 </div>
                 <div class="icon">
