@@ -12,12 +12,15 @@ use App\Http\Controllers\KepalaUud\KegiatanController as KepalaUudKegiatanContro
 use App\Http\Controllers\KepalaUud\MisiController as KepalaUudMisiController;
 use App\Http\Controllers\KepalaUud\ProgramController as KepalaUudProgramController;
 use App\Http\Controllers\KepalaUud\KegiatanMonitoringController as KepalaUudKegiatanMonitoringController;
+use App\Http\Controllers\KepalaUud\Keuangan\ManajemenKeuangan as KepalaUudManajemenKeuanganController;
 
 use App\Http\Controllers\KepalaBagian\KegiatanController as KepalaBagianKegiatanController;
+use App\Http\Controllers\KepalaBagian\KegiatanRutinController as KepalaBagianKegiatanRutinController;
 use App\Http\Controllers\KepalaBagian\KegiatanMonitoringController as KepalaBagianKegiatanMonitoringController;
 use App\Http\Controllers\KepalaBagian\Keuangan\KegiatanPelaksanaanController AS KepalaBagianKegiatanPelaksanaanController;
 use App\Http\Controllers\KepalaBagian\BkuMonitoringController as KepalaBagianBkuMonitoringController;
-use App\Http\Controllers\KepalaBagian\ManajemenKeuangan;
+use App\Http\Controllers\KepalaBagian\Keuangan\ManajemenKeuangan as KepalaBagianManajemenKeuanganController;
+use App\Http\Controllers\KepalaBagian\SPJKegiatanController as KepalaBagianSPJKegiatanController;
 
 use App\Http\Controllers\BendaharaPengeluaran\KegiatanRutinController as BendaharaPengeluaranKegiatanRutinController;
 use App\Http\Controllers\BendaharaPengeluaran\KegiatanRutinPelaksanaanController as BendaharaPengeluaranKegiatanRutinPelaksanaanController;
@@ -113,6 +116,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('viewDetail', 'viewDetail')->name('kepalauud.kegiatanMonitoring.viewDetail');
         Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('kepalauud.KegiatanMonitoring.viewGetAllLaksanaDetail');
     });
+    Route::controller(KepalaUudManajemenKeuanganController::class)->prefix('kepalauud/ManajemenKeuangan')->group(function () {
+        // PERENCANAAN
+        Route::get('perencanaan/apiGetAll', 'perencanaanApiGetAll')->name('kepalauud.ManajemenKeuangan.perencanaan.apiGetAll');
+        Route::get('perencanaan/viewGetAll', 'perencanaanViewGetAll')->name('kepalauud.ManajemenKeuangan.perencanaan.viewGetAll');
+        // PENGANGGARAN PENDAPATAN
+        Route::get('penganggaranPendapatan/viewGetAll', 'penganggaranPendapatanViewGetAll')->name('kepalauud.ManajemenKeuangan.penganggaranPendapatan.viewGetAll');
+        Route::get('penganggaranPendapatan/apiGetAll', 'penganggaranPendapatanApiGetAll')->name('kepalauud.ManajemenKeuangan.penganggaranPendapatan.apiGetAll');
+        // PENGANGGARAN PENGELUARAN
+        Route::get('penganggaranPengeluaran/viewGetAll', 'penganggaranPengeluaranViewGetAll')->name('kepalauud.ManajemenKeuangan.penganggaranPengeluaran.viewGetAll');
+        Route::get('penganggaranPengeluaran/apiGetAll', 'penganggaranPengeluaranApiGetAll')->name('kepalauud.ManajemenKeuangan.penganggaranPengeluaran.apiGetAll');
+        // PENATAUSAHAAN
+        Route::get('penatausahaan/apiGetAll', 'penatausahaanApiGetAll')->name('kepalauud.ManajemenKeuangan.penatausahaan.apiGetAll');
+        Route::get('penatausahaan/viewGetAll', 'penatausahaanViewGetAll')->name('kepalauud.ManajemenKeuangan.penatausahaan.viewGetAll');
+        // PELAPORAN
+        Route::get('pelaporan/apiGetAll', 'pelaporanApiGetAll')->name('kepalauud.ManajemenKeuangan.pelaporan.apiGetAll');
+        Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('kepalauud.ManajemenKeuangan.pelaporan.viewGetAll');
+    });
     // =====================================TIM RBA========================================
     Route::controller(TimRbaKegiatanMonitoringController::class)->prefix('timrba/kegiatanMonitoring')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('timrba.kegiatanMonitoring.apiGetAll');
@@ -134,6 +154,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.Kegiatan.apiGetAll');
         Route::post('apiCreate', 'apiCreate')->name('kepalabagian.Kegiatan.apiCreate');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.Kegiatan.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalabagian.Kegiatan.viewCreate');
+    });
+    Route::controller(KepalaBagianKegiatanRutinController::class)->prefix('kepalabagian/KegiatanRutin')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.KegiatanRutin.apiGetAll');
+        Route::post('apiCreate', 'apiCreate')->name('kepalabagian.KegiatanRutin.apiCreate');
+        Route::get('viewDetail', 'viewDetail')->name('kepalabagian.KegiatanRutin.viewDetail');
     });
     Route::controller(KepalaBagianKegiatanMonitoringController::class)->prefix('kepalabagian/KegiatanMonitoring')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.KegiatanMonitoring.apiGetAll');
@@ -167,6 +193,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.BkuMonitoring.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('kepalabagian.BkuMonitoring.viewDetail');
     });
+    Route::controller(KepalaBagianSPJKegiatanController::class)->prefix('kepalabagian/SPJKegiatan')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.SPJKegiatan.apiGetAll');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.SPJKegiatan.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('kepalabagian.SPJKegiatan.viewDetail');
+    });
+    Route::controller(KepalaBagianManajemenKeuanganController::class)->prefix('kepalabagian/ManajemenKeuangan')->group(function () {
+        // PERENCANAAN
+        Route::get('perencanaan/apiGetAll', 'perencanaanApiGetAll')->name('kepalabagian.ManajemenKeuangan.perencanaan.apiGetAll');
+        Route::get('perencanaan/viewGetAll', 'perencanaanViewGetAll')->name('kepalabagian.ManajemenKeuangan.perencanaan.viewGetAll');
+        // PENGANGGARAN PENDAPATAN
+        Route::get('penganggaranPendapatan/viewGetAll', 'penganggaranPendapatanViewGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaranPendapatan.viewGetAll');
+        Route::get('penganggaranPendapatan/apiGetAll', 'penganggaranPendapatanApiGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaranPendapatan.apiGetAll');
+        // PENGANGGARAN PENGELUARAN
+        Route::get('penganggaranPengeluaran/viewGetAll', 'penganggaranPengeluaranViewGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaranPengeluaran.viewGetAll');
+        Route::get('penganggaranPengeluaran/apiGetAll', 'penganggaranPengeluaranApiGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaranPengeluaran.apiGetAll');
+        // PENATAUSAHAAN
+        Route::get('penatausahaan/apiGetAll', 'penatausahaanApiGetAll')->name('kepalabagian.ManajemenKeuangan.penatausahaan.apiGetAll');
+        Route::get('penatausahaan/viewGetAll', 'penatausahaanViewGetAll')->name('kepalabagian.ManajemenKeuangan.penatausahaan.viewGetAll');
+        // PELAPORAN
+        Route::get('pelaporan/apiGetAll', 'pelaporanApiGetAll')->name('kepalabagian.ManajemenKeuangan.pelaporan.apiGetAll');
+        Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('kepalabagian.ManajemenKeuangan.pelaporan.viewGetAll');
+    });
     // =====================================BENDAHARA PENGELUARAN========================================
     Route::controller(BendaharaPengeluaranKegiatanRutinController::class)->prefix('bendaharapengeluaran/kegiatanRutin')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('bendaharapengeluaran.kegiatanRutin.apiGetAll');
@@ -183,16 +231,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('apiUpdate', 'apiUpdate')->name('bendaharapengeluaran.KegiatanRutinPelaksana.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('bendaharapengeluaran.KegiatanRutinPelaksana.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('bendaharapengeluaran.KegiatanRutinPelaksana.viewDetail');
-    });
-    // =====================================KEPALA KEUANGAN========================================
-    Route::controller(ManajemenKeuangan::class)->prefix('kepalabagian/ManajemenKeuangan')->group(function () {
-        // PERENCANAAN
-        Route::get('perencanaan/apiGetAll', 'perencanaanApiGetAll')->name('kepalabagian.ManajemenKeuangan.perencanaan.apiGetAll');
-        Route::get('perencanaan/viewGetAll', 'perencanaanViewGetAll')->name('kepalabagian.ManajemenKeuangan.perencanaan.viewGetAll');
-        // PENGANGGARAN
-        Route::get('penganggaran/viewGetAll', 'penganggaranViewGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaran.viewGetAll');
-        Route::get('penganggaran/apiGetAll', 'penganggaranApiGetAll')->name('kepalabagian.ManajemenKeuangan.penganggaran.apiGetAll');
-        Route::get('penganggaran/viewDetail', 'penganggaranViewDetail')->name('kepalabagian.ManajemenKeuangan.penganggaran.viewDetail');
-        Route::post('penganggaran/apiUpdate', 'penganggaranApiUpdate')->name('kepalabagian.ManajemenKeuangan.penganggaran.apiUpdate');
     });
 });

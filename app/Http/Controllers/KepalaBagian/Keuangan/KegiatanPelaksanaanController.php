@@ -310,7 +310,6 @@ class KegiatanPelaksanaanController extends Controller
                 dlkgt.id_detail_laksana_kegiatan,
                 dlkgt.id_laksana_kegiatan,
                 dlkgt.id_detail_rba,
-                dlkgt.jumlah,
                 dlkgt.total,
                 dlkgt.created_at,
                 dlkgt.updated_at,

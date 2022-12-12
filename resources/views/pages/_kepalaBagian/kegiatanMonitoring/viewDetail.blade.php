@@ -273,6 +273,7 @@
                                                                     '{!! $lkgt->tgl_ajuan !!}',
                                                                     '{!! $lkgt->waktu_pelaksanaan !!}',
                                                                     '{!! $lkgt->waktu_selesai !!}',
+                                                                    '{!! $lkgt->lokasi !!}',
                                                                 )">Ubah
                                                             Data</a>
                                                         @endif
@@ -441,19 +442,24 @@
                     <form id="formaddLaksKegiatanMdl">
                         <div class="row mb-2">
                             <div class="col">
+                                <label for="lokasiaddLaksKegiatanMdl">Lokasi: <i class="text-red">*</i></label>
+                                <input type="text" placeholder="Lokasi Kegiatan" class="form-control"
+                                    id="lokasiaddLaksKegiatanMdl">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-2">
                                 <label for="tahunaddLaksKegiatanMdl">Tahun: <i class="text-red">*</i></label>
                                 <input type="number" value="{{ date('Y') }}" class="form-control"
                                     id="tahunaddLaksKegiatanMdl">
                             </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col">
+                            <div class="col-5">
                                 <label for="waktu_pelaksanaanaddLaksKegiatanMdl">Waktu Pelakasanaan: <i
                                         class="text-red">*</i></label>
                                 <input type="datetime-local" class="form-control"
                                     id="waktu_pelaksanaanaddLaksKegiatanMdl">
                             </div>
-                            <div class="col">
+                            <div class="col-5">
                                 <label for="waktu_selesaiaddLaksKegiatanMdl">Waktu Selesai: <i
                                         class="text-red">*</i></label>
                                 <input type="datetime-local" class="form-control" id="waktu_selesaiaddLaksKegiatanMdl">
@@ -483,18 +489,23 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <input type="hidden" id="id_laksana_kegiatanupdateLaksKegiatanMdl">
-                                <label for="tahunupdateLaksKegiatanMdl">Tahun: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="tahunupdateLaksKegiatanMdl">
+                                <label for="lokasiupdateLaksKegiatanMdl">Lokasi: <i class="text-red">*</i></label>
+                                <input type="text" placeholder="Lokasi Kegiatan" class="form-control"
+                                    id="lokasiupdateLaksKegiatanMdl">
                             </div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col">
+                            <div class="col-2">
+                                <label for="tahunupdateLaksKegiatanMdl">Tahun: <i class="text-red">*</i></label>
+                                <input type="number" class="form-control" id="tahunupdateLaksKegiatanMdl">
+                            </div>
+                            <div class="col-5">
                                 <label for="waktu_pelaksanaanupdateLaksKegiatanMdl">Waktu Pelakasanaan: <i
                                         class="text-red">*</i></label>
                                 <input type="datetime-local" class="form-control"
                                     id="waktu_pelaksanaanupdateLaksKegiatanMdl">
                             </div>
-                            <div class="col">
+                            <div class="col-5">
                                 <label for="waktu_selesaiupdateLaksKegiatanMdl">Waktu Selesai: <i
                                         class="text-red">*</i></label>
                                 <input type="datetime-local" class="form-control"
@@ -728,6 +739,7 @@
                         data: {
                             _token: "{!! csrf_token() !!}",
                             id_kegiatan_divisi: "{!! request()->get('id_kegiatan_divisi') !!}",
+                            lokasi: $('#lokasiaddLaksKegiatanMdl').val(),
                             waktu_pelaksanaan: $('#waktu_pelaksanaanaddLaksKegiatanMdl').val(),
                             waktu_selesai: $('#waktu_selesaiaddLaksKegiatanMdl').val(),
                             tahun: $('#tahunaddLaksKegiatanMdl').val(),
@@ -872,6 +884,7 @@
                         data: {
                             _token: "{!! csrf_token() !!}",
                             id_laksana_kegiatan: $('#id_laksana_kegiatanupdateLaksKegiatanMdl').val(),
+                            lokasi: $('#lokasiupdateLaksKegiatanMdl').val(),
                             waktu_pelaksanaan: $('#waktu_pelaksanaanupdateLaksKegiatanMdl').val(),
                             waktu_selesai: $('#waktu_selesaiupdateLaksKegiatanMdl').val(),
                             tahun: $('#tahunupdateLaksKegiatanMdl').val(),
@@ -929,12 +942,13 @@
             return id;
         }
 
-        function modalUpdateDetailLaks(p1, p2, p3, p4, p5) {
+        function modalUpdateDetailLaks(p1, p2, p3, p4, p5, p6) {
             $("#id_laksana_kegiatanupdateLaksKegiatanMdl").val(p1);
             $("#tahunupdateLaksKegiatanMdl").val(p2);
             $("#tgl_ajuanupdateLaksKegiatanMdl").val(p3);
             $("#waktu_pelaksanaanupdateLaksKegiatanMdl").val(p4);
             $("#waktu_selesaiupdateLaksKegiatanMdl").val(p5);
+            $("#lokasiupdateLaksKegiatanMdl").val(p6);
             $('#updateLaksKegiatanMdl').modal('show');
         }
 

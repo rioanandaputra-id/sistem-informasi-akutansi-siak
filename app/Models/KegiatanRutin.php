@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LaksanaKegiatan extends Model
+class KegiatanRutin extends Model
 {
-    protected $table = 'laksana_kegiatan';
-    protected $primaryKey = 'id_laksana_kegiatan';
+    protected $table = 'kegiatan_rutin';
+    protected $primaryKey = 'id_kegiatan_rutin';
     public $keyType = 'string';
 
     public $timestamps = true;
@@ -15,18 +16,20 @@ class LaksanaKegiatan extends Model
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
-        'id_laksana_kegiatan',
-        'id_kegiatan_divisi',
-        'tgl_ajuan',
-        'urutan_laksana_kegiatan',
+        'id_kegiatan_rutin',
+        'id_divisi',
+        'tgl_buat',
+        'tgl_submit',
+        'periode',
+        'nm_kegiatan',
+        'a_aktif',
+        'a_verif_rba',
+        'tgl_verif_rba',
+        'id_verif_rba',
+        'catatan',
         'a_verif_kabag_keuangan',
         'id_verif_kabag_keuangan',
         'tgl_verif_kabag_keuangan',
-        'catatan',
-        'waktu_pelaksanaan',
-        'waktu_selesai',
-        'tahun',
-        'lokasi',
         'created_at',
         'updated_at',
         'deleted_at',

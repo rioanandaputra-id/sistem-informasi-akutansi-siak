@@ -217,4 +217,13 @@ class KegiatanController extends Controller
         ");
         return view('pages._kepalaBagian.kegiatan.viewGetAll', compact('info', 'program'));
     }
+
+    public function viewCreate()
+    {
+        $info = [
+            'title' => 'Pengajuan Kegiatan Rutin',
+            'site_active' => 'KegiatanBaru',
+        ];
+        return view('pages._kepalaBagian.kegiatan.viewCreate', compact('info'));
+    }
 }

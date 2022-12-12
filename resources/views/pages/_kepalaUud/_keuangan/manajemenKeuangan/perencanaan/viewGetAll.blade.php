@@ -30,6 +30,16 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="float-left">
+                                <div class="input-group">
+                                    <select class="form-control mr-2" id="divisi">
+                                        <option value="-" selected>-- Semua Bagian --</option>
+                                        @foreach($divisi AS $n=>$r)
+                                        <option value="{{ $r->id_divisi }}">{{ $r->nm_divisi }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="float-right text-bold">
                                 <div class="input-group">
                                     <button id="refresh" type="button" class="btn btn-info noborder">
@@ -85,6 +95,11 @@
                 $('#tbkegiatan').DataTable().clear().destroy();
                 tbkegiatan();
             });
+
+            $('#divisi').on('change', function() {
+                $('#tbkegiatan').DataTable().clear().destroy();
+                tbkegiatan();
+            });
         });
     </script>
 
@@ -99,10 +114,11 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kepalabagian.ManajemenKeuangan.perencanaan.apiGetAll') }}',
+                    url: '{{ route('kepalauud.ManajemenKeuangan.perencanaan.apiGetAll') }}',
                     type: 'GET',
                     data: {
-                        tahun: $('#tahun').val()
+                        tahun: $('#tahun').val(),
+                        divisi: $('#divisi').val()
                     }
                 },
                 columns: [{

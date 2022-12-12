@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignUuid('id_verif_kabag_keuangan')->nullable();
             $table->dateTime('tgl_verif_kabag_keuangan')->nullable();
             $table->text('catatan')->nullable();
+            $table->string('lokasi', 255);
             $table->dateTime('waktu_pelaksanaan');
             $table->dateTime('waktu_selesai');
             $table->char('tahun', 4);

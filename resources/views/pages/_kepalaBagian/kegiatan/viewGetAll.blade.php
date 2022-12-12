@@ -27,6 +27,10 @@
                                     Refresh</button>
                                 <button id="selected" type="button" class="btn btn-info noborder"><i
                                         class="fas fa-sign-in-alt"></i> Ajukan</button>
+                                <!-- <a href="{{ route('kepalabagian.Kegiatan.viewCreate') }}" type="button"
+                                    class="btn btn-info noborder">
+                                    <i class="fas fa-plus-circle"></i> Rutin
+                                </a> -->
                             </div>
                             <div class="float-right">
                                 <b>Daftar Kegiatan</b>

@@ -27,6 +27,10 @@
                             </div>
                             <div class="float-right text-bold">
                                 <b>Daftar Kegiatan</b>
+                                <select class="form-control-sm" id="kategori">
+                                    <option value="program" selected>Program</option>
+                                    <option value="rutin">Rutin</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -176,6 +180,58 @@
                         name: 'kdiv_a_verif_rba',
                         visible: false,
                     },
+                ]
+            });
+        }
+
+        function tbkegiatanrutin() {
+            $('#tbkegiatandivisi').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                searching: true,
+                paging: true,
+                info: true,
+                ordering: false,
+                ajax: {
+                    url: '{{ route('kepalabagian.KegiatanRutin.apiGetAll') }}',
+                    type: 'GET'
+                },
+                columns: [{
+                        data: 'id_kegiatan_rutin',
+                        name: 'id_kegiatan_rutin',
+                        title: '<input type="checkbox" id="ckAll" />',
+                        width: '5px',
+                        render: function(data, type, row) {
+                            return `<input type="checkbox" class="ckItem" value="${data}" />`;
+                        }
+                    }, {
+                        data: 'nm_kegiatan',
+                        name: 'nm_kegiatan',
+                        title: 'Kegiatan',
+                        render: function(data, type, row) {
+                            return `<a href="{{ route('kepalabagian.KegiatanRutin.viewDetail') }}?id_kegiatan_rutin=${row.id_kegiatan_rutin}">${data}</a>`;
+                        }
+                    }, {
+                        data: 'nm_divisi',
+                        name: 'nm_divisi',
+                        title: 'Divisi',
+                    }, {
+                        data: 'a_verif_kabag_keuangan',
+                        name: 'a_verif_kabag_keuangan',
+                        title: 'Status',
+                        render: function(data, type, row) {
+                            if (row.tgl_submit === null) {
+                                return "Belum Disimpan";
+                            } else if (row.a_verif_rba == "1") {
+                                return "Belum Diverifikasi Tim RBA";
+                            } else if (row.a_verif_kabag_keuangan == "1") {
+                                return "Belum Diverifikasi Bendahara Pengeluaran";
+                            } else {
+                                return "Terverifikasi";
+                            }
+                        }
+                    }
                 ]
             });
         }

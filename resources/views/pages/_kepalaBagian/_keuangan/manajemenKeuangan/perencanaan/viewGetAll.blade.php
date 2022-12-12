@@ -22,13 +22,11 @@
                         <div class="col">
                             <div class="float-left">
                                 <div class="input-group">
-                                    <select class="form-control" id="misi" style="max-width: 620px">
-                                        <option value="" selected>Pilih</option>
-                                        @foreach ($misi as $msi)
-                                        <option value="{{ $msi->id_misi }}">
-                                            {{ $msi->periode . ' - ' . $msi->nm_misi }}
-                                        </option>
-                                        @endforeach
+                                    <select class="form-control mr-2" id="tahun">
+                                        <option value="-" selected>-- Semua Tahun --</option>
+                                        @for($i=0;$i<3;$i++)
+                                        <option value="{{ date('Y')-$i }}">{{ date('Y')-$i }}</option>
+                                        @endfor
                                     </select>
                                 </div>
                             </div>
@@ -46,6 +44,12 @@
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
                                 <thead class="bg-info"></thead>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3"><h5>Total</h4></th>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -71,12 +75,13 @@
     <script>
         $(document).ready(function() {
             tbkegiatan();
+            $('#btnAdd').hide();
 
             $("#refresh").click(function() {
                 $('#tbkegiatan').DataTable().ajax.reload();
             });
 
-            $('#misi').on('change', function() {
+            $('#tahun').on('change', function() {
                 $('#tbkegiatan').DataTable().clear().destroy();
                 tbkegiatan();
             });
@@ -90,35 +95,60 @@
                 serverSide: true,
                 responsive: true,
                 searching: true,
-                paging: true,
+                paging: false,
                 info: true,
                 ordering: false,
                 ajax: {
                     url: '{{ route('kepalabagian.ManajemenKeuangan.perencanaan.apiGetAll') }}',
                     type: 'GET',
                     data: {
-                        misi: $('#misi').val()
+                        tahun: $('#tahun').val()
                     }
                 },
                 columns: [{
-                        data: 'id_kegiatan',
-                        name: 'id_kegiatan',
+                        data: 'id_akun',
+                        name: 'id_akun',
                         title: '<input type="checkbox" id="ckAll" />',
                         width: '5px',
                         render: function(data, type, row) {
                             return `<input type="checkbox" class="ckItem" value="${data}" />`;
                         }
-                    }, {
-                        data: 'nm_kegiatan',
-                        name: 'nm_kegiatan',
-                        title: 'Kegiatan',
                     },
                     {
-                        data: 'a_aktif',
-                        name: 'a_aktif',
-                        title: 'Status',
+                        data: 'no_akun',
+                        name: 'no_akun',
+                        title: 'No. Akun',
+                    },
+                    {
+                        data: 'nm_akun',
+                        name: 'nm_akun',
+                        title: 'Nama Akun',
+                    },
+                    {
+                        data: 'rencana_anggaran',
+                        name: 'rencana_anggaran',
+                        title: 'Rencana Anggaran',
+                        className: 'dt-right',
+                        render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
                     }
-                ]
+                ],
+                footerCallback: function (row, data, start, end, display) {
+                    var api = this.api();
+                    var intVal = function (i) {
+                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                    };
+                    var numFormat = $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' ).display;
+                    // Total over all pages
+                    total = api
+                        .column(3)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+        
+                    // Update footer
+                    $(api.column(3).footer()).html("<h5>"+numFormat(total)+"</h5>");
+                },
             });
         }
     </script>

@@ -99,7 +99,7 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kepalabagian.ManajemenKeuangan.perencanaan.apiGetAll') }}',
+                    url: '{{ route('kepalabagian.ManajemenKeuangan.penganggaranPendapatan.apiGetAll') }}',
                     type: 'GET',
                     data: {
                         tahun: $('#tahun').val()
@@ -125,9 +125,9 @@
                         title: 'Nama Akun',
                     },
                     {
-                        data: 'rencana_anggaran',
-                        name: 'rencana_anggaran',
-                        title: 'Rencana Anggaran',
+                        data: 'realisasi_anggaran',
+                        name: 'realisasi_anggaran',
+                        title: 'Realisasi Anggaran',
                         className: 'dt-right',
                         render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
                     }

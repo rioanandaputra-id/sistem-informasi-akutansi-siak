@@ -45,7 +45,7 @@
                         </div>
                         <div class="col">
                             <select id="divisi" class="form-control filter">
-                                <option value="">-- Divisi --</option>
+                                <option value="">-- Semua Bagian --</option>
                                 @foreach ($divisi as $div)
                                     <option value="{{ $div->id_divisi }}">{{ $div->nm_divisi }}</option>
                                 @endforeach
@@ -53,7 +53,7 @@
                         </div>
                         <div class="col">
                             <select id="kegiatan" class="form-control filter">
-                                <option value="">-- Kegiatan --</option>
+                                <option value="">-- Semua Kegiatan --</option>
                                 @foreach ($kegiatan as $kgt)
                                     <option value="{{ $kgt->id_kegiatan }}">{{ $kgt->nm_kegiatan }}</option>
                                 @endforeach

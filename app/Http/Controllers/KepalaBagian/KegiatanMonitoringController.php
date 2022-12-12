@@ -304,6 +304,7 @@ class KegiatanMonitoringController extends Controller
                 lkgt.id_verif_kabag_keuangan,
                 lkgt.tgl_verif_kabag_keuangan,
                 lkgt.catatan,
+                lkgt.lokasi,
                 lkgt.waktu_pelaksanaan,
                 lkgt.waktu_selesai,
                 lkgt.tahun,
@@ -336,7 +337,7 @@ class KegiatanMonitoringController extends Controller
                 AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
             ORDER BY lkgt.created_at ASC
         ");
-        $akun = DB::select("SELECT * FROM akun WHERE no_akun_induk = '5'");
+        $akun = DB::select("SELECT * FROM akun WHERE SUBSTR(no_akun_induk,1,1) = '5'");
         return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
     }
 
@@ -555,6 +556,7 @@ class KegiatanMonitoringController extends Controller
             DB::beginTransaction();
             $rules = [
                 'id_kegiatan_divisi' => 'required|uuid',
+                'lokasi' => 'required',
                 'waktu_pelaksanaan' => 'required|date',
                 'waktu_selesai' => 'required|date',
                 'tahun' => 'required|numeric',
@@ -572,6 +574,7 @@ class KegiatanMonitoringController extends Controller
 
             $id_laksana_kegiatan = guid();
             $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
+            $lokasi = $this->request->lokasi;
             $waktu_pelaksanaan = $this->request->waktu_pelaksanaan;
             $waktu_selesai = $this->request->waktu_selesai;
             $tahun = $this->request->tahun;
@@ -593,6 +596,7 @@ class KegiatanMonitoringController extends Controller
                 'id_kegiatan_divisi' => $id_kegiatan_divisi,
                 'urutan_laksana_kegiatan' => $urutan_laksana_kegiatan + 1,
                 'a_verif_kabag_keuangan' => '1',
+                'lokasi' => $lokasi,
                 'waktu_pelaksanaan' => $waktu_pelaksanaan,
                 'waktu_selesai' => $waktu_selesai,
                 'tahun' => $tahun,
@@ -643,6 +647,7 @@ class KegiatanMonitoringController extends Controller
             } else {
                 $rules = [
                     'id_laksana_kegiatan' => 'required|uuid',
+                    'lokasi' => 'required',
                     'waktu_pelaksanaan' => 'required',
                     'waktu_selesai' => 'required',
                     'tahun' => 'required',
@@ -660,6 +665,7 @@ class KegiatanMonitoringController extends Controller
             }
 
             $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
+            $lokasi = $this->request->lokasi;
             $waktu_pelaksanaan = $this->request->waktu_pelaksanaan;
             $waktu_selesai = $this->request->waktu_selesai;
             $tahun = $this->request->tahun;
@@ -682,6 +688,7 @@ class KegiatanMonitoringController extends Controller
             $this->mLaksanaKegiatan->where('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
                 'tgl_ajuan' => $type_request == 'ajuan' ? now() : DB::raw('tgl_ajuan'),
                 'a_verif_kabag_keuangan' => $type_request == 'ajuan' ? '1' : DB::raw('a_verif_kabag_keuangan'),
+                'lokasi' => $lokasi ?? DB::raw('lokasi'),
                 'waktu_pelaksanaan' => $waktu_pelaksanaan ?? DB::raw('waktu_pelaksanaan'),
                 'waktu_selesai' => $waktu_selesai ?? DB::raw('waktu_selesai'),
                 'tahun' => $tahun ?? DB::raw('tahun'),
@@ -802,6 +809,7 @@ class KegiatanMonitoringController extends Controller
                 kgt.nm_kegiatan,
                 lkgt.urutan_laksana_kegiatan,
                 lkgt.tgl_ajuan,
+                lkgt.lokasi,
                 lkgt.waktu_pelaksanaan,
                 lkgt.waktu_selesai,
                 CASE
@@ -929,7 +937,7 @@ class KegiatanMonitoringController extends Controller
                     'error' => $validator->errors(),
                     'response' => null
                 ];
-            }
+            }            
 
             $id_detail_laksana_kegiatan = guid();
             $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
@@ -937,6 +945,20 @@ class KegiatanMonitoringController extends Controller
             $total = $this->request->total;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
+
+            //CHECK
+            $rbaCheck = $this->mDetailRba->where('id_detail_rba', $id_detail_rba)->sum('total');
+            $laksKegCheck = $this->mDetailLaksanaKegiatan->where('id_detail_rba', $id_detail_rba)->sum('total');
+            $checkSum = $rbaCheck - $laksKegCheck;
+            if($total > $checkSum) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
 
             $this->mDetailLaksanaKegiatan->create([
                 'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,
