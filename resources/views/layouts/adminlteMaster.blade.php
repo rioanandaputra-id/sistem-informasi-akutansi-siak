@@ -11,6 +11,8 @@
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="{{ asset('adminlte320/plugins/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('adminlte320/dist/css/adminlte.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte320/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte320/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <style>
         .noborder {
             border-radius: 0 !important;
@@ -41,11 +43,12 @@
 
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">v1.0</div>
-            <strong>Hak Cipta &copy; {{ date('Y') }} <a href="{{ url('/') }}">SIAK</a></strong>
+            <strong>Hak Cipta &copy; {{ date('Y') }} <a href="{{ url('/') }}">PMI</a></strong>
         </footer>
     </div>
 
     <script src="{{ asset('adminlte320/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('adminlte320/plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('adminlte320/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('adminlte320/dist/js/adminlte.min.js') }}"></script>
     <script>
@@ -63,6 +66,15 @@
                 localStorage.setItem('navbarTrigger', 'open');
             }
         }
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+        });
     </script>
     @stack('js')
 </body>

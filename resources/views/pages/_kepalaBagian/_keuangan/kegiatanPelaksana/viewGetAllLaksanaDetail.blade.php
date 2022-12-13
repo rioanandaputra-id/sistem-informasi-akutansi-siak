@@ -80,6 +80,11 @@
                                             <td>Pengajuan Ke-{{ $kgt->urutan_laksana_kegiatan }}</td>
                                         </tr>
                                         <tr>
+                                            <td>Lokasi</td>
+                                            <td>:</td>
+                                            <td>{{ $kgt->lokasi }}</td>
+                                        </tr>
+                                        <tr>
                                             <td>Waktu Pengajuan</td>
                                             <td>:</td>
                                             <td>{{ tglWaktuIndonesia($kgt->tgl_ajuan) ?? '-' }}</td>

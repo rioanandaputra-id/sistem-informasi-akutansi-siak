@@ -580,6 +580,7 @@ class KegiatanMonitoringController extends Controller
             $tahun = $this->request->tahun;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
+
             $urutan_laksana_kegiatan =
                 DB::select("
                     SELECT

@@ -28,6 +28,8 @@ class DashboardController extends Controller
                 AND laks.a_verif_kabag_keuangan = '2'
         ");
 
+        $id_divisi = (!is_null(\Auth::user()->id_divisi)) ? " AND kdiv.id_divisi='".\Auth::user()->id_divisi."'" : " ";
+
         $pengeluaran = DB::SELECT("
             SELECT
                 kdiv.id_divisi,
@@ -43,7 +45,7 @@ class DashboardController extends Controller
                         rba
                         JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba
                     WHERE
-                        rba.a_verif_wilayah='2'
+                        rba.deleted_at IS NULL
                     GROUP BY
                         rba.id_kegiatan_divisi
                 ) AS rba ON rba.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
@@ -64,6 +66,7 @@ class DashboardController extends Controller
             WHERE
                 kdiv.a_verif_rba='2'
                 AND date_part('year', kdiv.created_at)='".date('Y')."'
+                ".$id_divisi."
             GROUP BY
                 kdiv.id_divisi
         ");

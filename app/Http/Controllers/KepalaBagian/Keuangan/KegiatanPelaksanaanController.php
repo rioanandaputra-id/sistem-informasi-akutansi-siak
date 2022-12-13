@@ -255,6 +255,7 @@ class KegiatanPelaksanaanController extends Controller
                 kgt.nm_kegiatan,
                 lkgt.urutan_laksana_kegiatan,
                 lkgt.tgl_ajuan,
+                lkgt.lokasi,
                 lkgt.waktu_pelaksanaan,
                 lkgt.waktu_selesai,
                 CASE

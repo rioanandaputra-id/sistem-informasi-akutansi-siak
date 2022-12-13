@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignUuid('id_detail_laksana_kegiatan');
             $table->foreignUuid('id_akun');
             $table->double('total');
-            $table->foreignUuid('id_dokumen');
+            $table->foreignUuid('id_dokumen')->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
             $table->dateTime('deleted_at')->nullable();

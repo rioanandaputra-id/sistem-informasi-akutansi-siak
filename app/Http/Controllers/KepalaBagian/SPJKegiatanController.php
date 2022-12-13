@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers\KepalaBagian;
 
+use App\Models\Spj;
+use App\Models\DetailSpj;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables as DaTables;
+use Exception;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 
 class SPJKegiatanController extends Controller
 {   
     private $request;
+    private $mSpj;
+    private $mDetailSpj;
     public function __construct()
     {
         $this->request = app(Request::class);
+        $this->mSpjKegiatan = app(Spj::class);
+        $this->mDetailSpj = app(DetailSpj::class);
     }
 
     public function apiGetAll()
@@ -72,6 +81,77 @@ class SPJKegiatanController extends Controller
                 return number_to_currency_without_rp(($ed->total_masuk - $ed->total_keluar), 0);
             })
             ->make(true);
+    }
+
+    public function apiCreateDetailSpj()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_spj' => 'required',
+                'id_detail_laksana_kegiatan' => 'required',
+                'id_akun' => 'required',
+                'total' => 'required',
+                // 'dokumen' => 'required'
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            $id_detail_spj = guid();
+            $id_spj = $this->request->id_spj;
+            $id_detail_laksana_kegiatan = $this->request->id_detail_laksana_kegiatan;
+            $id_akun = $this->request->id_akun;
+            $total = $this->request->total;
+            $created_at = now();
+            $id_updater = Auth::user()->id_user;
+
+            $this->mDetailSpj->create([
+                'id_detail_spj' => $id_detail_spj,
+                'id_spj' => $id_spj,
+                'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,
+                'id_akun' => $id_akun,
+                'total' => $total,
+                'created_at' => $created_at,
+                'id_updater' => $id_updater,
+            ]);
+
+            DB::commit();
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Created',
+                'error' => null,
+                'response' => ['id_detail_spj' => $id_detail_spj]
+            ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
     }
 
     public function viewGetAll()
@@ -136,27 +216,24 @@ class SPJKegiatanController extends Controller
                 AND bku.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
         ");
 
-        $rincBku = DB::select("
+        $detLaks = DB::select("
             SELECT
-                bku.id_bku,
-                bku.id_laksana_kegiatan,
-                akn.no_akun,
-                akn.nm_akun,
-                bku.masuk,
-                bku.keluar,
-                bku.saldo,
-                bku.tanggal
+                dlaks.id_detail_laksana_kegiatan,
+                drba.id_akun,
+                dlaks.total,
+                akun.no_akun,
+                akun.nm_akun
             FROM
-                bku as bku
-                LEFT JOIN akun AS akn ON akn.id_akun = bku.id_akun
-                AND akn.deleted_at IS NULL
+                detail_laksana_kegiatan AS dlaks
+                JOIN detail_rba AS drba ON drba.id_detail_rba=dlaks.id_detail_rba
+                JOIN akun ON akun.id_akun=drba.id_akun
             WHERE
-                bku.deleted_at IS NULL
-                AND bku.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
-            ORDER BY
-                bku.masuk,
-                bku.tanggal ASC
+                dlaks.id_laksana_kegiatan='".$id_laksana_kegiatan."'
         ");
-        return view('pages._kepalaBagian.spj.viewDetail', compact('info', 'bku', 'rincBku'));
+
+        $akun = DB::select("SELECT * FROM akun WHERE SUBSTR(no_akun_induk,1,1) = '5'");
+        $spj = \App\Models\SPJ::where('id_laksana_kegiatan', $id_laksana_kegiatan)->first();
+
+        return view('pages._kepalaBagian.spj.viewDetail', compact('info', 'bku', 'detLaks', 'akun', 'spj'));
     }
 }

@@ -326,7 +326,7 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="id_akunaddDetailRbaMdl">Akun: <i class="text-red">*</i></label>
-                                <select id="id_akunaddDetailRbaMdl" class="form-control">
+                                <select id="id_akunaddDetailRbaMdl" class="form-control select2bs4">
                                     <option value="">---</option>
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
@@ -342,7 +342,7 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="indikatoraddDetailRbaMdl">Indikator: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="indikatoraddDetailRbaMdl">
+                                <input type="number" class="form-control" id="indikatoraddDetailRbaMdl" min="1">
                             </div>
                             <div class="col">
                                 <label for="voladdDetailRbaMdl">Volume: <i class="text-red">*</i></label>
@@ -385,7 +385,7 @@
                             <div class="col">
                                 <input type="hidden" id="id_detail_rbaupdateDetailRbaMdl">
                                 <label for="id_akunupdateDetailRbaMdl">Akun: <i class="text-red">*</i></label>
-                                <select id="id_akunupdateDetailRbaMdl" class="form-control">
+                                <select id="id_akunupdateDetailRbaMdl" class="form-control  select2bs4">
                                     <option value="">---</option>
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
@@ -401,7 +401,7 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="indikatorupdateDetailRbaMdl">Indikator: <i class="text-red">*</i></label>
-                                <input type="number" class="form-control" id="indikatorupdateDetailRbaMdl">
+                                <input type="number" class="form-control" id="indikatorupdateDetailRbaMdl" min="1">
                             </div>
                             <div class="col">
                                 <label for="volupdateDetailRbaMdl">Volume: <i class="text-red">*</i></label>
@@ -561,20 +561,28 @@
                 $('#addDetailRbaMdl').modal('show');
             });
 
+            $("#indikatoraddDetailRbaMdl").keyup(function() {
+                $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $("#voladdDetailRbaMdl").val() * $(this).val());
+            });
+
+            $("#indikatorupdateDetailRbaMdl").keyup(function() {
+                $("#totaladdDetailRbaMdl").val($("#tarifaddDetailRbaMdl").val() * $("#voladdDetailRbaMdl").val() * $(this).val());
+            });
+
             $("#tarifaddDetailRbaMdl").keyup(function() {
-                $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $(this).val());
+                $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $("#indikatoraddDetailRbaMdl").val() * $(this).val());
             });
 
             $("#voladdDetailRbaMdl").keyup(function() {
-                $("#totaladdDetailRbaMdl").val($("#tarifaddDetailRbaMdl").val() * $(this).val());
+                $("#totaladdDetailRbaMdl").val($("#tarifaddDetailRbaMdl").val() * $("#indikatordetailDetailRbaMdl").val() * $(this).val());
             });
 
             $("#tarifupdateDetailRbaMdl").keyup(function() {
-                $("#totalupdateDetailRbaMdl").val($("#volupdateDetailRbaMdl").val() * $(this).val());
+                $("#totalupdateDetailRbaMdl").val($("#volupdateDetailRbaMdl").val() * $("#indikatoraddDetailRbaMdl").val() * $(this).val());
             });
 
             $("#volupdateDetailRbaMdl").keyup(function() {
-                $("#totalupdateDetailRbaMdl").val($("#tarifupdateDetailRbaMdl").val() * $(this).val());
+                $("#totalupdateDetailRbaMdl").val($("#tarifupdateDetailRbaMdl").val() * $("#indikatordetailDetailRbaMdl").val() * $(this).val());
             });
 
             $("#btnaddDetailRbaMdl").click(function() {

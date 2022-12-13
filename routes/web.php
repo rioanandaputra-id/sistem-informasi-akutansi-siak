@@ -195,6 +195,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::controller(KepalaBagianSPJKegiatanController::class)->prefix('kepalabagian/SPJKegiatan')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.SPJKegiatan.apiGetAll');
+        Route::post('apiCreateDetailSpj', 'apiCreateDetailSpj')->name('kepalabagian.SPJKegiatan.apiCreateDetailSpj');
         Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.SPJKegiatan.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('kepalabagian.SPJKegiatan.viewDetail');
     });
