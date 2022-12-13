@@ -112,6 +112,7 @@ class SPJKegiatanController extends Controller
             $total = $this->request->total;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
+            $id_dokumen = '1';
 
             $this->mDetailSpj->create([
                 'id_detail_spj' => $id_detail_spj,
@@ -121,6 +122,7 @@ class SPJKegiatanController extends Controller
                 'total' => $total,
                 'created_at' => $created_at,
                 'id_updater' => $id_updater,
+                'id_dokumen' => $id_dokumen
             ]);
 
             DB::commit();
