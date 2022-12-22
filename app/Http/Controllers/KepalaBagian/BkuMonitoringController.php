@@ -59,6 +59,7 @@ class BkuMonitoringController extends Controller
                 AND msi.deleted_at IS NULL
             WHERE
                 bku.deleted_at IS NULL
+                AND pgm.id_misi IS NOT NULL
                 AND bku.id_divisi = '" . Auth::user()->id_divisi . "'
         ");
         return DaTables::of($apiGetAll)
@@ -154,7 +155,7 @@ class BkuMonitoringController extends Controller
                 bku.deleted_at IS NULL
                 AND bku.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
             ORDER BY
-                bku.masuk,
+                bku.masuk DESC,
                 bku.tanggal ASC
         ");
         return view('pages._kepalaBagian.bkuMonitoring.viewDetail', compact('info', 'bku', 'rincBku'));

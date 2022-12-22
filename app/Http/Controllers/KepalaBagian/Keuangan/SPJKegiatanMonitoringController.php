@@ -249,6 +249,7 @@ class SPJKegiatanMonitoringController extends Controller
                 AND msi.deleted_at IS NULL
             WHERE
                 bku.deleted_at IS NULL
+                AND pgm.id_misi IS NOT NULL
                 AND bku.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
         ");
 

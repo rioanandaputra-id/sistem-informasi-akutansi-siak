@@ -24,6 +24,7 @@ use App\Http\Controllers\KepalaBagian\SPJKegiatanController as KepalaBagianSPJKe
 
 use App\Http\Controllers\BendaharaPengeluaran\KegiatanRutinController as BendaharaPengeluaranKegiatanRutinController;
 use App\Http\Controllers\BendaharaPengeluaran\KegiatanRutinPelaksanaanController as BendaharaPengeluaranKegiatanRutinPelaksanaanController;
+use App\Http\Controllers\BendaharaPengeluaran\SPJKegiatanRutinController as BendaharaPengeluaranSPJKegiatanRutinController;
 
 use App\Http\Controllers\TimRba\KegiatanMonitoringController as TimRbaKegiatanMonitoringController;
 use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
@@ -232,5 +233,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('apiUpdate', 'apiUpdate')->name('bendaharapengeluaran.KegiatanRutinPelaksana.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('bendaharapengeluaran.KegiatanRutinPelaksana.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('bendaharapengeluaran.KegiatanRutinPelaksana.viewDetail');
+    });
+    Route::controller(BendaharaPengeluaranSPJKegiatanRutinController::class)->prefix('bendaharapengeluaran/SPJKegiatanRutin')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('bendaharapengeluaran.SPJKegiatanRutin.apiGetAll');
+        Route::post('apiCreateDetailSpj', 'apiCreateDetailSpj')->name('bendaharapengeluaran.SPJKegiatanRutin.apiCreateDetailSpj');
+        Route::get('viewGetAll', 'viewGetAll')->name('bendaharapengeluaran.SPJKegiatanRutin.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('bendaharapengeluaran.SPJKegiatanRutin.viewDetail');
     });
 });
