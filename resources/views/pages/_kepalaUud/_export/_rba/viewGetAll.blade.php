@@ -141,7 +141,7 @@
                             } else if (row.id_rba != null && row.tgl_submit == null) {
                                 return 'Belum Submit';
                             } else {
-                                var route = ]row.id_kegiatan;
+                                var route = row.id_kegiatan;
                                 return `<a href="${route}" class="btn btn-info"><i class="fas fa-print"></i> Print</a>`;
                             }
                         }
