@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('dokumen', function (Blueprint $table) {
             $table->increments('id_dokumen');
             $table->text('nm_dokumen');
-            $table->string('mimee_type');
             $table->text('nm_asli_dokumen');
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();

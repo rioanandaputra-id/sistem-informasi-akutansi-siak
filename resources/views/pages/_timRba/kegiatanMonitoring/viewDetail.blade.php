@@ -99,7 +99,7 @@
                                 <table class="mt-3">
                                     <tbody>
                                         <tr>
-                                            <th colspan="3">Verifikasi Kepala UUD</th>
+                                            <th colspan="3">Verifikasi Kepala UDD</th>
                                         </tr>
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
@@ -121,7 +121,7 @@
                                 <table class="mt-3 mb-4">
                                     <tbody>
                                         <tr>
-                                            <th colspan="3">Verifikasi Kepala Wilayah</th>
+                                            <th colspan="3">Verifikasi Kepala Pengurus Wilayah</th>
                                         </tr>
                                         <tr>
                                             <td style="min-width: 200px">Status</td>

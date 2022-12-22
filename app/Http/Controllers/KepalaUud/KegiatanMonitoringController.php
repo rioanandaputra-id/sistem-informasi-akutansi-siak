@@ -47,15 +47,15 @@ class KegiatanMonitoringController extends Controller
                 END AS kdiv_a_verif_rba,
                 CASE
                     rba.a_verif_rba
-                    WHEN '2' THEN 'Disetujui Kepala UUD'
-                    WHEN '3' THEN 'Ditolak Kepala UUD'
-                    ELSE 'Belum Diverifikasi Kepala UUD'
+                    WHEN '2' THEN 'Disetujui Kepala UDD'
+                    WHEN '3' THEN 'Ditolak Kepala UDD'
+                    ELSE 'Belum Diverifikasi Kepala UDD'
                 END AS rba_a_verif_rba,
                 CASE
                     rba.a_verif_wilayah
-                    WHEN '2' THEN 'Disetujui Kepala Wilayah'
-                    WHEN '3' THEN 'Ditolak Kepala Wilayah'
-                    ELSE 'Belum Diverifikasi Kepala Wilayah'
+                    WHEN '2' THEN 'Disetujui Kepala Pengurus Wilayah'
+                    WHEN '3' THEN 'Ditolak Kepala Pengurus Wilayah'
+                    ELSE 'Belum Diverifikasi Kepala Pengurus Wilayah'
                 END AS rba_a_verif_wilayah,
                 kdiv.id_verif_rba AS kdiv_id_verif_rba,
                 kdiv.tgl_verif_rba AS kdiv_tgl_verif_rba,
@@ -111,15 +111,15 @@ class KegiatanMonitoringController extends Controller
                 END AS kdiv_a_verif_rba,
                 CASE
                     rba.a_verif_rba
-                    WHEN '2' THEN 'Disetujui Kepala UUD'
-                    WHEN '3' THEN 'Ditolak Kepala UUD'
-                    ELSE 'Belum Diverifikasi Kepala UUD'
+                    WHEN '2' THEN 'Disetujui Kepala UDD'
+                    WHEN '3' THEN 'Ditolak Kepala UDD'
+                    ELSE 'Belum Diverifikasi Kepala UDD'
                 END AS rba_a_verif_rba,
                 CASE
                     rba.a_verif_wilayah
-                    WHEN '2' THEN 'Disetujui Kepala Wilayah'
-                    WHEN '3' THEN 'Ditolak Kepala Wilayah'
-                    ELSE 'Belum Diverifikasi Kepala Wilayah'
+                    WHEN '2' THEN 'Disetujui Kepala Pengurus Wilayah'
+                    WHEN '3' THEN 'Ditolak Kepala Pengurus Wilayah'
+                    ELSE 'Belum Diverifikasi Kepala Pengurus Wilayah'
                 END AS rba_a_verif_wilayah,
                 kdiv.id_verif_rba AS kdiv_id_verif_rba,
                 kdiv.tgl_verif_rba AS kdiv_tgl_verif_rba,
@@ -186,6 +186,12 @@ class KegiatanMonitoringController extends Controller
                 'updated_at' => $updated_at,
                 'id_updater' => $id_updater,
             ]);
+
+            if($a_verif_rba=='3') {
+                \App\Models\Rba::whereIn('id_kegiatan_divisi', $id_kegiatan_divisi)->update([
+                    'tgl_submit' => null,
+                ]);
+            }
 
             DB::commit();
             return [

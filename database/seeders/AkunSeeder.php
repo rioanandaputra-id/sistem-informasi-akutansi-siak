@@ -12,7 +12,7 @@ class AkunSeeder extends Seeder
         Akun::truncate();
         $csvFile = fopen(base_path("docs/csv/akun.csv"), "r");
         $firstline = true;
-        while (($data = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+        while (($data = fgetcsv($csvFile, 2000, ";")) !== FALSE) {
             if (!$firstline) {
                 Akun::create(
                     [

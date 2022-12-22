@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\KepalaBagian\Keuangan;
+namespace App\Http\Controllers\KepalaWilayah\Keuangan;
 
 use App\Http\Controllers\Controller;
 use Exception;
@@ -26,14 +26,15 @@ class ManajemenKeuangan extends Controller
             'title' => 'Perencanaan',
             'site_active' => 'Perencanaan',
         ];
-        $misi = DB::SELECT("SELECT * FROM misi ORDER BY periode DESC, created_at ASC");
-        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.perencanaan.viewGetAll', compact('info','misi'));
+        $divisi = \App\Models\Divisi::whereNull('deleted_at')->orderBy('nm_divisi')->get();
+        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.perencanaan.viewGetAll', compact('info','divisi'));
     }
 
     public function perencanaanApiGetAll()
     {
         try {
             $tahun = ($this->request->tahun == "-") ? " " : " AND date_part('year', rba.tgl_submit)='".$this->request->tahun."'";
+            $divisi = ($this->request->divisi == "-") ? " " : " AND kdiv.id_divisi='".$this->request->divisi."'";
             $apiGetAll = DB::SELECT("
                 SELECT
                     akun.id_akun,
@@ -54,9 +55,9 @@ class ManajemenKeuangan extends Controller
                             JOIN rba ON rba.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
                             JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba
                         WHERE
-                            kdiv.id_divisi='".Auth::user()->id_divisi."'
-                            AND rba.a_verif_wilayah='2'
+                            rba.a_verif_wilayah='2'
                             ".$tahun."
+                            ".$divisi."
                         GROUP BY
                             drba.id_akun
                     ) AS rencana ON rencana.id_akun=akun.id_akun
@@ -96,13 +97,14 @@ class ManajemenKeuangan extends Controller
             ]
         ];
         $akun = \App\Models\Akun::where('no_akun_induk', 5)->orderBy('no_akun')->get();
-        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.penganggaran.pendapatan.viewGetAll', compact('info'));
+        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.penganggaran.pendapatan.viewGetAll', compact('info'));
     }
 
     public function penganggaranPendapatanApiGetAll()
     {
         try {
             $tahun = ($this->request->tahun == "-") ? " " : " AND date_part('year', spj.created_at)='".$this->request->tahun."'";
+            $divisi = ($this->request->divisi == "-") ? " " : " AND kdiv.id_divisi='".$this->request->divisi."'";
             $apiGetAll = DB::SELECT("
                 SELECT
                     akun.id_akun,
@@ -120,12 +122,13 @@ class ManajemenKeuangan extends Controller
                             SUM(dspj.total) AS realisasi_anggaran
                         FROM
                             kegiatan_divisi AS kdiv
-                            JOIN spj ON spj.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                            JOIN laksana_kegiatan AS lkeg ON lkeg.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                            JOIN spj ON spj.id_laksana_kegiatan=lkeg.id_laksana_kegiatan
                             JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
                         WHERE
-                            kdiv.id_divisi='".Auth::user()->id_divisi."'
+                            spj.a_verif_kabag_keuangan='2'
                             ".$tahun."
-                            AND (spj.a_verif_bendahara_pengeluaran='2' OR spj.a_verif_kabag_keuangan='2')
+                            ".$divisi."
                         GROUP BY
                             dspj.id_akun
                     ) AS realisasi ON realisasi.id_akun=akun.id_akun
@@ -167,13 +170,14 @@ class ManajemenKeuangan extends Controller
             ]
         ];
         $akun = \App\Models\Akun::where('no_akun_induk', 5)->orderBy('no_akun')->get();
-        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.penganggaran.pengeluaran.viewGetAll', compact('info'));
+        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.penganggaran.pengeluaran.viewGetAll', compact('info'));
     }
 
     public function penganggaranPengeluaranApiGetAll()
     {
         try {
             $tahun = ($this->request->tahun == "-") ? " " : " AND date_part('year', spj.created_at)='".$this->request->tahun."'";
+            $divisi = ($this->request->divisi == "-") ? " " : " AND kdiv.id_divisi='".$this->request->divisi."'";
             $apiGetAll = DB::SELECT("
                 SELECT
                     akun.id_akun,
@@ -191,13 +195,13 @@ class ManajemenKeuangan extends Controller
                             SUM(dspj.total) AS realisasi_anggaran
                         FROM
                             kegiatan_divisi AS kdiv
-                            JOIN laksana_kegiatan AS lkeg ON lkeg.id_kegiatan_divisi=kdiv.id_kegiatan_divisi AND lkeg.deleted_at IS NULL
-                            JOIN spj ON spj.id_laksana_kegiatan=lkeg.id_laksana_kegiatan AND spj.deleted_at IS NULL
-                            JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj AND dspj.deleted_at IS NULL
+                            JOIN laksana_kegiatan AS lkeg ON lkeg.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                            JOIN spj ON spj.id_laksana_kegiatan=lkeg.id_laksana_kegiatan
+                            JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
                         WHERE
-                            kdiv.id_divisi='".Auth::user()->id_divisi."'
+                            spj.a_verif_kabag_keuangan='2'
                             ".$tahun."
-                            AND (spj.a_verif_bendahara_pengeluaran='2' OR spj.a_verif_kabag_keuangan='2')
+                            ".$divisi."
                         GROUP BY
                             dspj.id_akun
                     ) AS realisasi ON realisasi.id_akun=akun.id_akun
@@ -206,6 +210,7 @@ class ManajemenKeuangan extends Controller
                 ORDER BY
                     akun.no_akun, akun.nm_akun ASC
             ");
+
             return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
@@ -234,7 +239,7 @@ class ManajemenKeuangan extends Controller
             'title' => 'Penatausahaan',
             'site_active' => 'Penatausahaan'
         ];
-        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.penatausahaan.viewGetAll', compact('info'));
+        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.penatausahaan.viewGetAll', compact('info'));
     }
 
     public function penatausahaanApiGetAll()
@@ -270,7 +275,7 @@ class ManajemenKeuangan extends Controller
             'title' => 'Pelaporan',
             'site_active' => 'Pelaporan'
         ];
-        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.pelaporan.viewGetAll', compact('info'));
+        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.pelaporan.viewGetAll', compact('info'));
     }
 
     public function pelaporanApiGetAll()

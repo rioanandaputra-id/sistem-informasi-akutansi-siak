@@ -86,23 +86,23 @@
                     render: function(data, type, row) {
                         return `<a href="{!! route('bendaharapengeluaran.SPJKegiatanRutin.viewDetail') !!}?id_laksana_kegiatan=${row.id_laksana_kegiatan}">Pelaksanaan Ke-${row.urutan_laksana_kegiatan}</a>`;
                     }
-                }, {
+                },
+                {
                     data: 'nm_kegiatan',
                     name: 'nm_kegiatan',
-                    title: 'Kegiatan, Program, Misi',
+                    title: 'Kegiatan',
                     render: function(data, type, row) {
                         return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
                     }
                 },
                 {
-                    data: 'total_masuk',
-                    name: 'total_masuk',
-                    title: 'Total Anggaran',
-                    className: 'dt-right'
+                    data: 'status',
+                    name: 'status',
+                    title: 'Status'
                 },
                 {
-                    data: 'total_keluar',
-                    name: 'total_keluar',
+                    data: 'total_realisasi',
+                    name: 'total_realisasi',
                     title: 'Total Realisasi',
                     className: 'dt-right'
                 },]

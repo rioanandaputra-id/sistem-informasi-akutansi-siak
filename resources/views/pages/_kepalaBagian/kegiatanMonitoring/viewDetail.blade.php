@@ -43,7 +43,7 @@
                             @foreach ($kegiatan as $kgt)
                                 @php
                                     $lockBtnDetailRba = $kgt->tgl_submit ? 'disabled' : '';
-                                    $lockBtnLaksana = $kgt->rba_a_verif_wilayah == 'Disetujui Kepala Wilayah' ? '' : 'disabled';
+                                    $lockBtnLaksana = $kgt->rba_a_verif_wilayah == 'Disetujui Kepala Pengurus Wilayah' ? '' : 'disabled';
                                     $IdRba = $kgt->id_rba;
                                 @endphp
                                 <table>
@@ -104,7 +104,7 @@
                                 <table class="mt-3">
                                     <tbody>
                                         <tr>
-                                            <th colspan="3">Verifikasi Kepala UUD</th>
+                                            <th colspan="3">Verifikasi Kepala UDD</th>
                                         </tr>
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
@@ -126,7 +126,7 @@
                                 <table class="mt-3 mb-4">
                                     <tbody>
                                         <tr>
-                                            <th colspan="3">Verifikasi Kepala Wilayah</th>
+                                            <th colspan="3">Verifikasi Kepala Pengurus Wilayah</th>
                                         </tr>
                                         <tr>
                                             <td style="min-width: 200px">Status</td>
@@ -562,7 +562,7 @@
             });
 
             $("#indikatoraddDetailRbaMdl").keyup(function() {
-                $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $("#voladdDetailRbaMdl").val() * $(this).val());
+                $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $("#tarifaddDetailRbaMdl").val() * $(this).val());
             });
 
             $("#indikatorupdateDetailRbaMdl").keyup(function() {
@@ -574,15 +574,15 @@
             });
 
             $("#voladdDetailRbaMdl").keyup(function() {
-                $("#totaladdDetailRbaMdl").val($("#tarifaddDetailRbaMdl").val() * $("#indikatordetailDetailRbaMdl").val() * $(this).val());
+                $("#totaladdDetailRbaMdl").val($("#tarifaddDetailRbaMdl").val() * $("#indikatoraddDetailRbaMdl").val() * $(this).val());
             });
 
             $("#tarifupdateDetailRbaMdl").keyup(function() {
-                $("#totalupdateDetailRbaMdl").val($("#volupdateDetailRbaMdl").val() * $("#indikatoraddDetailRbaMdl").val() * $(this).val());
+                $("#totalupdateDetailRbaMdl").val($("#volupdateDetailRbaMdl").val() * $("#indikatorupdateDetailRbaMdl").val() * $(this).val());
             });
 
             $("#volupdateDetailRbaMdl").keyup(function() {
-                $("#totalupdateDetailRbaMdl").val($("#tarifupdateDetailRbaMdl").val() * $("#indikatordetailDetailRbaMdl").val() * $(this).val());
+                $("#totalupdateDetailRbaMdl").val($("#tarifupdateDetailRbaMdl").val() * $("#indikatorupdateDetailRbaMdl").val() * $(this).val());
             });
 
             $("#btnaddDetailRbaMdl").click(function() {
@@ -696,7 +696,8 @@
                             url: "{!! route('kepalabagian.KegiatanMonitoring.apiUpdate') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
-                                id_rba: "{!! $IdRba !!}"
+                                id_rba: "{!! $IdRba !!}",
+                                id_kegiatan_divisi: "{!! request()->get('id_kegiatan_divisi') !!}",
                             }
                         }).done(function(res) {
                             if (res.status) {
@@ -962,7 +963,7 @@
 
         function modalUpdateDetailRba(p1, p2, p3, p4, p5, p6, p7){
             $("#id_detail_rbaupdateDetailRbaMdl").val(p1);
-            $("#id_akunupdateDetailRbaMdl").val(p2);
+            $("#id_akunupdateDetailRbaMdl").val(p2).trigger('change');
             $("#satuanupdateDetailRbaMdl").val(p3);
             $("#indikatorupdateDetailRbaMdl").val(p4);
             $("#volupdateDetailRbaMdl").val(p5);

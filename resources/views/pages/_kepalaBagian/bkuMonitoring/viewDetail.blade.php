@@ -58,7 +58,13 @@
                                         <tr class="bg-purple">
                                             <td>Total Anggaran</td>
                                             <td>:</td>
-                                            <td>{{ number_to_currency_without_rp($bk->total_masuk - $bk->total_keluar, 0) }}
+                                            <td>{{ number_to_currency_without_rp($bk->total_masuk, 0) }}
+                                            </td>
+                                        </tr>
+                                        <tr class="bg-success">
+                                            <td>Total Realisasi</td>
+                                            <td>:</td>
+                                            <td>{{ number_to_currency_without_rp($bk->total_keluar, 0) }}
                                             </td>
                                         </tr>
                                     @endforeach

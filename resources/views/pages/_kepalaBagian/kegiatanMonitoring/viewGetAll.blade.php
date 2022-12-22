@@ -161,9 +161,9 @@
                         render: function(data, type, row) {
                             if (row.tgl_submit === null) {
                                 return 'Belum Disimpan';
-                            } else if (row.rba_a_verif_wilayah != "Belum Diverifikasi Kepala Wilayah") {
+                            } else if (row.rba_a_verif_wilayah != "Belum Diverifikasi Kepala Pengurus Wilayah") {
                                 return row.rba_a_verif_wilayah;
-                            } else if (row.rba_a_verif_rba != "Belum Diverifikasi Kepala UUD") {
+                            } else if (row.rba_a_verif_rba != "Belum Diverifikasi Kepala UDD") {
                                 return row.rba_a_verif_rba;
                             } else {
                                 return row.kdiv_a_verif_rba;

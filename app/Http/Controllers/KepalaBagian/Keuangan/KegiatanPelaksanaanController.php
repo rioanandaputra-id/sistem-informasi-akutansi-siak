@@ -116,6 +116,20 @@ class KegiatanPelaksanaanController extends Controller
                 'id_updater' => $id_updater,
             ]);
 
+            if($a_verif_kabag_keuangan=='3') {
+                LaksanaKegiatan::whereIn('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
+                    'tgl_ajuan' => null
+                ]);
+                DB::commit();
+                return [
+                    'status' => true,
+                    'latency' => AppLatency(),
+                    'message' => 'Updated',
+                    'error' => null,
+                    'response' => ['id_laksana_kegiatan' => $id_laksana_kegiatan]
+                ];
+            }
+
             $laksanaKegiatan = DB::select("
                 SELECT
                     lkgt.id_laksana_kegiatan,

@@ -70,7 +70,23 @@ class DashboardController extends Controller
             GROUP BY
                 kdiv.id_divisi
         ");
+
+
+        if(!is_null(\Auth::user()->id_divisi)) {
+            $kdiv = \App\Models\KegiatanDivisi::where('id_divisi', \Auth::user()->id_divisi)->pluck('id_kegiatan_divisi');
+            $laksKeg = \App\Models\LaksanaKegiatan::whereIn('id_kegiatan_divisi', $kdiv)->pluck('id_laksana_kegiatan');
+
+            $realisasiKegiatan = \App\Models\LaksanaKegiatan::whereNull('deleted_at')->whereIn('id_kegiatan_divisi', $kdiv)->where('a_verif_kabag_keuangan', 2)->count();
+            $spjday = \App\Models\Spj::whereNull('deleted_at')->whereIn('id_laksana_kegiatan', $laksKeg)->whereDay('created_at', date('d'))->count();
+            $spjmonth = \App\Models\Spj::whereNull('deleted_at')->whereIn('id_laksana_kegiatan', $laksKeg)->whereMonth('created_at', date('m'))->count();
+            $spjyears = \App\Models\Spj::whereNull('deleted_at')->whereIn('id_laksana_kegiatan', $laksKeg)->whereYear('created_at', date('Y'))->count();
+        } else {
+            $realisasiKegiatan = \App\Models\LaksanaKegiatan::whereNull('deleted_at')->where('a_verif_kabag_keuangan', 2)->count();
+            $spjday = \App\Models\Spj::whereNull('deleted_at')->whereDay('created_at', date('d'))->count();
+            $spjmonth = \App\Models\Spj::whereNull('deleted_at')->whereMonth('created_at', date('m'))->count();
+            $spjyears = \App\Models\Spj::whereNull('deleted_at')->whereYear('created_at', date('Y'))->count();
+        }
         
-        return view('pages.dashboard', compact('info','kegiatan','pengeluaran'));
+        return view('pages.dashboard', compact('info','kegiatan','pengeluaran', 'realisasiKegiatan', 'spjday', 'spjmonth', 'spjyears'));
     }
 }

@@ -122,12 +122,11 @@ class ManajemenKeuangan extends Controller
                             SUM(dspj.total) AS realisasi_anggaran
                         FROM
                             kegiatan_divisi AS kdiv
-                            JOIN spj ON spj.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                            JOIN laksana_kegiatan AS lkeg ON lkeg.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                            JOIN spj ON spj.id_laksana_kegiatan=lkeg.id_laksana_kegiatan
                             JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
                         WHERE
-                            (spj.a_verif_bendahara_pengeluaran='2' OR spj.a_verif_kabag_keuangan='2')
-                            ".$tahun."
-                            ".$divisi."
+                            spj.a_verif_kabag_keuangan='2'
                         GROUP BY
                             dspj.id_akun
                     ) AS realisasi ON realisasi.id_akun=akun.id_akun
@@ -194,10 +193,11 @@ class ManajemenKeuangan extends Controller
                             SUM(dspj.total) AS realisasi_anggaran
                         FROM
                             kegiatan_divisi AS kdiv
-                            JOIN spj ON spj.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                            JOIN laksana_kegiatan AS lkeg ON lkeg.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                            JOIN spj ON spj.id_laksana_kegiatan=lkeg.id_laksana_kegiatan
                             JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
                         WHERE
-                            (spj.a_verif_bendahara_pengeluaran='2' OR spj.a_verif_kabag_keuangan='2')
+                            spj.a_verif_kabag_keuangan='2'
                             ".$tahun."
                             ".$divisi."
                         GROUP BY

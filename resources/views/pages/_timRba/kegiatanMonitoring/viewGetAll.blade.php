@@ -252,9 +252,9 @@
                         name: 'rba_a_verif_wilayah',
                         title: 'Status',
                         render: function(data, type, row) {
-                            if (row.rba_a_verif_wilayah != "Belum Diverifikasi Kepala Wilayah") {
+                            if (row.rba_a_verif_wilayah != "Belum Diverifikasi Kepala Pengurus Wilayah") {
                                 return row.rba_a_verif_wilayah;
-                            } else if (row.rba_a_verif_rba != "Belum Diverifikasi Kepala UUD") {
+                            } else if (row.rba_a_verif_rba != "Belum Diverifikasi Kepala UDD") {
                                 return row.rba_a_verif_rba;
                             } else {
                                 return row.kdiv_a_verif_rba;

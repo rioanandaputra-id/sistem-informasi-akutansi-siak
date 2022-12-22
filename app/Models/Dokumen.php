@@ -9,7 +9,6 @@ class Dokumen extends Model
 {
     protected $table = 'dokumen';
     protected $primaryKey = 'id_dokumen';
-    protected $incrementing = true;
 
     public $timestamps = true;
     const CREATED_AT = 'created_at';
@@ -18,7 +17,6 @@ class Dokumen extends Model
     protected $fillable = [
         'id_dokumen',
         'nm_dokumen',
-        'mime_type',
         'nm_asli_dokumen',
         'created_at',
         'updated_at',

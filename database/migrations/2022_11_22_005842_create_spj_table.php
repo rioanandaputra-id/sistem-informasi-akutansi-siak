@@ -11,12 +11,14 @@ return new class extends Migration
         Schema::create('spj', function (Blueprint $table) {
             $table->uuid('id_spj')->primary();
             $table->foreignUuid('id_laksana_kegiatan');
+            $table->datetime('tgl_ajuan')->nullable();
             $table->char('a_verif_bendahara_pengeluaran', 1)->nullable();
             $table->foreignUuid('id_verif_bendahara_pengeluaran')->nullable();
             $table->dateTime('tgl_verif_bendahara_pengeluaran')->nullable();
             $table->char('a_verif_kabag_keuangan', 1)->nullable();
             $table->foreignUuid('id_verif_kabag_keuangan')->nullable();
             $table->dateTime('tgl_verif_kabag_keuangan')->nullable();
+            $table->text('catatan')->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
             $table->dateTime('deleted_at')->nullable();

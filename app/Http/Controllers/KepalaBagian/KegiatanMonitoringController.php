@@ -55,15 +55,15 @@ class KegiatanMonitoringController extends Controller
                 END AS kdiv_a_verif_rba,
                 CASE
                     rba.a_verif_rba
-                    WHEN '2' THEN 'Disetujui Kepala UUD'
-                    WHEN '3' THEN 'Ditolak Kepala UUD'
-                    ELSE 'Belum Diverifikasi Kepala UUD'
+                    WHEN '2' THEN 'Disetujui Kepala UDD'
+                    WHEN '3' THEN 'Ditolak Kepala UDD'
+                    ELSE 'Belum Diverifikasi Kepala UDD'
                 END AS rba_a_verif_rba,
                 CASE
                     rba.a_verif_wilayah
-                    WHEN '2' THEN 'Disetujui Kepala Wilayah'
-                    WHEN '3' THEN 'Ditolak Kepala Wilayah'
-                    ELSE 'Belum Diverifikasi Kepala Wilayah'
+                    WHEN '2' THEN 'Disetujui Kepala Pengurus Wilayah'
+                    WHEN '3' THEN 'Ditolak Kepala Pengurus Wilayah'
+                    ELSE 'Belum Diverifikasi Kepala Pengurus Wilayah'
                 END AS rba_a_verif_wilayah,
                 kdiv.id_verif_rba AS kdiv_id_verif_rba,
                 kdiv.tgl_verif_rba AS kdiv_tgl_verif_rba,
@@ -117,15 +117,15 @@ class KegiatanMonitoringController extends Controller
                 END AS kdiv_a_verif_rba,
                 CASE
                     rba.a_verif_rba
-                    WHEN '2' THEN 'Disetujui Kepala UUD'
-                    WHEN '3' THEN 'Ditolak Kepala UUD'
-                    ELSE 'Belum Diverifikasi Kepala UUD'
+                    WHEN '2' THEN 'Disetujui Kepala UDD'
+                    WHEN '3' THEN 'Ditolak Kepala UDD'
+                    ELSE 'Belum Diverifikasi Kepala UDD'
                 END AS rba_a_verif_rba,
                 CASE
                     rba.a_verif_wilayah
-                    WHEN '2' THEN 'Disetujui Kepala Wilayah'
-                    WHEN '3' THEN 'Ditolak Kepala Wilayah'
-                    ELSE 'Belum Diverifikasi Kepala Wilayah'
+                    WHEN '2' THEN 'Disetujui Kepala Pengurus Wilayah'
+                    WHEN '3' THEN 'Ditolak Kepala Pengurus Wilayah'
+                    ELSE 'Belum Diverifikasi Kepala Pengurus Wilayah'
                 END AS rba_a_verif_wilayah,
                 kdiv.id_verif_rba AS kdiv_id_verif_rba,
                 kdiv.tgl_verif_rba AS kdiv_tgl_verif_rba,
@@ -161,6 +161,7 @@ class KegiatanMonitoringController extends Controller
             DB::beginTransaction();
             $rules = [
                 'id_rba' => 'required',
+                'id_kegiatan_divisi' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
             if ($validator->fails()) {
@@ -172,6 +173,7 @@ class KegiatanMonitoringController extends Controller
                     'response' => null
                 ];
             }
+            $id_kegiatan_divisi = $this->request->id_kegiatan_divisi;
             $id_rba = $this->request->id_rba;
             $tgl_submit = now();
             $updated_at = now();
@@ -188,8 +190,16 @@ class KegiatanMonitoringController extends Controller
             } else {
                 $this->mRba->where('id_rba', $id_rba)->update([
                     'tgl_submit' => $tgl_submit,
+                    'a_verif_rba' => '1',
+                    'tgl_verif_rba' => null,
+                    'a_verif_wilayah' => '1',
+                    'tgl_verif_wilayah' => null,
                     'updated_at' => $updated_at,
                     'id_updater' => $id_updater,
+                ]);
+                \App\Models\KegiatanDivisi::where('id_kegiatan_divisi', $id_kegiatan_divisi)->update([
+                    'a_verif_rba' => 1,
+                    'tgl_verif_rba' => null
                 ]);
                 DB::commit();
                 return [
@@ -581,6 +591,10 @@ class KegiatanMonitoringController extends Controller
             $created_at = now();
             $id_updater = Auth::user()->id_user;
 
+            if($waktu_pelaksanaan == $waktu_selesai) {
+                $waktu_selesai = date('Y-m-d\TH:i', strtotime($waktu_selesai) + 60);
+            }
+
             $urutan_laksana_kegiatan =
                 DB::select("
                     SELECT
@@ -597,6 +611,7 @@ class KegiatanMonitoringController extends Controller
                 'id_kegiatan_divisi' => $id_kegiatan_divisi,
                 'urutan_laksana_kegiatan' => $urutan_laksana_kegiatan + 1,
                 'a_verif_kabag_keuangan' => '1',
+                'tgl_verif_kabag_keuangan' => null,
                 'lokasi' => $lokasi,
                 'waktu_pelaksanaan' => $waktu_pelaksanaan,
                 'waktu_selesai' => $waktu_selesai,
@@ -689,6 +704,7 @@ class KegiatanMonitoringController extends Controller
             $this->mLaksanaKegiatan->where('id_laksana_kegiatan', $id_laksana_kegiatan)->update([
                 'tgl_ajuan' => $type_request == 'ajuan' ? now() : DB::raw('tgl_ajuan'),
                 'a_verif_kabag_keuangan' => $type_request == 'ajuan' ? '1' : DB::raw('a_verif_kabag_keuangan'),
+                'tgl_verif_kabag_keuangan' => null,
                 'lokasi' => $lokasi ?? DB::raw('lokasi'),
                 'waktu_pelaksanaan' => $waktu_pelaksanaan ?? DB::raw('waktu_pelaksanaan'),
                 'waktu_selesai' => $waktu_selesai ?? DB::raw('waktu_selesai'),

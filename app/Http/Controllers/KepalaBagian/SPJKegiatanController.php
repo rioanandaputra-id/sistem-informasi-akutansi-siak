@@ -4,6 +4,7 @@ namespace App\Http\Controllers\KepalaBagian;
 
 use App\Models\Spj;
 use App\Models\DetailSpj;
+use App\Models\Dokumen;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,11 +19,13 @@ class SPJKegiatanController extends Controller
     private $request;
     private $mSpj;
     private $mDetailSpj;
+    private $mDokumen;
     public function __construct()
     {
         $this->request = app(Request::class);
-        $this->mSpjKegiatan = app(Spj::class);
+        $this->mSpj = app(Spj::class);
         $this->mDetailSpj = app(DetailSpj::class);
+        $this->mDokumen = app(Dokumen::class);
     }
 
     public function apiGetAll()
@@ -32,10 +35,13 @@ class SPJKegiatanController extends Controller
                 DISTINCT ON (bku.id_laksana_kegiatan) bku.id_laksana_kegiatan,
                 bku.id_bku,
                 bku.id_divisi,
+                dvs.nm_divisi,
                 lkgt.urutan_laksana_kegiatan,
                 kgt.nm_kegiatan,
                 CONCAT('[ ', pgm.periode ,' ] ', pgm.nm_program) AS nm_program,
                 CONCAT('[ ', msi.periode ,' ] ', msi.nm_misi) AS nm_misi,
+                spj.a_verif_kabag_keuangan,
+                spj.a_verif_bendahara_pengeluaran,
                 (
                     SELECT
                         SUM(bbku.masuk)
@@ -47,19 +53,21 @@ class SPJKegiatanController extends Controller
                 ) AS total_masuk,
                 (
                     SELECT
-                        SUM(bbbku.keluar)
+                        SUM(dspj.total)
                     FROM
-                        bku AS bbbku
+                        detail_spj AS dspj
                     WHERE
-                        bbbku.id_laksana_kegiatan = bku.id_laksana_kegiatan
-                        AND bbbku.deleted_at IS NULL
-                ) AS total_keluar
+                        dspj.id_spj = spj.id_spj
+                        AND dspj.deleted_at IS NULL
+                ) AS total_realisasi
             FROM
                 bku AS bku
                 JOIN laksana_kegiatan AS lkgt ON lkgt.id_laksana_kegiatan = bku.id_laksana_kegiatan
                 AND lkgt.deleted_at IS NULL
+                JOIN spj ON spj.id_laksana_kegiatan=lkgt.id_laksana_kegiatan AND spj.deleted_at IS NULL
                 JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
                 AND kdiv.deleted_at IS NULL
+                JOIN divisi AS dvs ON dvs.id_divisi=kdiv.id_divisi AND dvs.deleted_at IS NULL
                 JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
@@ -75,12 +83,21 @@ class SPJKegiatanController extends Controller
             ->editColumn('total_masuk', function ($ed) {
                 return number_to_currency($ed->total_masuk, 0);
             })
-            ->editColumn('total_keluar', function ($ed) {
-                return number_to_currency($ed->total_keluar, 0);
+            ->editColumn('total_realisasi', function ($ed) {
+                return number_to_currency($ed->total_realisasi, 0);
             })
-            ->addColumn('total_saldo', function ($ed) {
-                return number_to_currency_without_rp(($ed->total_masuk - $ed->total_keluar), 0);
+            ->addColumn('status', function($data) {
+                if(is_null($data->a_verif_bendahara_pengeluaran) AND is_null($data->a_verif_kabag_keuangan)) {
+                    return 'Belum Disimpan';
+                } else if($data->a_verif_bendahara_pengeluaran == '1' OR $data->a_verif_kabag_keuangan == '1') {
+                    return 'Belum Diverifikasi';
+                } else if($data->a_verif_bendahara_pengeluaran == '3' OR $data->a_verif_kabag_keuangan == '3') {
+                    return 'Ditolak';
+                } else {
+                    return 'Disetujui';
+                }
             })
+            ->rawColumns(['status'])
             ->make(true);
     }
 
@@ -93,10 +110,10 @@ class SPJKegiatanController extends Controller
                 'id_detail_laksana_kegiatan' => 'required',
                 'id_akun' => 'required',
                 'total' => 'required',
-                // 'dokumen' => 'required'
+                'dokumen' => 'required'
             ];
             $validator = Validator::make(request()->all(), $rules);
-            if ($validator->fails()) {
+            if ($validator->fails() OR $this->request->total < 1) {
                 return [
                     'status' => false,
                     'latency' => AppLatency(),
@@ -113,7 +130,33 @@ class SPJKegiatanController extends Controller
             $total = $this->request->total;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
-            $id_dokumen = '1';
+
+            $totDetLaks = \App\Models\DetailLaksanaKegiatan::find($id_detail_laksana_kegiatan);
+            $totDetSpj = $this->mDetailSpj->where('id_detail_laksana_kegiatan', $id_detail_laksana_kegiatan)->whereNull('deleted_at')->sum('total');
+            $sumCheck = $totDetLaks->total - $totDetSpj;
+            if($total > $sumCheck) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'Total Melebihi Batas Anggaran!<br>Tersisa '.number_to_currency_without_rp($sumCheck, 0),
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            //Read Image
+            $image = $this->request->file('dokumen');
+            $filename = $image->getClientOriginalName();
+            $filepath = time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('storage/uploads'), $filepath);
+            //Store Image
+            $dokumen = $this->mDokumen->create([
+                'nm_dokumen' => $filepath,
+                'nm_asli_dokumen' => $filename,
+                'created_at' => now(),
+                'id_updater' => $id_updater
+            ]);
+            $id_dokumen = $dokumen->id_dokumen;
 
             $this->mDetailSpj->create([
                 'id_detail_spj' => $id_detail_spj,
@@ -134,6 +177,235 @@ class SPJKegiatanController extends Controller
                 'error' => null,
                 'response' => ['id_detail_spj' => $id_detail_spj]
             ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
+    public function apiUpdateDetailSpj()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_detail_spj' => 'required',
+                'id_spj' => 'required',
+                'id_detail_laksana_kegiatan' => 'required',
+                'id_akun' => 'required',
+                'total' => 'required',
+                'dokumen' => 'required'
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            $id_detail_spj = $this->request->id_detail_spj;
+            $id_spj = $this->request->id_spj;
+            $id_detail_laksana_kegiatan = $this->request->id_detail_laksana_kegiatan;
+            $id_akun = $this->request->id_akun;
+            $total = $this->request->total;
+            $updated_at = now();
+            $id_updater = Auth::user()->id_user;
+
+            $totDetLaks = \App\Models\DetailLaksanaKegiatan::find($id_detail_laksana_kegiatan);
+            $totDetSpj = $this->mDetailSpj->where('id_detail_laksana_kegiatan', $id_detail_laksana_kegiatan)->whereNull('deleted_at')->sum('total');
+            $lastTotDetSpj = $this->mDetailSpj::find($id_detail_spj);
+            $sumCheck = $totDetLaks->total - ($totDetSpj - $lastTotDetSpj->total);
+            if($total > $sumCheck) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'Total Melebihi Batas Anggaran!<br>Tersisa '.number_to_currency_without_rp($sumCheck, 0),
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            //Read Image
+            $image = $this->request->file('dokumen');
+            $filename = $image->getClientOriginalName();
+            $filepath = time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('storage/uploads'), $filepath);
+            //Store Image
+            $dokumen = $this->mDokumen->create([
+                'nm_dokumen' => $filepath,
+                'nm_asli_dokumen' => $filename,
+                'created_at' => now(),
+                'id_updater' => $id_updater
+            ]);
+            $id_dokumen = $dokumen->id_dokumen;
+
+            $this->mDetailSpj->where('id_detail_spj', $id_detail_spj)->update([
+                'id_spj' => $id_spj,
+                'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,
+                'id_akun' => $id_akun,
+                'total' => $total,
+                'updated_at' => $updated_at,
+                'id_updater' => $id_updater,
+                'id_dokumen' => $id_dokumen
+            ]);
+
+            DB::commit();
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Created',
+                'error' => null,
+                'response' => ['id_detail_spj' => $id_detail_spj]
+            ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
+    public function apiDeleteDetailSpj()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_detail_spj.*' => 'required|uuid',
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+
+            $id_detail_spj = $this->request->id_detail_spj;
+            $deleted_at = now();
+            $id_updater = Auth::user()->id_user;
+
+            $this->mDetailSpj->whereIn('id_detail_spj', $id_detail_spj)->update([
+                'deleted_at' => $deleted_at,
+                'id_updater' => $id_updater,
+            ]);
+
+            DB::commit();
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Deleted',
+                'error' => null,
+                'response' => ['id_detail_spj' => $id_detail_spj]
+            ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
+    public function apiUpdate()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_spj' => 'required'
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+            $id_spj = $this->request->id_spj;
+            $tgl_ajuan = now();
+            $updated_at = now();
+            $id_updater = Auth::user()->id_user;
+            $check = $this->mDetailSpj->where('id_spj', $id_spj)->whereNull('deleted_at')->count();
+            if ($check == 0) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'Rincian Detail SPJ Belum Anda Tambahkan!',
+                    'error' => null,
+                    'response' => ['id_spj' => $id_spj]
+                ];
+            } else {
+                $this->mSpj->where('id_spj', $id_spj)->update([
+                    'tgl_ajuan' => $tgl_ajuan,
+                    'a_verif_kabag_keuangan' => '1',
+                    'tgl_verif_kabag_keuangan' => null,
+                    'id_verif_kabag_keuangan' => null,
+                    'updated_at' => $updated_at,
+                    'id_updater' => $id_updater,
+                ]);
+                DB::commit();
+                return [
+                    'status' => true,
+                    'latency' => AppLatency(),
+                    'message' => 'Updated',
+                    'error' => null,
+                    'response' => ['id_spj' => $id_spj]
+                ];
+            }
         } catch (QueryException $e) {
             DB::rollBack();
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
@@ -234,8 +506,8 @@ class SPJKegiatanController extends Controller
                 dlaks.id_laksana_kegiatan='".$id_laksana_kegiatan."'
         ");
 
-        $akun = DB::select("SELECT * FROM akun WHERE SUBSTR(no_akun_induk,1,1) = '5'");
-        $spj = \App\Models\SPJ::where('id_laksana_kegiatan', $id_laksana_kegiatan)->first();
+        $akun = DB::select("SELECT * FROM akun WHERE SUBSTR(no_akun_induk,1,1) = '5' AND deleted_at IS NULL");
+        $spj = \App\Models\SPJ::where('id_laksana_kegiatan', $id_laksana_kegiatan)->whereNull('deleted_at')->first();
 
         return view('pages._kepalaBagian.spj.viewDetail', compact('info', 'bku', 'detLaks', 'akun', 'spj'));
     }
