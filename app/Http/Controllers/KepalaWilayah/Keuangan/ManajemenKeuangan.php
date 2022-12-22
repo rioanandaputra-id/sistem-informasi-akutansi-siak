@@ -27,7 +27,7 @@ class ManajemenKeuangan extends Controller
             'site_active' => 'Perencanaan',
         ];
         $divisi = \App\Models\Divisi::whereNull('deleted_at')->orderBy('nm_divisi')->get();
-        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.perencanaan.viewGetAll', compact('info','divisi'));
+        return view('pages._kepalaWilayah._keuangan.manajemenKeuangan.perencanaan.viewGetAll', compact('info','divisi'));
     }
 
     public function perencanaanApiGetAll()
@@ -97,7 +97,7 @@ class ManajemenKeuangan extends Controller
             ]
         ];
         $akun = \App\Models\Akun::where('no_akun_induk', 5)->orderBy('no_akun')->get();
-        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.penganggaran.pendapatan.viewGetAll', compact('info'));
+        return view('pages._kepalaWilayah._keuangan.manajemenKeuangan.penganggaran.pendapatan.viewGetAll', compact('info'));
     }
 
     public function penganggaranPendapatanApiGetAll()
@@ -170,7 +170,7 @@ class ManajemenKeuangan extends Controller
             ]
         ];
         $akun = \App\Models\Akun::where('no_akun_induk', 5)->orderBy('no_akun')->get();
-        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.penganggaran.pengeluaran.viewGetAll', compact('info'));
+        return view('pages._kepalaWilayah._keuangan.manajemenKeuangan.penganggaran.pengeluaran.viewGetAll', compact('info'));
     }
 
     public function penganggaranPengeluaranApiGetAll()
@@ -239,7 +239,7 @@ class ManajemenKeuangan extends Controller
             'title' => 'Penatausahaan',
             'site_active' => 'Penatausahaan'
         ];
-        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.penatausahaan.viewGetAll', compact('info'));
+        return view('pages._kepalaWilayah._keuangan.manajemenKeuangan.penatausahaan.viewGetAll', compact('info'));
     }
 
     public function penatausahaanApiGetAll()
@@ -275,7 +275,7 @@ class ManajemenKeuangan extends Controller
             'title' => 'Pelaporan',
             'site_active' => 'Pelaporan'
         ];
-        return view('pages._kepalawilayah._keuangan.manajemenKeuangan.pelaporan.viewGetAll', compact('info'));
+        return view('pages._kepalaWilayah._keuangan.manajemenKeuangan.pelaporan.viewGetAll', compact('info'));
     }
 
     public function pelaporanApiGetAll()
