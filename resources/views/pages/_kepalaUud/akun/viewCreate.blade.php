@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="no_akun">Sub Elemen: <i class="text-danger">*</i></label>
-                                    <input type="text" class="form-control @error('sub_elemen') is-invalid @enderror" value="{{ old('elemen') }}" id="sub_elemen" name="sub_elemen" maxlength="2" placeholder="00" required>
+                                    <input type="text" class="form-control @error('sub_elemen') is-invalid @enderror" value="{{ old('elemen') }}" id="sub_elemen" name="sub_elemen" maxlength="1" placeholder="0" required>
                                     @error('sub_elemen')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

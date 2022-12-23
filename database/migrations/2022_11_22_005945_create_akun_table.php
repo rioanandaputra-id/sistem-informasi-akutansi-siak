@@ -12,7 +12,7 @@ return new class extends Migration
             $table->uuid('id_akun')->primary();
             $table->uuid('no_akun_induk')->nullable();
             $table->string('elemen', 1);
-            $table->string('sub_elemen', 2);
+            $table->string('sub_elemen', 1);
             $table->string('jenis', 2);
             $table->string('no_akun', 4);
             $table->string('nm_akun', 255);
