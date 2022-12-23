@@ -137,7 +137,7 @@
                                                 dspj.id_detail_laksana_kegiatan,
                                                 dspj.id_akun,
                                                 dspj.total,
-                                                akun.no_akun,
+                                                CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
                                                 akun.nm_akun,
                                                 dok.nm_dokumen
                                             FROM
@@ -178,7 +178,7 @@
         </div>
     </div>
 
-    <div id="showDetailSpjMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="showDetailSpjMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -197,7 +197,7 @@
         </div>
     </div>
 
-    <div id="verifMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="verifMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">

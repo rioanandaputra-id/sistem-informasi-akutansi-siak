@@ -27,12 +27,12 @@
                         <form action="{{ route('kepalauud.master.akun.apiCreate') }}" method="POST">
                             @csrf
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
                                     <label for="no_akun_induk">No. Induk:</label>
                                     <select name="no_akun_induk" id="no_akun_induk" class="form-control @error('no_akun_induk') is-invalid @enderror">
                                         <option value="">-</option>
                                         @foreach ($noInduk as $ni)
-                                            <option value="{{ $ni->no_akun }}" {{ (old('no_akun_induk') == $ni->no_akun) ? 'selected' : ''}}>{{ $ni->no_akun }} - {{ $ni->nm_akun }}</option>
+                                            <option value="{{ $ni->id_akun }}" {{ (old('no_akun_induk') == $ni->no_akun) ? 'selected' : ''}}>{{ $ni->no_akun }} - {{ $ni->nm_akun }}</option>
                                         @endforeach
                                     </select>
                                     @error('no_akun_induk')
@@ -41,9 +41,38 @@
                                         </span>
                                     @enderror
                                 </div>
-                                <div class="form-group col-md-6">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="no_akun">Elemen: <i class="text-danger">*</i></label>
+                                    <input type="text" class="form-control @error('elemen') is-invalid @enderror" value="{{ old('elemen') }}" id="elemen" name="elemen" maxlength="1" placeholder="0" required>
+                                    @error('elemen')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="no_akun">Sub Elemen: <i class="text-danger">*</i></label>
+                                    <input type="text" class="form-control @error('sub_elemen') is-invalid @enderror" value="{{ old('elemen') }}" id="sub_elemen" name="sub_elemen" maxlength="2" placeholder="00" required>
+                                    @error('sub_elemen')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="no_akun">Jenis: <i class="text-danger">*</i></label>
+                                    <input type="text" class="form-control @error('jenis') is-invalid @enderror" value="{{ old('elemen') }}" id="jenis" name="jenis" maxlength="2" placeholder="00" required>
+                                    @error('jenis')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="form-group col-md-3">
                                     <label for="no_akun">No. Akun: <i class="text-danger">*</i></label>
-                                    <input type="text" class="form-control @error('no_akun') is-invalid @enderror" value="{{ old('no_akun') }}" id="no_akun" name="no_akun">
+                                    <input type="text" class="form-control @error('no_akun') is-invalid @enderror" value="{{ old('no_akun') }}" id="no_akun" name="no_akun" maxlength="4" placeholder="0000" required>
                                     @error('no_akun')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -52,19 +81,10 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-12">
                                     <label for="nm_akun">Nama Akun: <i class="text-danger">*</i></label>
-                                    <input type="text" class="form-control @error('nm_akun') is-invalid @enderror" value="{{ old('nm_akun') }}" id="nm_akun" name="nm_akun">
+                                    <input type="text" class="form-control @error('nm_akun') is-invalid @enderror" value="{{ old('nm_akun') }}" id="nm_akun" name="nm_akun" placeholder="Nama Akun" required>
                                     @error('nm_akun')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="sumber_akun">Sumber Akun:</label>
-                                    <input type="text" class="form-control @error('sumber_akun') is-invalid @enderror" value="{{ old('sumber_akun') }}" id="sumber_akun" name="sumber_akun">
-                                    @error('sumber_akun')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>

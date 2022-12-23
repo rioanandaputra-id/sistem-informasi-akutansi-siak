@@ -497,7 +497,7 @@ class SPJKegiatanRutinController extends Controller
                 dlaks.id_detail_laksana_kegiatan,
                 drba.id_akun,
                 dlaks.total,
-                akun.no_akun,
+                CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
                 akun.nm_akun
             FROM
                 detail_laksana_kegiatan AS dlaks

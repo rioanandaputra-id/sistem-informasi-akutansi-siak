@@ -123,28 +123,26 @@
                         id_divisi: $('#divisi').val(),
                     },
                 },
-                columns: [{
-                    data: 'urutan_laksana_kegiatan',
-                    name: 'urutan_laksana_kegiatan',
-                    title: 'Pengajuan',
-                    render: function(data, type, row) {
-                        return `<a href="{!! route('kepalabagian.SPJKegiatanMonitoring.viewDetail') !!}?id_laksana_kegiatan=${row.id_laksana_kegiatan}">Pelaksanaan Ke-${row.urutan_laksana_kegiatan}</a>`;
-                    }
-                }, 
+                columns: [
                 {
                     data: 'nm_divisi',
                     name: 'nm_divisi',
                     title: 'Bagian'
-                },
-                {
+                }, {
                     data: 'nm_kegiatan',
                     name: 'nm_kegiatan',
                     title: 'Kegiatan',
                     render: function(data, type, row) {
                         return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
                     }
-                },
-                {
+                }, {
+                    data: 'urutan_laksana_kegiatan',
+                    name: 'urutan_laksana_kegiatan',
+                    title: 'Pengajuan',
+                    render: function(data, type, row) {
+                        return `<a href="{!! route('kepalabagian.SPJKegiatanMonitoring.viewDetail') !!}?id_laksana_kegiatan=${row.id_laksana_kegiatan}">Pelaksanaan Ke-${row.urutan_laksana_kegiatan}</a>`;
+                    }
+                }, {
                     data: 'status',
                     name: 'status',
                     title: 'Status'

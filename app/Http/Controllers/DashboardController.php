@@ -28,7 +28,7 @@ class DashboardController extends Controller
                 AND laks.a_verif_kabag_keuangan = '2'
         ");
 
-        $id_divisi = (!is_null(\Auth::user()->id_divisi)) ? " AND kdiv.id_divisi='".\Auth::user()->id_divisi."'" : " ";
+        $id_divisi = (!is_null(\Auth::user()->id_divisi) && userRole(\Auth::user()->id_user)[0]->id_role != 2) ? " AND kdiv.id_divisi='".\Auth::user()->id_divisi."'" : " ";
 
         $pengeluaran = DB::SELECT("
             SELECT
@@ -71,8 +71,7 @@ class DashboardController extends Controller
                 kdiv.id_divisi
         ");
 
-
-        if(!is_null(\Auth::user()->id_divisi)) {
+        if(!is_null(\Auth::user()->id_divisi) && userRole(\Auth::user()->id_user)[0]->id_role != 2) {
             $kdiv = \App\Models\KegiatanDivisi::where('id_divisi', \Auth::user()->id_divisi)->pluck('id_kegiatan_divisi');
             $laksKeg = \App\Models\LaksanaKegiatan::whereIn('id_kegiatan_divisi', $kdiv)->pluck('id_laksana_kegiatan');
 

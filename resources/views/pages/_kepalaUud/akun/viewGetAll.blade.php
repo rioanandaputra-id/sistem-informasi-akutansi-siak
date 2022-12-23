@@ -85,12 +85,7 @@
                 }, {
                     data: 'no_akun',
                     name: 'no_akun',
-                    title: 'No.',
-                },
-                {
-                    data: 'no_akun_induk',
-                    name: 'no_akun_induk',
-                    title: 'No. Induk',
+                    title: 'No. Akun',
                 }, {
                     data: 'nm_akun',
                     name: 'nm_akun',
@@ -98,10 +93,10 @@
                     render: function(data, type, row) {
                         return `<a href="{!! route('kepalauud.master.akun.viewUpdate') !!}?id_akun=${row.id_akun}">${data}</a>`;
                     }
-                },  {
-                    data: 'sumber_akun',
-                    name: 'sumber_akun',
-                    title: 'Sumber',
+                }, {
+                    data: 'nm_akun_induk',
+                    name: 'nm_akun_induk',
+                    title: 'Akun Induk',
                 }, {
                     data: 'keterangan',
                     name: 'keterangan',

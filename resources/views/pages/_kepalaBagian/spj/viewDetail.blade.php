@@ -113,7 +113,7 @@
                                                 dspj.id_detail_laksana_kegiatan,
                                                 dspj.id_akun,
                                                 dspj.total,
-                                                akun.no_akun,
+                                                CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
                                                 akun.nm_akun,
                                                 dok.nm_dokumen
                                             FROM
@@ -170,7 +170,7 @@
         </div>
     </div>
 
-    <div id="addDetailSpjMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="addDetailSpjMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -191,8 +191,7 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="id_akunaddDetailSpjMdl">Akun: <i class="text-red">*</i></label>
-                                <select id="id_akunaddDetailSpjMdl" class="form-control">
-                                    <option value="">---</option>
+                                <select id="id_akunaddDetailSpjMdl" class="form-control select2bs4">
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
                                         </option>
@@ -223,7 +222,7 @@
         </div>
     </div>
 
-    <div id="updateDetailSpjMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="updateDetailSpjMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -238,15 +237,14 @@
                             <div class="col">
                                 <input type="hidden" id="id_detail_spjupdateDetailSpjMdl">
                                 <input type="hidden" id="id_detail_laksana_kegiatanupdateDetailSpjMdl">
-                                <label for="akunupdateDetailSpjMdl">Akun: <i class="text-red">*</i></label>
-                                <input type="text" class="form-control" id="akunupdateDetailSpjMdl" readonly>
+                                <!-- <label for="akunupdateDetailSpjMdl">Akun: <i class="text-red">*</i></label>
+                                <input type="text" class="form-control" id="akunupdateDetailSpjMdl" readonly> -->
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="id_akunupdateDetailSpjMdl">Akun: <i class="text-red">*</i></label>
-                                <select id="id_akunupdateDetailSpjMdl" class="form-control">
-                                    <option value="">---</option>
+                                <select id="id_akunupdateDetailSpjMdl" class="form-control select2bs4">
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
                                         </option>
@@ -277,7 +275,7 @@
         </div>
     </div>
 
-    <div id="showDetailSpjMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="showDetailSpjMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -538,7 +536,7 @@
         $("#id_spjupdateDetailSpjMdl").val(p2);
         $("#id_detail_laksana_kegiatanupdateDetailSpjMdl").val(p3);
         $("#akunupdateDetailSpjMdl").val(p4);
-        $("#id_akunupdateDetailSpjMdl").val(p5);
+        $("#id_akunupdateDetailSpjMdl").val(p5).trigger('change');
         $("#totalupdateDetailSpjMdl").val(p6);
         $('#updateDetailSpjMdl').modal('show');
     }

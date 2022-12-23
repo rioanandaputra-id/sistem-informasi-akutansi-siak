@@ -152,7 +152,7 @@
         </div>
     </div>
 
-    <div id="VerifMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="VerifMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">

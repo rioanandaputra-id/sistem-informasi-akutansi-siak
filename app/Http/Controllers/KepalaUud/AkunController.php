@@ -26,21 +26,21 @@ class AkunController extends Controller
             $apiGetAll = DB::select("
                 SELECT
                     akn.id_akun,
-                    akn.no_akun_induk,
-                    akn.no_akun,
+                    CONCAT(rakn.elemen, rakn.sub_elemen, rakn.jenis, rakn.no_akun) AS nm_akun_induk,
+                    CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                     akn.nm_akun,
                     akn.keterangan,
-                    akn.sumber_akun,
                     akn.created_at,
                     akn.updated_at,
                     akn.deleted_at,
                     akn.id_updater
                 FROM
                     akun AS akn
+                    LEFT JOIN akun AS rakn ON rakn.id_akun=akn.no_akun_induk AND rakn.deleted_at IS NULL
                 WHERE
                     akn.deleted_at IS NULL
                 ORDER BY
-                    akn.no_akun ASC
+                    no_akun ASC
             ");
             return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
@@ -72,10 +72,12 @@ class AkunController extends Controller
                 SELECT
                     akn.id_akun,
                     akn.no_akun_induk,
+                    akn.elemen,
+                    akn.sub_elemen,
+                    akn.jenis,
                     akn.no_akun,
                     akn.nm_akun,
                     akn.keterangan,
-                    akn.sumber_akun,
                     akn.created_at,
                     akn.updated_at,
                     akn.deleted_at,
@@ -120,7 +122,10 @@ class AkunController extends Controller
         try {
             DB::beginTransaction();
             $rules = [
-                'no_akun' => 'required|unique:akun',
+                'elemen' => 'required',
+                'sub_elemen' => 'required',
+                'jenis' => 'required',
+                'no_akun' => 'required',
                 'nm_akun' => 'required',
             ];
             $validator = Validator::make(request()->all(), $rules);
@@ -130,20 +135,24 @@ class AkunController extends Controller
 
             $id_akun = guid();
             $no_akun_induk = $this->request->no_akun_induk;
+            $elemen = $this->request->elemen;
+            $sub_elemen = $this->request->sub_elemen;
+            $jenis = $this->request->jenis;
             $no_akun = $this->request->no_akun;
             $nm_akun = $this->request->nm_akun;
             $keterangan = $this->request->keterangan;
-            $sumber_akun = $this->request->sumber_akun;
             $created_at = now();
             $id_updater = Auth::user()->id_user;
 
             Akun::create([
                 'id_akun' => $id_akun,
                 'no_akun_induk' => $no_akun_induk,
+                'elemen' => $elemen,
+                'sub_elemen' => $sub_elemen,
+                'jenis' => $jenis,
                 'no_akun' => $no_akun,
                 'nm_akun' => $nm_akun,
                 'keterangan' => $keterangan,
-                'sumber_akun' => $sumber_akun,
                 'created_at' => $created_at,
                 'id_updater' => $id_updater,
             ]);
@@ -165,7 +174,9 @@ class AkunController extends Controller
         try {
             DB::beginTransaction();
             $rules = [
-                'id_akun' => 'required',
+                'elemen' => 'required',
+                'sub_elemen' => 'required',
+                'jenis' => 'required',
                 'no_akun' => 'required',
                 'nm_akun' => 'required',
             ];
@@ -175,19 +186,24 @@ class AkunController extends Controller
             }
             $id_akun = $this->request->id_akun;
             $no_akun_induk = $this->request->no_akun_induk;
+            $elemen = $this->request->elemen;
+            $sub_elemen = $this->request->sub_elemen;
+            $jenis = $this->request->jenis;
             $no_akun = $this->request->no_akun;
             $nm_akun = $this->request->nm_akun;
             $keterangan = $this->request->keterangan;
-            $sumber_akun = $this->request->sumber_akun;
             $updated_at = now();
             $id_updater = Auth::user()->id_user;
+
             Akun::where('id_akun', $id_akun)->update([
                 'id_akun' => $id_akun,
                 'no_akun_induk' => $no_akun_induk,
+                'elemen' => $elemen,
+                'sub_elemen' => $sub_elemen,
+                'jenis' => $jenis,
                 'no_akun' => $no_akun,
                 'nm_akun' => $nm_akun,
                 'keterangan' => $keterangan,
-                'sumber_akun' => $sumber_akun,
                 'updated_at' => $updated_at,
                 'id_updater' => $id_updater,
             ]);
@@ -277,7 +293,7 @@ class AkunController extends Controller
         $noInduk = DB::select("
             SELECT
                 akn.id_akun,
-                akn.no_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                 akn.nm_akun
             FROM
                 akun AS akn
@@ -297,7 +313,7 @@ class AkunController extends Controller
         $noInduk = DB::select("
             SELECT
                 akn.id_akun,
-                akn.no_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                 akn.nm_akun
             FROM
                 akun AS akn

@@ -157,7 +157,7 @@ class KegiatanRutinPelaksanaanController extends Controller
                     'id_bku' => guid(),
                     'id_divisi' => $lk->id_divisi,
                     'id_laksana_kegiatan' => $lk->id_laksana_kegiatan,
-                    'id_akun' => \App\Models\Akun::where('no_akun', '1.1.2')->pluck('id_akun')[0],
+                    'id_akun' => \App\Models\Akun::where('nm_akun', 'Kas Kecil')->pluck('id_akun')[0],
                     'tanggal' => $lk->tgl_verif_kabag_keuangan,
                     'masuk' => $lk->total_anggaran_terpakai,
                     'keluar' => 0,
@@ -319,7 +319,7 @@ class KegiatanRutinPelaksanaanController extends Controller
                 dlkgt.updated_at,
                 dlkgt.deleted_at,
                 dlkgt.id_updater,
-                akn.no_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                 akn.nm_akun
             FROM
                 detail_laksana_kegiatan AS dlkgt
@@ -337,7 +337,7 @@ class KegiatanRutinPelaksanaanController extends Controller
             SELECT
                 drba.id_detail_rba,
                 akn.id_akun,
-                akn.no_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                 akn.no_akun_induk,
                 akn.nm_akun
             FROM

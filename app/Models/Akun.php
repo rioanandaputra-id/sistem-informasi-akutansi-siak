@@ -17,10 +17,12 @@ class Akun extends Model
     protected $fillable = [
         'id_akun',
         'no_akun_induk',
+        'elemen',
+        'sub_elemen',
+        'jenis',
         'no_akun',
         'nm_akun',
         'keterangan',
-        'sumber_akun',
         'created_at',
         'updated_at',
         'deleted_at',

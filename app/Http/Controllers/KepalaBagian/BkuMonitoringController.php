@@ -141,7 +141,7 @@ class BkuMonitoringController extends Controller
             SELECT
                 bku.id_bku,
                 bku.id_laksana_kegiatan,
-                akn.no_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                 akn.nm_akun,
                 bku.masuk,
                 bku.keluar,

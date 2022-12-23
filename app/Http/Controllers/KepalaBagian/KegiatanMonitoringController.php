@@ -276,9 +276,8 @@ class KegiatanMonitoringController extends Controller
                 drba.updated_at,
                 drba.deleted_at,
                 drba.id_updater,
-                akn.no_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                 akn.nm_akun,
-                akn.sumber_akun,
                 akn.keterangan
             FROM
                 detail_rba AS drba
@@ -347,7 +346,18 @@ class KegiatanMonitoringController extends Controller
                 AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
             ORDER BY lkgt.created_at ASC
         ");
-        $akun = DB::select("SELECT * FROM akun WHERE SUBSTR(no_akun_induk,1,1) = '5'");
+        $akun = \DB::SELECT("
+            SELECT
+                akn.id_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
+                akn.nm_akun
+            FROM
+                akun AS akn
+            WHERE
+                akn.elemen='5'
+                AND akn.no_akun > '0000'
+                AND akn.deleted_at IS NULL
+        ");
         return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
     }
 
@@ -896,7 +906,7 @@ class KegiatanMonitoringController extends Controller
                 dlkgt.updated_at,
                 dlkgt.deleted_at,
                 dlkgt.id_updater,
-                akn.no_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                 akn.nm_akun
             FROM
                 detail_laksana_kegiatan AS dlkgt
@@ -914,7 +924,7 @@ class KegiatanMonitoringController extends Controller
             SELECT
                 drba.id_detail_rba,
                 akn.id_akun,
-                akn.no_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
                 akn.no_akun_induk,
                 akn.nm_akun
             FROM
@@ -930,7 +940,7 @@ class KegiatanMonitoringController extends Controller
             WHERE
                 lkgt.deleted_at IS NULL
                 AND lkgt.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
-            ORDER BY akn.no_akun ASC
+            ORDER BY no_akun ASC
         ");
 
         return view('pages._kepalaBagian.kegiatanMonitoring.viewGetAllLaksanaDetail', compact('info', 'kegiatan', 'detailLaks', 'akun'));

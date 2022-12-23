@@ -39,7 +39,7 @@ class ManajemenKeuangan extends Controller
                 SELECT
                     akun.id_akun,
                     akun.nm_akun,
-                    akun.no_akun,
+                    CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
                     CASE
                         WHEN rencana.rencana_anggaran IS NULL THEN 0
                         ELSE rencana.rencana_anggaran
@@ -96,7 +96,18 @@ class ManajemenKeuangan extends Controller
                 'Rutin'
             ]
         ];
-        $akun = \App\Models\Akun::where('no_akun_induk', 5)->orderBy('no_akun')->get();
+        $akun = \DB::SELECT("
+            SELECT
+                akn.id_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
+                akn.nm_akun
+            FROM
+                akun AS akn
+            WHERE
+                akn.elemen='5'
+                AND akn.no_akun > '0000'
+                AND akn.deleted_at IS NULL
+        ");
         return view('pages._kepalaUud._keuangan.manajemenKeuangan.penganggaran.pendapatan.viewGetAll', compact('info'));
     }
 
@@ -109,7 +120,7 @@ class ManajemenKeuangan extends Controller
                 SELECT
                     akun.id_akun,
                     akun.nm_akun,
-                    akun.no_akun,
+                    CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
                     CASE
                         WHEN realisasi.realisasi_anggaran IS NULL THEN 0
                         ELSE realisasi.realisasi_anggaran
@@ -131,7 +142,7 @@ class ManajemenKeuangan extends Controller
                             dspj.id_akun
                     ) AS realisasi ON realisasi.id_akun=akun.id_akun
                 WHERE
-                    SUBSTR(akun.no_akun,1,1)='4'
+                    akun.elemen='4'
                 ORDER BY
                     akun.no_akun, akun.nm_akun ASC
             ");
@@ -167,7 +178,18 @@ class ManajemenKeuangan extends Controller
                 'Rutin'
             ]
         ];
-        $akun = \App\Models\Akun::where('no_akun_induk', 5)->orderBy('no_akun')->get();
+        $akun = \DB::SELECT("
+            SELECT
+                akn.id_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
+                akn.nm_akun
+            FROM
+                akun AS akn
+            WHERE
+                akn.elemen='5'
+                AND akn.no_akun > '0000'
+                AND akn.deleted_at IS NULL
+        ");
         return view('pages._kepalaUud._keuangan.manajemenKeuangan.penganggaran.pengeluaran.viewGetAll', compact('info'));
     }
 
@@ -180,7 +202,7 @@ class ManajemenKeuangan extends Controller
                 SELECT
                     akun.id_akun,
                     akun.nm_akun,
-                    akun.no_akun,
+                    CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
                     CASE
                         WHEN realisasi.realisasi_anggaran IS NULL THEN 0
                         ELSE realisasi.realisasi_anggaran
@@ -204,7 +226,7 @@ class ManajemenKeuangan extends Controller
                             dspj.id_akun
                     ) AS realisasi ON realisasi.id_akun=akun.id_akun
                 WHERE
-                    SUBSTR(akun.no_akun,1,1)='5'
+                    akun.elemen='5'
                 ORDER BY
                     akun.no_akun, akun.nm_akun ASC
             ");

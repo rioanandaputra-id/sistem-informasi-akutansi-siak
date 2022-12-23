@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <div id="addDetailLaksMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="addDetailLaksMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -189,8 +189,7 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <label for="id_detail_rbaaddDetailLaksMdl">Akun: <i class="text-red">*</i></label>
-                                <select id="id_detail_rbaaddDetailLaksMdl" class="form-control">
-                                    <option value="">---</option>
+                                <select id="id_detail_rbaaddDetailLaksMdl" class="form-control select2bs4">
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_detail_rba }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
                                         </option>
@@ -214,7 +213,7 @@
         </div>
     </div>
 
-    <div id="updateDetailLaksMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="updateDetailLaksMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -229,8 +228,7 @@
                             <div class="col">
                                 <input type="hidden" id="id_detail_laksana_kegiatanupdateDetailLaksMdl">
                                 <label for="id_detail_rbaupdateDetailLaksMdl">Akun: <i class="text-red">*</i></label>
-                                <select id="id_detail_rbaupdateDetailLaksMdl" class="form-control">
-                                    <option value="">---</option>
+                                <select id="id_detail_rbaupdateDetailLaksMdl" class="form-control select2bs4">
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_detail_rba }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
                                         </option>

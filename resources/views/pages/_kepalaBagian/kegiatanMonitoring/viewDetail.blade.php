@@ -312,7 +312,7 @@
         </div>
     </div>
 
-    <div id="addDetailRbaMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="addDetailRbaMdl" class="modal" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -327,7 +327,6 @@
                             <div class="col">
                                 <label for="id_akunaddDetailRbaMdl">Akun: <i class="text-red">*</i></label>
                                 <select id="id_akunaddDetailRbaMdl" class="form-control select2bs4">
-                                    <option value="">---</option>
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
                                         </option>
@@ -370,7 +369,7 @@
         </div>
     </div>
 
-    <div id="updateDetailRbaMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="updateDetailRbaMdl" class="modal" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -385,7 +384,7 @@
                             <div class="col">
                                 <input type="hidden" id="id_detail_rbaupdateDetailRbaMdl">
                                 <label for="id_akunupdateDetailRbaMdl">Akun: <i class="text-red">*</i></label>
-                                <select id="id_akunupdateDetailRbaMdl" class="form-control  select2bs4">
+                                <select id="id_akunupdateDetailRbaMdl" class="form-control select2bs4">
                                     <option value="">---</option>
                                     @foreach ($akun as $akn)
                                         <option value="{{ $akn->id_akun }}">{{ $akn->no_akun }} {{ $akn->nm_akun }}
@@ -429,7 +428,7 @@
         </div>
     </div>
 
-    <div id="addLaksKegiatanMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="addLaksKegiatanMdl" class="modal" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -475,7 +474,7 @@
         </div>
     </div>
 
-    <div id="updateLaksKegiatanMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="updateLaksKegiatanMdl" class="modal" role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">

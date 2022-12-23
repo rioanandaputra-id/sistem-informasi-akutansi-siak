@@ -83,7 +83,18 @@ class ManajemenKeuangan extends Controller
                 'Rutin'
             ]
         ];
-        $akun = \App\Models\Akun::where('no_akun_induk', 5)->orderBy('no_akun')->get();
+        $akun = \DB::SELECT("
+            SELECT
+                akn.id_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
+                akn.nm_akun
+            FROM
+                akun AS akn
+            WHERE
+                akn.elemen='5'
+                AND akn.no_akun > '0000'
+                AND akn.deleted_at IS NULL
+        ");
         return view('pages._manajemenKeuangan.penganggaran.viewGetAll', compact('info','akun'));
     }
 

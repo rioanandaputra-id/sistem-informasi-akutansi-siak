@@ -10,11 +10,13 @@ return new class extends Migration
     {
         Schema::create('akun', function (Blueprint $table) {
             $table->uuid('id_akun')->primary();
-            $table->string('no_akun_induk', 10)->nullable();
-            $table->string('no_akun', 10);
+            $table->uuid('no_akun_induk')->nullable();
+            $table->string('elemen', 1);
+            $table->string('sub_elemen', 2);
+            $table->string('jenis', 2);
+            $table->string('no_akun', 4);
             $table->string('nm_akun', 255);
             $table->text('keterangan')->nullable();
-            $table->string('sumber_akun', 255)->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at')->nullable();
             $table->dateTime('deleted_at')->nullable();

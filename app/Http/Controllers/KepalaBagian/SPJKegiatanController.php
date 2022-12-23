@@ -509,7 +509,7 @@ class SPJKegiatanController extends Controller
                 dlaks.id_detail_laksana_kegiatan,
                 drba.id_akun,
                 dlaks.total,
-                akun.no_akun,
+                CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
                 akun.nm_akun
             FROM
                 detail_laksana_kegiatan AS dlaks
@@ -519,7 +519,18 @@ class SPJKegiatanController extends Controller
                 dlaks.id_laksana_kegiatan='".$id_laksana_kegiatan."'
         ");
 
-        $akun = DB::select("SELECT * FROM akun WHERE SUBSTR(no_akun_induk,1,1) = '5' AND deleted_at IS NULL");
+        $akun = \DB::SELECT("
+            SELECT
+                akn.id_akun,
+                CONCAT(akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun) AS no_akun,
+                akn.nm_akun
+            FROM
+                akun AS akn
+            WHERE
+                akn.elemen='5'
+                AND akn.no_akun > '0000'
+                AND akn.deleted_at IS NULL
+        ");
         $spj = \App\Models\SPJ::where('id_laksana_kegiatan', $id_laksana_kegiatan)->whereNull('deleted_at')->first();
 
         return view('pages._kepalaBagian.spj.viewDetail', compact('info', 'bku', 'detLaks', 'akun', 'spj'));

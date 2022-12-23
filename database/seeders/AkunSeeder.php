@@ -18,10 +18,12 @@ class AkunSeeder extends Seeder
                     [
                         'id_akun' => $data[0],
                         'no_akun_induk' => $data[1],
-                        'no_akun' => $data[2],
-                        'nm_akun' => $data[3],
-                        'keterangan' => $data[4],
-                        'sumber_akun' => $data[5],
+                        'elemen' => $data[2],
+                        'sub_elemen' => $data[3],
+                        'jenis' => $data[4],
+                        'no_akun' => $data[5],
+                        'nm_akun' => $data[6],
+                        'keterangan' => $data[7],
                         'created_at' => now()
                     ]
                 );  

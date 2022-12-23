@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <div id="VerifMdl" class="modal" tabindex="-1" role="dialog">
+    <div id="VerifMdl" class="modal"  role="dialog">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -226,6 +226,14 @@
                             return `<input type="checkbox" class="ckItem" value="${data}" />`;
                         }
                     }, {
+                        data: 'nm_divisi',
+                        name: 'nm_divisi',
+                        title: 'Divisi',
+                    }, {
+                        data: 'nm_kegiatan',
+                        name: 'nm_kegiatan',
+                        title: 'Kegiatan',
+                    }, {
                         data: 'urutan_laksana_kegiatan',
                         name: 'urutan_laksana_kegiatan',
                         title: 'Pengajuan',
@@ -233,24 +241,13 @@
                             return `<a href="{{ route('kepalabagian.KegiatanPelaksana.viewDetail') }}?id_laksana_kegiatan=${row.id_laksana_kegiatan}">Pelaksanaan Ke-${data}</a>`;
                         }
                     }, {
-                        data: 'nm_kegiatan',
-                        name: 'nm_kegiatan',
-                        title: 'Kegiatan',
-                    },
-                    {
                         data: 'waktu_pelaksanaan',
                         name: 'waktu_pelaksanaan',
                         title: 'Waktu Pelaksana',
                         render: function(data, type, row) {
                             return `${row.waktu_pelaksanaan} - ${row.waktu_selesai}`;
                         }
-                    },
-                    {
-                        data: 'nm_divisi',
-                        name: 'nm_divisi',
-                        title: 'Divisi',
-                    },
-                    {
+                    }, {
                         data: 'a_verif_kabag_keuangan',
                         name: 'a_verif_kabag_keuangan',
                         title: 'Status',
