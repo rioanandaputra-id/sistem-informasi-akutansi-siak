@@ -30,6 +30,7 @@ class SPJKegiatanController extends Controller
 
     public function apiGetAll()
     {
+        $kegiatan = ($this->request->nm_kegiatan != '-') ? " AND kdiv.id_kegiatan='".$this->request->nm_kegiatan."' " : "";
         $apiGetAll = DB::select("
             SELECT
                 DISTINCT ON (bku.id_laksana_kegiatan) bku.id_laksana_kegiatan,
@@ -78,6 +79,7 @@ class SPJKegiatanController extends Controller
                 bku.deleted_at IS NULL
                 AND pgm.id_misi IS NOT NULL
                 AND bku.id_divisi = '" . Auth::user()->id_divisi . "'
+                ".$kegiatan."
         ");
         return DaTables::of($apiGetAll)
             ->editColumn('total_masuk', function ($ed) {
@@ -435,7 +437,18 @@ class SPJKegiatanController extends Controller
             'title' => 'SPJ Kegiatan',
             'site_active' => 'SPJKegiatan',
         ];
-        return view('pages._kepalaBagian.spj.viewGetAll', compact('info'));
+        $kegiatan = \DB::SELECT("
+            SELECT
+                kgt.*
+            FROM
+                kegiatan AS kgt
+                JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan=kgt.id_kegiatan AND kdiv.deleted_at IS NULL
+                JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL
+            WHERE
+                pr.id_misi IS NOT NULL
+                AND kdiv.id_divisi='".\Auth::user()->id_divisi."'
+        ");
+        return view('pages._kepalaBagian.spj.viewGetAll', compact('info','kegiatan'));
     }
 
     public function viewDetail()

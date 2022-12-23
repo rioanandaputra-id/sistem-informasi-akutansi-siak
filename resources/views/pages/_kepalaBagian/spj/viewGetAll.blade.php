@@ -26,6 +26,16 @@
                                         class="fas fa-sync"></i>
                                     Refresh</button>
                             </div>
+                            <div class="float-left">
+                                <div class="input-group">
+                                    <select class="form-control ml-2" id="nm_kegiatan">
+                                        <option value="-" selected>-- Semua Kegiatan --</option>
+                                        @foreach($kegiatan AS $n=>$r)
+                                        <option value="{{ $r->id_kegiatan }}">{{ $r->nm_kegiatan }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="float-right">
                                 <b>Daftar Kegiatan</b>
                             </div>
@@ -64,6 +74,11 @@
             $("#refresh").click(function() {
                 $('#tbBku').DataTable().ajax.reload();
             });
+
+            $('#nm_kegiatan').on('change', function() {
+                $('#tbBku').DataTable().clear().destroy();
+                tbBku();
+            });
         });
 
         function tbBku() {
@@ -78,8 +93,19 @@
                 ajax: {
                     url: '{{ route('kepalabagian.SPJKegiatan.apiGetAll') }}',
                     type: 'GET',
+                    data: {
+                        nm_kegiatan: $('#nm_kegiatan').val(),
+                    }
                 },
-                columns: [{
+                columns: [
+                {
+                    data: 'nm_kegiatan',
+                    name: 'nm_kegiatan',
+                    title: 'Kegiatan',
+                    render: function(data, type, row) {
+                        return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
+                    }
+                },{
                     data: 'urutan_laksana_kegiatan',
                     name: 'urutan_laksana_kegiatan',
                     title: 'Pengajuan',
@@ -88,22 +114,20 @@
                     }
                 },
                 {
-                    data: 'nm_kegiatan',
-                    name: 'nm_kegiatan',
-                    title: 'Kegiatan',
-                    render: function(data, type, row) {
-                        return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
-                    }
-                },
-                {
                     data: 'status',
                     name: 'status',
                     title: 'Status'
                 },
                 {
+                    data: 'total_masuk',
+                    name: 'total_masuk',
+                    title: 'Anggaran',
+                    className: 'dt-right'
+                },
+                {
                     data: 'total_realisasi',
                     name: 'total_realisasi',
-                    title: 'Total Realisasi',
+                    title: 'Realisasi',
                     className: 'dt-right'
                 },]
             });

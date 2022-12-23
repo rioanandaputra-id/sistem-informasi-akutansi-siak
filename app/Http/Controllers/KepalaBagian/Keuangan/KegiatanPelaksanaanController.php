@@ -130,44 +130,89 @@ class KegiatanPelaksanaanController extends Controller
                 ];
             }
 
-            $laksanaKegiatan = DB::select("
+            // $laksanaKegiatan = DB::select("
+            //     SELECT
+            //         lkgt.id_laksana_kegiatan,
+            //         lkgt.tgl_verif_kabag_keuangan,
+            //         kdiv.id_divisi,
+            //         (
+            //             SELECT
+            //                 SUM(dlkgt.total)
+            //             FROM
+            //                 detail_laksana_kegiatan AS dlkgt
+            //                 JOIN laksana_kegiatan AS llkgt ON dlkgt.id_laksana_kegiatan = llkgt.id_laksana_kegiatan
+            //                 AND llkgt.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+            //                 AND llkgt.deleted_at IS NULL
+            //             WHERE
+            //                 dlkgt.deleted_at IS NULL
+            //         ) AS total_anggaran_terpakai,
+            //         (
+            //             SELECT
+            //                 SUM(drba.total)
+            //             FROM
+            //                 rba AS rba
+            //                 JOIN detail_rba AS drba ON drba.id_rba = rba.id_rba
+            //                 AND drba.deleted_at IS NULL
+            //             WHERE
+            //                 rba.deleted_at IS NULL
+            //                 AND rba.a_verif_wilayah = '2'
+            //                 AND rba.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+            //         ) AS total_anggaran_tersedia
+            //     FROM
+            //         laksana_kegiatan AS lkgt
+            //         JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
+            //         AND kdiv.deleted_at IS NULL
+            //     WHERE
+            //         lkgt.deleted_at IS NULL
+            //         AND lkgt.id_laksana_kegiatan IN ( ? )
+            // ", $id_laksana_kegiatan);
+
+            $laksanaKegiatan = \DB::SELECT("
                 SELECT
-                    lkgt.id_laksana_kegiatan,
-                    lkgt.tgl_verif_kabag_keuangan,
+                    lkeg.id_laksana_kegiatan,
+                    lkeg.tgl_verif_kabag_keuangan,
                     kdiv.id_divisi,
+                    SUM(dlkeg.total) AS total_anggaran_terpakai,
                     (
                         SELECT
-                            SUM(dlkgt.total)
+                            (SUM(bku.masuk) - SUM(bku.keluar))
                         FROM
-                            detail_laksana_kegiatan AS dlkgt
-                            JOIN laksana_kegiatan AS llkgt ON dlkgt.id_laksana_kegiatan = llkgt.id_laksana_kegiatan
-                            AND llkgt.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
-                            AND llkgt.deleted_at IS NULL
+                            laksana_kegiatan AS laks
+                            JOIN bku ON bku.id_laksana_kegiatan=laks.id_laksana_kegiatan AND bku.deleted_at IS NULL
                         WHERE
-                            dlkgt.deleted_at IS NULL
-                    ) AS total_anggaran_terpakai,
-                    (
-                        SELECT
-                            SUM(drba.total)
-                        FROM
-                            rba AS rba
-                            JOIN detail_rba AS drba ON drba.id_rba = rba.id_rba
-                            AND drba.deleted_at IS NULL
-                        WHERE
-                            rba.deleted_at IS NULL
-                            AND rba.a_verif_wilayah = '2'
-                            AND rba.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
-                    ) AS total_anggaran_tersedia
+                            laks.deleted_at IS NULL
+                            AND laks.a_verif_kabag_keuangan='2'
+                            AND laks.id_kegiatan_divisi=lkeg.id_kegiatan_divisi
+                    ) AS sisa
                 FROM
-                    laksana_kegiatan AS lkgt
-                    JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi = lkgt.id_kegiatan_divisi
-                    AND kdiv.deleted_at IS NULL
+                    laksana_kegiatan AS lkeg
+                    JOIN detail_laksana_kegiatan AS dlkeg ON dlkeg.id_laksana_kegiatan=lkeg.id_laksana_kegiatan AND dlkeg.deleted_at IS NULL
+                    JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi=lkeg.id_kegiatan_divisi AND kdiv.deleted_at IS NULL
                 WHERE
-                    lkgt.deleted_at IS NULL
-                    AND lkgt.id_laksana_kegiatan IN ( ? )
+                    lkeg.deleted_at IS NULL
+                    AND lkeg.id_laksana_kegiatan IN ( ? )
+                GROUP BY
+                    lkeg.id_laksana_kegiatan,
+                    lkeg.tgl_verif_kabag_keuangan,
+                    kdiv.id_divisi,
+                    sisa
             ", $id_laksana_kegiatan);
 
             foreach ($laksanaKegiatan as $lk) {
+                // if($lk->sisa > 0) {
+                //     Bku::create([
+                //         'id_bku' => guid(),
+                //         'id_divisi' => $lk->id_divisi,
+                //         'id_laksana_kegiatan' => $lk->id_laksana_kegiatan,
+                //         'id_akun' => \App\Models\Akun::where('no_akun', '1.1.2')->pluck('id_akun')[0],
+                //         'tanggal' => $lk->tgl_verif_kabag_keuangan,
+                //         'masuk' => $lk->sisa,
+                //         'keluar' => 0,
+                //         'saldo' => $lk->sisa,
+                //         'created_at' => $updated_at,
+                //         'id_updater' => $id_updater,
+                //     ]);
+                // }
                 Bku::create([
                     'id_bku' => guid(),
                     'id_divisi' => $lk->id_divisi,

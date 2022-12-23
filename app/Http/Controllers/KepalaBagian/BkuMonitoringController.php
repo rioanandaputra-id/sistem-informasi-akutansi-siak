@@ -155,7 +155,7 @@ class BkuMonitoringController extends Controller
                 bku.deleted_at IS NULL
                 AND bku.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
             ORDER BY
-                bku.masuk DESC,
+                bku.created_at ASC,
                 bku.tanggal ASC
         ");
         return view('pages._kepalaBagian.bkuMonitoring.viewDetail', compact('info', 'bku', 'rincBku'));
