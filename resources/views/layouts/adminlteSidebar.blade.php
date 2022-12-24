@@ -206,9 +206,9 @@
                 @endcan
                 @can('kepalabagian')
                     <li
-                        class="nav-item {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' || $info['site_active'] == 'KegiatanPelaksana' ? 'menu-open' : '' }}">
+                        class="nav-item {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' ? 'menu-open' : '' }}">
                         <a href="#"
-                            class="nav-link {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' || $info['site_active'] == 'KegiatanPelaksana' ? 'active' : '' }}">
+                            class="nav-link {{ $info['site_active'] == 'KegiatanBaru' || $info['site_active'] == 'KegiatanDiajukan' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
                             <p>
                                 Kegiatan
@@ -230,15 +230,6 @@
                                     <p>Kegiatan Telah Diajukan</p>
                                 </a>
                             </li>
-                            @if (Auth::user()->id_divisi == 'f270590c-78f2-4980-be9a-edf0becc3f4f')
-                                <li class="nav-item">
-                                    <a href="{{ route('kepalabagian.KegiatanPelaksana.viewGetAll') }}"
-                                        class="nav-link {{ $info['site_active'] == 'KegiatanPelaksana' ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Pelaksanaan Kegiatan</p>
-                                    </a>
-                                </li>
-                            @endif
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -255,14 +246,30 @@
                             <p>SPJ Kegiatan</p>
                         </a>
                     </li>
+                    
                     @if (Auth::user()->id_divisi == 'f270590c-78f2-4980-be9a-edf0becc3f4f')
-                        <li class="nav-item">
-                            <a href="{{ route('kepalabagian.SPJKegiatanMonitoring.viewGetAll') }}"
-                                class="nav-link {{ $info['site_active'] == 'SPJKegiatanMonitoring' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-list"></i>
-                                <p>Monitoring SPJ Kegiatan</p>
-                            </a>
-                        </li>
+                    <li class="nav-header">KEUANGAN</li>
+                    <li class="nav-item">
+                        <a href="{{ route('kepalabagian.kegiatanPendapatan.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'KegiatanPendapatan' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-list"></i>
+                            <p>Tambah Kegiatan Pendapatan</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('kepalabagian.KegiatanPelaksana.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'KegiatanPelaksana' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-list"></i>
+                            <p>Verifikasi Kegiatan</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('kepalabagian.SPJKegiatanMonitoring.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'SPJKegiatanMonitoring' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-list"></i>
+                            <p>Verifikasi SPJ Kegiatan</p>
+                        </a>
+                    </li>
                     @endif
 
                     <li class="nav-header">MANAJEMEN KEUANGAN</li>
@@ -316,10 +323,17 @@
                 @endcan
                 @can('bendpenerimaan')
                     <li class="nav-item">
-                        <a href="#"
-                            class="nav-link {{ $info['site_active'] == 'VerifikasiKegiatan' ? 'active' : '' }}">
+                        <a href="{{ route('bendaharapenerimaan.KegiatanMonitoring.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'KegiatanMonitoring' ? 'active' : '' }}">
                             <i class="nav-icon fas fa-list"></i>
-                            <p>Verifikasi Kegiatan</p>
+                            <p>Monitoring Kegiatan</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('bendaharapenerimaan.SPJKegiatan.viewGetAll') }}"
+                            class="nav-link {{ $info['site_active'] == 'SPJKegiatan' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-list"></i>
+                            <p>SPJ Kegiatan</p>
                         </a>
                     </li>
                 @endcan

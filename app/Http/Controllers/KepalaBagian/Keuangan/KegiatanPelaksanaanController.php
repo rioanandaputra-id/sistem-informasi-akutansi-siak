@@ -55,7 +55,7 @@ class KegiatanPelaksanaanController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
             WHERE
                 lkgt.deleted_at IS NULL
@@ -217,7 +217,7 @@ class KegiatanPelaksanaanController extends Controller
                     'id_bku' => guid(),
                     'id_divisi' => $lk->id_divisi,
                     'id_laksana_kegiatan' => $lk->id_laksana_kegiatan,
-                    'id_akun' => \App\Models\Akun::where('nm_akun', 'Kas Kecil')->pluck('id_akun')[0],
+                    'id_akun' => \App\Models\Akun::whereIn('nm_akun', ['Kas Kecil','kas kecil','KAS KECIL'])->pluck('id_akun')[0],
                     'tanggal' => $lk->tgl_verif_kabag_keuangan,
                     'masuk' => $lk->total_anggaran_terpakai,
                     'keluar' => 0,
@@ -359,7 +359,7 @@ class KegiatanPelaksanaanController extends Controller
                 AND kgt.deleted_at IS NULL
                 JOIN program AS pgm ON pgm.id_program = kgt.id_program
                 AND pgm.deleted_at IS NULL
-                JOIN misi AS msi ON msi.id_misi = pgm.id_misi
+                LEFT JOIN misi AS msi ON msi.id_misi = pgm.id_misi
                 AND msi.deleted_at IS NULL
             WHERE
                 lkgt.deleted_at IS NULL

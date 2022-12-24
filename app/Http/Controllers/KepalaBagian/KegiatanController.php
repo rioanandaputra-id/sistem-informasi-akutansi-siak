@@ -62,6 +62,7 @@ class KegiatanController extends Controller
                             kkdiv.deleted_at IS NULL
                     )
                     " . $id_program . "
+                    AND pgm.nm_program != 'Non Program (Pendapatan)'
                 ORDER BY
                     msi.periode,
                     msi.nm_misi,

@@ -46,6 +46,11 @@ class RoleSeeder extends Seeder
                 'role_name' => 'Bendahara Kegiatan',
                 'created_at' => now(),
             ],
+            [
+                'id_role' => 8,
+                'role_name' => 'Bendahara Pendapatan',
+                'created_at' => now(),
+            ],
         ]);
     }
 }

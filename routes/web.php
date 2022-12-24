@@ -23,6 +23,7 @@ use App\Http\Controllers\KepalaBagian\BkuMonitoringController as KepalaBagianBku
 use App\Http\Controllers\KepalaBagian\Keuangan\ManajemenKeuangan as KepalaBagianManajemenKeuanganController;
 use App\Http\Controllers\KepalaBagian\SPJKegiatanController as KepalaBagianSPJKegiatanController;
 use App\Http\Controllers\KepalaBagian\Keuangan\SPJKegiatanMonitoringController as KepalabagianSPJKegiatanMonitoringController;
+use App\Http\Controllers\KepalaBagian\Keuangan\KegiatanPendapatanController as KepalaBagianKegiatanPendapatanController;
 
 use App\Http\Controllers\BendaharaPengeluaran\KegiatanRutinController as BendaharaPengeluaranKegiatanRutinController;
 use App\Http\Controllers\BendaharaPengeluaran\KegiatanRutinPelaksanaanController as BendaharaPengeluaranKegiatanRutinPelaksanaanController;
@@ -32,6 +33,9 @@ use App\Http\Controllers\TimRba\KegiatanMonitoringController as TimRbaKegiatanMo
 
 use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
 use App\Http\Controllers\KepalaWilayah\Keuangan\ManajemenKeuangan as KepalaWilayahManajemenKeuanganController;
+
+use App\Http\Controllers\BendaharaPenerimaan\KegiatanMonitoringController as BendaharaPenerimaanKegiatanMonitoringController;
+use App\Http\Controllers\BendaharaPenerimaan\SPJKegiatanController as BendaharaPenerimaanSPJKegiatanController;
 
 Auth::routes();
 Auth::routes(['verify' => true]);
@@ -251,6 +255,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('pelaporan/apiGetAll', 'pelaporanApiGetAll')->name('kepalabagian.ManajemenKeuangan.pelaporan.apiGetAll');
         Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('kepalabagian.ManajemenKeuangan.pelaporan.viewGetAll');
     });
+    Route::controller(KepalaBagianKegiatanPendapatanController::class)->prefix('kepalabagian/kegiatanPendapatan')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.kegiatanPendapatan.apiGetAll');
+        Route::post('apiCreate', 'apiCreate')->name('kepalabagian.kegiatanPendapatan.apiCreate');
+        Route::post('apiUpdate', 'apiUpdate')->name('kepalabagian.kegiatanPendapatan.apiUpdate');
+        Route::post('apiDelete', 'apiDelete')->name('kepalabagian.kegiatanPendapatan.apiDelete');
+        Route::get('viewGetAll', 'viewGetAll')->name('kepalabagian.kegiatanPendapatan.viewGetAll');
+        Route::get('viewCreate', 'viewCreate')->name('kepalabagian.kegiatanPendapatan.viewCreate');
+        Route::get('viewUpdate', 'viewUpdate')->name('kepalabagian.kegiatanPendapatan.viewUpdate');
+    });
     // =====================================BENDAHARA PENGELUARAN========================================
     Route::controller(BendaharaPengeluaranKegiatanRutinController::class)->prefix('bendaharapengeluaran/kegiatanRutin')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('bendaharapengeluaran.kegiatanRutin.apiGetAll');
@@ -276,5 +289,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('apiUpdate', 'apiUpdate')->name('bendaharapengeluaran.SPJKegiatanRutin.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('bendaharapengeluaran.SPJKegiatanRutin.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('bendaharapengeluaran.SPJKegiatanRutin.viewDetail');
+    });
+    // =====================================BENDAHARA PENERIMAAN========================================
+    Route::controller(BendaharaPenerimaanKegiatanMonitoringController::class)->prefix('bendaharapenerimaan/KegiatanMonitoring')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('bendaharapenerimaan.KegiatanMonitoring.apiGetAll');
+
+        Route::post('apiCreateLaksana', 'apiCreateLaksana')->name('bendaharapenerimaan.KegiatanMonitoring.apiCreateLaksana');
+        Route::post('apiUpdateLaksana', 'apiUpdateLaksana')->name('bendaharapenerimaan.KegiatanMonitoring.apiUpdateLaksana');
+        Route::post('apiDeleteLaksana', 'apiDeleteLaksana')->name('bendaharapenerimaan.KegiatanMonitoring.apiDeleteLaksana');
+
+        Route::post('apiUpdate', 'apiUpdate')->name('bendaharapenerimaan.KegiatanMonitoring.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('bendaharapenerimaan.KegiatanMonitoring.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('bendaharapenerimaan.KegiatanMonitoring.viewDetail');
+
+        Route::post('apiCreateDetailLaksana', 'apiCreateDetailLaksana')->name('bendaharapenerimaan.KegiatanMonitoring.apiCreateDetailLaksana');
+        Route::post('apiUpdateDetailLaksana', 'apiUpdateDetailLaksana')->name('bendaharapenerimaan.KegiatanMonitoring.apiUpdateDetailLaksana');
+        Route::post('apiDeleteDetailLaksana', 'apiDeleteDetailLaksana')->name('bendaharapenerimaan.KegiatanMonitoring.apiDeleteDetailLaksana');
+        Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('bendaharapenerimaan.KegiatanMonitoring.viewGetAllLaksanaDetail');
+    });
+    Route::controller(BendaharaPenerimaanSPJKegiatanController::class)->prefix('bendaharapenerimaan/SPJKegiatan')->group(function () {
+        Route::get('apiGetAll', 'apiGetAll')->name('bendaharapenerimaan.SPJKegiatan.apiGetAll');
+        Route::post('apiCreateDetailSpj', 'apiCreateDetailSpj')->name('bendaharapenerimaan.SPJKegiatan.apiCreateDetailSpj');
+        Route::post('apiUpdateDetailSpj', 'apiUpdateDetailSpj')->name('bendaharapenerimaan.SPJKegiatan.apiUpdateDetailSpj');
+        Route::post('apiDeleteDetailSpj', 'apiDeleteDetailSpj')->name('bendaharapenerimaan.SPJKegiatan.apiDeleteDetailSpj');
+        Route::post('apiUpdate', 'apiUpdate')->name('bendaharapenerimaan.SPJKegiatan.apiUpdate');
+        Route::get('viewGetAll', 'viewGetAll')->name('bendaharapenerimaan.SPJKegiatan.viewGetAll');
+        Route::get('viewDetail', 'viewDetail')->name('bendaharapenerimaan.SPJKegiatan.viewDetail');
     });
 });

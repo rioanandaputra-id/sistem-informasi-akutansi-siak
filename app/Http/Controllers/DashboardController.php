@@ -23,12 +23,56 @@ class DashboardController extends Controller
                 JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan=kgt.id_kegiatan
                 JOIN divisi AS dvs ON dvs.id_divisi=kdiv.id_divisi
                 JOIN laksana_kegiatan AS laks ON laks.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL AND pr.id_misi IS NOT NULL
             WHERE
                 laks.deleted_at IS NULL
                 AND laks.a_verif_kabag_keuangan = '2'
         ");
 
         $id_divisi = (!is_null(\Auth::user()->id_divisi) && userRole(\Auth::user()->id_user)[0]->id_role != 2) ? " AND kdiv.id_divisi='".\Auth::user()->id_divisi."'" : " ";
+
+        $pendapatan = DB::SELECT("
+            SELECT
+                kdiv.id_divisi,
+                SUM(rba.rencana_pendapatan) AS rencana_pendapatan,
+                SUM(laks.realisasi_pendapatan) AS realisasi_pendapatan
+            FROM
+                kegiatan_divisi AS kdiv
+                LEFT JOIN (
+                    SELECT
+                        rba.id_kegiatan_divisi,
+                        SUM(drba.total) AS rencana_pendapatan
+                    FROM
+                        rba
+                        JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba
+                        JOIN akun AS akn ON akn.id_akun=drba.id_akun AND akn.deleted_at IS NULL AND akn.elemen='4'
+                    WHERE
+                        rba.deleted_at IS NULL
+                    GROUP BY
+                        rba.id_kegiatan_divisi
+                ) AS rba ON rba.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+                LEFT JOIN (
+                    SELECT
+                        laks.id_kegiatan_divisi,
+                        SUM(dspj.total) AS realisasi_pendapatan
+                    FROM
+                        laksana_kegiatan AS laks
+                        JOIN spj ON spj.id_laksana_kegiatan=laks.id_laksana_kegiatan
+                        JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
+                        JOIN akun AS akn ON akn.id_akun=dspj.id_akun AND akn.deleted_at IS NULL AND akn.elemen='4'
+                    WHERE
+                        laks.a_verif_kabag_keuangan='2'
+                        AND (spj.a_verif_kabag_keuangan='2' OR spj.a_verif_bendahara_pengeluaran='2')
+                    GROUP BY
+                        laks.id_kegiatan_divisi
+                ) AS laks ON laks.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
+            WHERE
+                kdiv.a_verif_rba='2'
+                AND date_part('year', kdiv.created_at)='".date('Y')."'
+                ".$id_divisi."
+            GROUP BY
+                kdiv.id_divisi
+        ");
 
         $pengeluaran = DB::SELECT("
             SELECT
@@ -44,6 +88,7 @@ class DashboardController extends Controller
                     FROM
                         rba
                         JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba
+                        JOIN akun AS akn ON akn.id_akun=drba.id_akun AND akn.deleted_at IS NULL AND akn.elemen='5'
                     WHERE
                         rba.deleted_at IS NULL
                     GROUP BY
@@ -57,6 +102,7 @@ class DashboardController extends Controller
                         laksana_kegiatan AS laks
                         JOIN spj ON spj.id_laksana_kegiatan=laks.id_laksana_kegiatan
                         JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
+                        JOIN akun AS akn ON akn.id_akun=dspj.id_akun AND akn.deleted_at IS NULL AND akn.elemen='5'
                     WHERE
                         laks.a_verif_kabag_keuangan='2'
                         AND (spj.a_verif_kabag_keuangan='2' OR spj.a_verif_bendahara_pengeluaran='2')
@@ -86,6 +132,6 @@ class DashboardController extends Controller
             $spjyears = \App\Models\Spj::whereNull('deleted_at')->whereYear('created_at', date('Y'))->count();
         }
         
-        return view('pages.dashboard', compact('info','kegiatan','pengeluaran', 'realisasiKegiatan', 'spjday', 'spjmonth', 'spjyears'));
+        return view('pages.dashboard', compact('info', 'kegiatan', 'pendapatan', 'pengeluaran', 'realisasiKegiatan', 'spjday', 'spjmonth', 'spjyears'));
     }
 }

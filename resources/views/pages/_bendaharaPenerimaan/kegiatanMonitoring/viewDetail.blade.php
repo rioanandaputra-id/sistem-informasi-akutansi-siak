@@ -264,7 +264,7 @@
                                                     </a>
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item mb-2"
-                                                            href="{{ route('kepalabagian.KegiatanMonitoring.viewGetAllLaksanaDetail') }}?id_laksana_kegiatan={{ $lkgt->id_laksana_kegiatan }}">Detail
+                                                            href="{{ route('bendaharapenerimaan.KegiatanMonitoring.viewGetAllLaksanaDetail') }}?id_laksana_kegiatan={{ $lkgt->id_laksana_kegiatan }}">Detail
                                                             Pelaksanaan Kegiatan</a>
                                                         @if ($lkgt->tgl_ajuan == null)
                                                         <a class="dropdown-item" href="javascript:"
@@ -586,154 +586,6 @@
                 $("#totalupdateDetailRbaMdl").val($("#tarifupdateDetailRbaMdl").val() * $("#indikatorupdateDetailRbaMdl").val() * $(this).val());
             });
 
-            $("#btnaddDetailRbaMdl").click(function() {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('kepalabagian.KegiatanMonitoring.apiCreateDetailRba') }}",
-                    data: {
-                        _token: "{!! csrf_token() !!}",
-                        id_rba: "{!! $IdRba !!}",
-                        id_akun: $('#id_akunaddDetailRbaMdl').val(),
-                        vol: $('#voladdDetailRbaMdl').val(),
-                        satuan: $('#satuanaddDetailRbaMdl').val(),
-                        indikator: $('#indikatoraddDetailRbaMdl').val(),
-                        tarif: $('#tarifaddDetailRbaMdl').val(),
-                        total: $('#totaladdDetailRbaMdl').val(),
-                    },
-                    beforeSend: function() {
-                        $(this).prop("disabled", true);
-                    },
-                }).done(function(res) {
-                    if (res.status) {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Berhasil',
-                            showConfirmButton: false,
-                            timer: 1000,
-                        });
-                        location.reload();
-                    } else {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Gagal',
-                            showConfirmButton: false,
-                            timer: 1000,
-                        });
-                    }
-                }).fail(function(res) {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Gagal',
-                        showConfirmButton: false,
-                        timer: 1000,
-                    });
-                    console.log(res);
-                    $(this).prop("disabled", false);
-                });
-            });
-
-            $("#deleteDetailRba").click(function() {
-                $("#deleteDetailRba").prop("disabled", true);
-                Swal.fire({
-                    title: 'Apakah anda yakin?',
-                    text: "Data yang dihapus tidak dapat dikembalikan!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Tidak, Batalkan!'
-                }).then((willDelete) => {
-                    if (willDelete.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: "{!! route('kepalabagian.KegiatanMonitoring.apiDeleteDetailRba') !!}",
-                            data: {
-                                _token: "{!! csrf_token() !!}",
-                                id_detail_rba: getIdDetailRba()
-                            }
-                        }).done(function(res) {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                title: 'Data Berhasil Dihapus!',
-                                showConfirmButton: false,
-                                timer: 1000,
-                            });
-                            location.reload();
-                        }).fail(function(res) {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'error',
-                                title: 'Data Gagal Dihapus!',
-                                showConfirmButton: true,
-                            });
-                            $("#deleteDetailRba").prop("disabled", false);
-                        });
-                    } else {
-                        $("#deleteDetailRba").prop("disabled", false);
-                    }
-                });
-            });
-
-            $("#locked").click(function() {
-                $("#locked").prop("disabled", true);
-                Swal.fire({
-                    title: 'Apakah anda yakin?',
-                    text: "RENCANA BISNIS & ANGGARAN Kegiatan Akan Diajukan Kepada Verifikator, Anda Tidak Dapat Melakukan Perubahan RENCANA BISNIS & ANGGARAN Kegiatan Setelahnya!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Simpan!',
-                    cancelButtonText: 'Tidak, Batalkan!'
-                }).then((willDelete) => {
-                    if (willDelete.isConfirmed) {
-                        $.ajax({
-                            type: "POST",
-                            url: "{!! route('kepalabagian.KegiatanMonitoring.apiUpdate') !!}",
-                            data: {
-                                _token: "{!! csrf_token() !!}",
-                                id_rba: "{!! $IdRba !!}",
-                                id_kegiatan_divisi: "{!! request()->get('id_kegiatan_divisi') !!}",
-                            }
-                        }).done(function(res) {
-                            if (res.status) {
-                                Swal.fire({
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Data Berhasil Disimpan!',
-                                    showConfirmButton: false,
-                                    timer: 1000,
-                                });
-                                location.reload();
-                            } else {
-                                Swal.fire({
-                                    position: 'top-end',
-                                    icon: 'error',
-                                    title: res.message,
-                                    showConfirmButton: true,
-                                });
-                                $("#locked").prop("disabled", false);
-                            }
-                        }).fail(function(res) {
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'error',
-                                title: 'Data Gagal Disimpan!',
-                                showConfirmButton: true,
-                            });
-                            $("#locked").prop("disabled", false);
-                        });
-                    } else {
-                        $("#locked").prop("disabled", false);
-                    }
-                });
-            });
-
             $("#addLaksKegiatan").click(function() {
                 $('#addLaksKegiatanMdl').modal('show');
             });
@@ -745,7 +597,7 @@
                 } else {
                     $.ajax({
                         type: 'POST',
-                        url: "{{ route('kepalabagian.KegiatanMonitoring.apiCreateLaksana') }}",
+                        url: "{{ route('bendaharapenerimaan.KegiatanMonitoring.apiCreateLaksana') }}",
                         data: {
                             _token: "{!! csrf_token() !!}",
                             id_kegiatan_divisi: "{!! request()->get('id_kegiatan_divisi') !!}",
@@ -805,7 +657,7 @@
                     if (willDelete.isConfirmed) {
                         $.ajax({
                             type: "POST",
-                            url: "{!! route('kepalabagian.KegiatanMonitoring.apiDeleteLaksana') !!}",
+                            url: "{!! route('bendaharapenerimaan.KegiatanMonitoring.apiDeleteLaksana') !!}",
                             data: {
                                 _token: "{!! csrf_token() !!}",
                                 id_laksana_kegiatan: getIdLaksKegiatan()
@@ -834,55 +686,6 @@
                 });
             });
 
-            $("#btnupdateDetailRbaMdl").click(function() {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('kepalabagian.KegiatanMonitoring.apiUpdateDetailRba') }}",
-                    data: {
-                        _token: "{!! csrf_token() !!}",
-                        id_detail_rba: $("#id_detail_rbaupdateDetailRbaMdl").val(),
-                        id_akun: $("#id_akunupdateDetailRbaMdl").val(),
-                        satuan: $("#satuanupdateDetailRbaMdl").val(),
-                        indikator: $("#indikatorupdateDetailRbaMdl").val(),
-                        vol: $("#volupdateDetailRbaMdl").val(),
-                        tarif: $("#tarifupdateDetailRbaMdl").val(),
-                        total: $("#totalupdateDetailRbaMdl").val(),
-                    },
-                    beforeSend: function() {
-                        $(this).prop("disabled", true);
-                    },
-                }).done(function(res) {
-                    if (res.status) {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Ubah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Berhasil',
-                            showConfirmButton: false,
-                            timer: 1000,
-                        });
-                        location.reload();
-                    } else {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Ubah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Gagal',
-                            showConfirmButton: false,
-                            timer: 1000,
-                        });
-                    }
-                }).fail(function(res) {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Ubah Rincian RENCANA BISNIS & ANGGARAN Kegiatan Gagal',
-                        showConfirmButton: false,
-                        timer: 1000,
-                    });
-                    console.log(res);
-                    $(this).prop("disabled", false);
-                });
-            });
-
             $("#btnupdateLaksKegiatanMdl").click(function() {
                 if ($('#waktu_selesaiupdateLaksKegiatanMdl').val() < $('#waktu_pelaksanaanupdateLaksKegiatanMdl')
                     .val()) {
@@ -890,7 +693,7 @@
                 } else {
                     $.ajax({
                         type: 'POST',
-                        url: "{{ route('kepalabagian.KegiatanMonitoring.apiUpdateLaksana') }}",
+                        url: "{{ route('bendaharapenerimaan.KegiatanMonitoring.apiUpdateLaksana') }}",
                         data: {
                             _token: "{!! csrf_token() !!}",
                             id_laksana_kegiatan: $('#id_laksana_kegiatanupdateLaksKegiatanMdl').val(),

@@ -148,6 +148,21 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'email_verified_at' => now(),
             ],
+            [
+                'id_user' => '128dd496-6864-4424-9abd-ab0218106844',
+                'id_divisi' => 'da138a9a-23ed-4941-932d-d1a457db0cdf',
+                'email' => 'bendpendapatankeuangan@siak.com',
+                'username' => 'bendpendapatankeuangan',
+                'password' => bcrypt('bendpendapatankeuangan'),
+                'full_name' => 'Bendahara Pendapatan',
+                'nik' => rand(1000000000000000, 9999999999999999),
+                'gender' => 'L',
+                'address' => '-',
+                'phone' => rand(100000000000, 999999999999),
+                'email_verified_at' => now(),
+                'created_at' => now(),
+                'email_verified_at' => now(),
+            ],
         ]);
     }
 }

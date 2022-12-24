@@ -76,6 +76,13 @@ class RoleUserSeeder extends Seeder
                 'a_active' => 1,
                 'created_at' => now(),
             ],
+            [
+                'id_role_user' => 'd723c71d-4eeb-4ccd-9d41-372b9ba33525',
+                'id_role' => '8',
+                'id_user' => '128dd496-6864-4424-9abd-ab0218106844',
+                'a_active' => 1,
+                'created_at' => now(),
+            ],
         ]);
     }
 }

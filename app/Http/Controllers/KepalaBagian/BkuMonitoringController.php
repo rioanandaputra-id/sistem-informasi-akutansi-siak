@@ -59,7 +59,6 @@ class BkuMonitoringController extends Controller
                 AND msi.deleted_at IS NULL
             WHERE
                 bku.deleted_at IS NULL
-                AND pgm.id_misi IS NOT NULL
                 AND bku.id_divisi = '" . Auth::user()->id_divisi . "'
         ");
         return DaTables::of($apiGetAll)

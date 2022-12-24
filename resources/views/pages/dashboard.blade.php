@@ -63,13 +63,13 @@
                     <div class="row">
                         <div class="col-sm-6 col-6">
                             <div class="description-block border-right">
-                                <h4>{{ number_to_currency(0, 0) }}</h4>
+                                <h4>{{ number_to_currency(array_sum(array_column($pendapatan, 'rencana_pendapatan')), 0) }}</h4>
                                 <span class="description-text">RENCANA PENDAPATAN</span>
                             </div>
                         </div>
                         <div class="col-sm-6 col-6">
                             <div class="description-block border-right">
-                                <h4>{{ number_to_currency(0, 0) }}</h4>
+                                <h4>{{ number_to_currency(array_sum(array_column($pendapatan, 'realisasi_pendapatan')), 0) }}</h4>
                                 <span class="description-text">REALISASI PENDAPATAN</span>
                             </div>
                         </div>

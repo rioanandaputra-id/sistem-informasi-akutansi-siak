@@ -65,7 +65,7 @@ class SPJKegiatanMonitoringController extends Controller
                 JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi=lkeg.id_kegiatan_divisi AND kdiv.deleted_at IS NULL
                 JOIN divisi AS dvs ON dvs.id_divisi=kdiv.id_divisi AND dvs.deleted_at IS NULL
                 JOIN kegiatan AS kgt ON kgt.id_kegiatan=kdiv.id_kegiatan AND kgt.deleted_at IS NULL
-                JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL AND pr.id_misi IS NOT NULL
+                JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL
                 LEFT JOIN misi ON misi.id_misi=pr.id_misi AND misi.deleted_at IS NULL
             WHERE
                 spj.deleted_at IS NULL
@@ -193,7 +193,7 @@ class SPJKegiatanMonitoringController extends Controller
             'site_active' => 'SPJKegiatanMonitoring',
         ];
         $divisi = DB::select("SELECT * FROM divisi WHERE deleted_at IS NULL ORDER BY nm_divisi ASC");
-        $kegiatan = DB::select("SELECT kgt.* FROM kegiatan AS kgt JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL AND pr.id_misi IS NOT NULL WHERE kgt.deleted_at IS NULL ORDER BY nm_kegiatan ASC");
+        $kegiatan = DB::select("SELECT kgt.* FROM kegiatan AS kgt JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL WHERE kgt.deleted_at IS NULL ORDER BY nm_kegiatan ASC");
         return view('pages._kepalaBagian._keuangan.spj.viewGetAll', compact('info','divisi','kegiatan'));
     }
     
@@ -249,7 +249,6 @@ class SPJKegiatanMonitoringController extends Controller
                 AND msi.deleted_at IS NULL
             WHERE
                 bku.deleted_at IS NULL
-                AND pgm.id_misi IS NOT NULL
                 AND bku.id_laksana_kegiatan = '" . $id_laksana_kegiatan . "'
         ");
 
