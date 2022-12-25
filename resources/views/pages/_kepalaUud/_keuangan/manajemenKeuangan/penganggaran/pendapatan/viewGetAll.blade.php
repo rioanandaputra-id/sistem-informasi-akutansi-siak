@@ -143,7 +143,7 @@
                     {
                         data: 'realisasi_anggaran',
                         name: 'realisasi_anggaran',
-                        title: 'Realisasi Anggaran',
+                        title: 'Realisasi',
                         className: 'dt-right',
                         render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
                     }

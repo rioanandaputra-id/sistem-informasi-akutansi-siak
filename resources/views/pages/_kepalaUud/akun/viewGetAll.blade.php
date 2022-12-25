@@ -70,6 +70,7 @@
                 paging: true,
                 info: true,
                 ordering: false,
+                lengthMenu: [50, 100, 500],
                 ajax: {
                     url: '{{ route('kepalauud.master.akun.apiGetAll') }}',
                     type: 'GET'

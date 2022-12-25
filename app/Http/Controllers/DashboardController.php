@@ -29,7 +29,9 @@ class DashboardController extends Controller
                 AND laks.a_verif_kabag_keuangan = '2'
         ");
 
-        $id_divisi = (!is_null(\Auth::user()->id_divisi) && userRole(\Auth::user()->id_user)[0]->id_role != 2) ? " AND kdiv.id_divisi='".\Auth::user()->id_divisi."'" : " ";
+        $divisi = \App\Models\Divisi::find(\Auth::user()->id_divisi);
+
+        $id_divisi = ($divisi->nm_divisi != '-') ? " AND kdiv.id_divisi='".\Auth::user()->id_divisi."'" : " ";
 
         $pendapatan = DB::SELECT("
             SELECT
@@ -117,7 +119,7 @@ class DashboardController extends Controller
                 kdiv.id_divisi
         ");
 
-        if(!is_null(\Auth::user()->id_divisi) && userRole(\Auth::user()->id_user)[0]->id_role != 2) {
+        if($divisi->nm_divisi != '-') {
             $kdiv = \App\Models\KegiatanDivisi::where('id_divisi', \Auth::user()->id_divisi)->pluck('id_kegiatan_divisi');
             $laksKeg = \App\Models\LaksanaKegiatan::whereIn('id_kegiatan_divisi', $kdiv)->pluck('id_laksana_kegiatan');
 
