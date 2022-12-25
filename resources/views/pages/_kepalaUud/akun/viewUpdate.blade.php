@@ -31,7 +31,7 @@
                                 <div class="form-group col-md-12">
                                     <label for="no_akun_induk">No. Induk:</label>
                                     <input type="hidden" name="id_akun" value="{{ $akn->id_akun ?? old('id_akun') }}">
-                                    <select name="no_akun_induk" id="no_akun_induk" class="form-control @error('no_akun_induk') is-invalid @enderror">
+                                    <select name="no_akun_induk" id="no_akun_induk" class="form-control select2bs4 @error('no_akun_induk') is-invalid @enderror">
                                         <option value="">-</option>
                                         @foreach ($noInduk as $ni)
                                             <option value="{{ $ni->id_akun }}" {{ ($akn->no_akun_induk == $ni->id_akun) ? 'selected' : ''}}>{{ $ni->no_akun }} - {{ $ni->nm_akun }}</option>
