@@ -163,16 +163,22 @@
                     };
                     var numFormat = $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' ).display;
                     // Total over all pages
-                    total = api
+                    total3 = api
                         .column(3)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+                    total4 = api
+                        .column(4)
                         .data()
                         .reduce(function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0);
         
                     // Update footer
-                    $(api.column(3).footer()).html("<h5>"+numFormat(total)+"</h5>");
-                    $(api.column(4).footer()).html("<h5>"+numFormat(total)+"</h5>");
+                    $(api.column(3).footer()).html("<h5>"+numFormat(total3)+"</h5>");
+                    $(api.column(4).footer()).html("<h5>"+numFormat(total4)+"</h5>");
                 },
             });
         }
