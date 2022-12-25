@@ -7,11 +7,9 @@
 </table>
 @foreach($records AS $item)
 <table>
-    <thead>
-        <tr>
-            <th colspan="5">Misi: {{ $item->nm_misi }}</th>
-        </tr>
-    </thead>
+    <tr>
+        <th colspan="5">Misi: {{ $item->nm_misi }}</th>
+    </tr>
     <thead>
         <tr>
             <th>Program</th>
