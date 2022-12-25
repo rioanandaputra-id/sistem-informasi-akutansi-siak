@@ -21,15 +21,7 @@
     </thead>
     <tbody>
         @foreach($item->program AS $program)
-        @if($program->kegiatan == null)
-        <tr>
-            <th>{{ $program->nm_program }}</th>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
-        @else
+        @if($program->kegiatan != null)
         <tr>
             <td rowspan="{{ count($program->kegiatan) }}">{{ $program->nm_program }}</td>
             <td>{{ $program->kegiatan[0]->nm_kegiatan }}</td>
