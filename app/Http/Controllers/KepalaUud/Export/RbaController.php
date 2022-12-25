@@ -42,7 +42,7 @@ class RbaController extends Controller
                     AND kgt.deleted_at IS NULL
                     JOIN program AS pr ON pr.id_program = kgt.id_program
                     AND pr.deleted_at IS NULL
-                    LEFT JOIN misi AS msi ON msi.id_misi = pr.id_misi
+                    JOIN misi AS msi ON msi.id_misi = pr.id_misi
                     AND msi.deleted_at IS NULL
                 WHERE
                     kdiv.id_divisi = '".$id_divisi."'
