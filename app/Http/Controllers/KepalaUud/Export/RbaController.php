@@ -33,7 +33,7 @@ class RbaController extends Controller
             $id_divisi = $this->request->id_divisi;
             $divisi = Divisi::find($id_divisi);
             $records = \DB::SELECT("
-                SELECT
+                SELECT DISTINCT
                     msi.id_misi,
                     msi.nm_misi
                 FROM
