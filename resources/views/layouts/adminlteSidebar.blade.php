@@ -181,6 +181,25 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item {{ $info['site_active'] == 'Pelaporan' ? 'menu-open' : '' }}">
+                        <a href="#"
+                            class="nav-link {{ $info['site_active'] == 'Pelaporan' ? 'active' : '' }}">
+                            <i class="fas fa-list nav-icon"></i>
+                            <p>
+                                Pelaporan
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('kepalauud.ManajemenKeuangan.pelaporan.viewGetAll') }}"
+                                    class="nav-link {{ $info['site_active'] == 'Pelaporan' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>RBA</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <!-- <li class="nav-item">
                         <a href="{{ route('kepalauud.ManajemenKeuangan.penatausahaan.viewGetAll') }}"
                             class="nav-link {{ $info['site_active'] == 'Penatausahaan' ? 'active' : '' }}">

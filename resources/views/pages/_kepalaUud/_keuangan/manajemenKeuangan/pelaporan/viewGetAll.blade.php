@@ -18,15 +18,15 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3">
+                    <!-- <div class="row mb-3">
                         <div class="col">
-                            <!-- <div class="float-left">
+                            <div class="float-left">
                                 <div class="input-group">
                                     <button id="exportAll" type="button" class="btn btn-info noborder">
                                         <i class="fas fa-print"></i> Export All
                                     </button>
                                 </div>
-                            </div> -->
+                            </div>
                             <div class="float-right text-bold">
                                 <div class="input-group">
                                     <button id="refresh" type="button" class="btn btn-info noborder">
@@ -36,7 +36,7 @@
                             </div>
                         </div>
                     </div>
-                    <hr>
+                    <hr> -->
                     <div class="row">
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
@@ -109,7 +109,7 @@
                         className: 'dt-right',
                         width: '10%',
                         render: function(data, type, row) {
-                            return `<a href="{{ url('kepalauud/Export/Rba/export?id_divisi=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-print"></i> Export</a>`;
+                            return `<a href="{{ url('kepalauud/Export/Rba/export?id_divisi=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
                         }
                     }
                 ]
