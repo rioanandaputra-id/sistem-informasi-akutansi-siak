@@ -1,7 +1,7 @@
 <table class="table table-borderless">
     <thead>
         <tr>
-            <th colspan="6" style="text-align:center">Dokumen RBA Kegiatan - {{ $divisi->nm_divisi }}</th>
+            <th colspan="5" style="text-align:center">Dokumen RBA Kegiatan - {{ $divisi->nm_divisi }}</th>
         </tr>
     </thead>
 </table>
@@ -9,9 +9,7 @@
 <table>
     <thead>
         <tr>
-            <th>Misi</th>
-            <td>:</td>
-            <td colspan="3">{{ $item->nm_misi }}</td>
+            <th colspan="5">Misi: {{ $item->nm_misi }}</th>
         </tr>
     </thead>
     <thead>
@@ -43,7 +41,6 @@
         </tr>
         @for($i=1;$i < count($program->kegiatan);$i++)
         <tr>
-            <td></td>
             <td>{{ $program->kegiatan[$i]->nm_kegiatan }}</td>
             <td>{{ $program->kegiatan[$i]->pagu_anggaran }}</td>
             <td>{{ $program->kegiatan[$i]->realisasi }}</td>

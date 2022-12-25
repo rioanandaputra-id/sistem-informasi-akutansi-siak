@@ -56,6 +56,7 @@ class RbaExcelExport implements FromView, WithTitle
                         JOIN kegiatan AS kgt ON kgt.id_kegiatan=kdiv.id_kegiatan AND kgt.deleted_at IS NULL
                     WHERE
                         kgt.id_program='".$values->id_program."'
+                        AND kdiv.id_divisi='".$divisi->id_divisi."'
                         AND kdiv.deleted_at IS NULL
                 ");
             }
