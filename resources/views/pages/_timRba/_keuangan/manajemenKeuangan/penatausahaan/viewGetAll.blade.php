@@ -44,13 +44,6 @@
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
                                 <thead class="bg-info"></thead>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3"><h5>Total</h4></th>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -75,90 +68,13 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            tbkegiatan();
-            $('#btnAdd').hide();
-
             $("#refresh").click(function() {
-                $('#tbkegiatan').DataTable().ajax.reload();
+                //
             });
 
             $('#tahun').on('change', function() {
-                $('#tbkegiatan').DataTable().clear().destroy();
-                tbkegiatan();
+                //
             });
         });
-    </script>
-
-    <script>
-        function tbkegiatan() {
-            $('#tbkegiatan').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                searching: true,
-                paging: false,
-                info: true,
-                ordering: false,
-                ajax: {
-                    url: '{{ route('kepalabagian.ManajemenKeuangan.penganggaranPengeluaran.apiGetAll') }}',
-                    type: 'GET',
-                    data: {
-                        tahun: $('#tahun').val()
-                    }
-                },
-                columns: [{
-                        data: 'id_akun',
-                        name: 'id_akun',
-                        title: '<input type="checkbox" id="ckAll" />',
-                        width: '5px',
-                        render: function(data, type, row) {
-                            return `<input type="checkbox" class="ckItem" value="${data}" />`;
-                        }
-                    },
-                    {
-                        data: 'no_akun',
-                        name: 'no_akun',
-                        title: 'No. Akun',
-                    },
-                    {
-                        data: 'nm_akun',
-                        name: 'nm_akun',
-                        title: 'Nama Akun',
-                    },
-                    {
-                        data: 'pagu_anggaran',
-                        name: 'pagu_anggaran',
-                        title: 'Pagu Anggaran',
-                        className: 'dt-right',
-                        render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
-                    },
-                    {
-                        data: 'realisasi_anggaran',
-                        name: 'realisasi_anggaran',
-                        title: 'Realisasi',
-                        className: 'dt-right',
-                        render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
-                    }
-                ],
-                footerCallback: function (row, data, start, end, display) {
-                    var api = this.api();
-                    var intVal = function (i) {
-                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                    };
-                    var numFormat = $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' ).display;
-                    // Total over all pages
-                    total = api
-                        .column(3)
-                        .data()
-                        .reduce(function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-        
-                    // Update footer
-                    $(api.column(3).footer()).html("<h5>"+numFormat(total)+"</h5>");
-                    $(api.column(4).footer()).html("<h5>"+numFormat(total)+"</h5>");
-                },
-            });
-        }
     </script>
 @endpush

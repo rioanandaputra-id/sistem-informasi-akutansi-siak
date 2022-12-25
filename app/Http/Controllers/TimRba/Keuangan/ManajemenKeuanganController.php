@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\KepalaUud\Keuangan;
+namespace App\Http\Controllers\TimRba\Keuangan;
 
 use App\Http\Controllers\Controller;
 use Exception;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables as DaTables;
 use Illuminate\Support\Facades\Validator;
 
-class ManajemenKeuangan extends Controller
+class ManajemenKeuanganController extends Controller
 {
     private $request;
 
@@ -27,7 +27,7 @@ class ManajemenKeuangan extends Controller
             'site_active' => 'Perencanaan',
         ];
         $divisi = \App\Models\Divisi::whereNull('deleted_at')->orderBy('nm_divisi')->get();
-        return view('pages._kepalaUud._keuangan.manajemenKeuangan.perencanaan.viewGetAll', compact('info','divisi'));
+        return view('pages._timRba._keuangan.manajemenKeuangan.perencanaan.viewGetAll', compact('info','divisi'));
     }
 
     public function perencanaanApiGetAll()
@@ -108,7 +108,7 @@ class ManajemenKeuangan extends Controller
                 AND akn.no_akun > '0000'
                 AND akn.deleted_at IS NULL
         ");
-        return view('pages._kepalaUud._keuangan.manajemenKeuangan.penganggaran.pendapatan.viewGetAll', compact('info'));
+        return view('pages._timRba._keuangan.manajemenKeuangan.penganggaran.pendapatan.viewGetAll', compact('info'));
     }
 
     public function penganggaranPendapatanApiGetAll()
@@ -219,7 +219,7 @@ class ManajemenKeuangan extends Controller
                 AND akn.no_akun > '0000'
                 AND akn.deleted_at IS NULL
         ");
-        return view('pages._kepalaUud._keuangan.manajemenKeuangan.penganggaran.pengeluaran.viewGetAll', compact('info'));
+        return view('pages._timRba._keuangan.manajemenKeuangan.penganggaran.pengeluaran.viewGetAll', compact('info'));
     }
 
     public function penganggaranPengeluaranApiGetAll()
@@ -314,7 +314,7 @@ class ManajemenKeuangan extends Controller
             'title' => 'Penatausahaan',
             'site_active' => 'Penatausahaan'
         ];
-        return view('pages._kepalaUud._keuangan.manajemenKeuangan.penatausahaan.viewGetAll', compact('info'));
+        return view('pages._timRba._keuangan.manajemenKeuangan.penatausahaan.viewGetAll', compact('info'));
     }
 
     public function penatausahaanApiGetAll()
@@ -350,26 +350,14 @@ class ManajemenKeuangan extends Controller
             'title' => 'Pelaporan',
             'site_active' => 'Pelaporan'
         ];
-        return view('pages._kepalaUud._keuangan.manajemenKeuangan.pelaporan.viewGetAll', compact('info'));
+        return view('pages._timRba._keuangan.manajemenKeuangan.pelaporan.viewGetAll', compact('info'));
     }
 
     public function pelaporanApiGetAll()
     {
         try {
-            $apiGetAll = DB::SELECT("
-                SELECT
-                    dvs.id_divisi,
-                    dvs.nm_divisi
-                FROM
-                    divisi AS dvs
-                WHERE
-                    dvs.deleted_at IS NULL
-                    AND dvs.nm_divisi != '-'
-                ORDER BY
-                    dvs.nm_divisi ASC
-            ");
-
-            return DaTables::of($apiGetAll)->make(true);
+            
+            //
 
         } catch (QueryException $e) {
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);

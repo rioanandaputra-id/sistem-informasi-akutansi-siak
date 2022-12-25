@@ -104,7 +104,7 @@ class ManajemenKeuangan extends Controller
             FROM
                 akun AS akn
             WHERE
-                akn.elemen='5'
+                akn.elemen='4'
                 AND akn.no_akun > '0000'
                 AND akn.deleted_at IS NULL
         ");
@@ -116,15 +116,39 @@ class ManajemenKeuangan extends Controller
         try {
             $tahun = ($this->request->tahun == "-") ? " " : " AND date_part('year', spj.created_at)='".$this->request->tahun."'";
             $divisi = ($this->request->divisi == "-") ? " " : " AND kdiv.id_divisi='".$this->request->divisi."'";
+            $tahun_pagu = ($this->request->tahun == "-") ? " " : " AND date_part('year', laks.created_at)='".$this->request->tahun."'";
             $apiGetAll = DB::SELECT("
                 SELECT
                     akun.id_akun,
                     akun.nm_akun,
-                    CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
+                    CONCAT(
+                        akun.elemen,
+                        akun.sub_elemen,
+                        akun.jenis,
+                        akun.no_akun
+                    ) AS no_akun,
                     CASE
                         WHEN realisasi.realisasi_anggaran IS NULL THEN 0
                         ELSE realisasi.realisasi_anggaran
-                        END AS realisasi_anggaran
+                    END AS realisasi_anggaran,
+                    (
+                        SELECT
+                            SUM(dlaks.total)
+                        FROM
+                            kegiatan_divisi AS kdiv
+                            JOIN laksana_kegiatan AS laks ON laks.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
+                            AND laks.deleted_at IS NULL
+                            AND laks.a_verif_kabag_keuangan = '2'
+                            JOIN detail_laksana_kegiatan AS dlaks ON dlaks.id_laksana_kegiatan = laks.id_laksana_kegiatan
+                            AND dlaks.deleted_at IS NULL
+                            JOIN detail_rba AS drba ON drba.id_detail_rba = dlaks.id_detail_rba
+                            AND drba.deleted_at IS NULL
+                        WHERE
+                            kdiv.deleted_at IS NULL
+                            AND akun.id_akun=drba.id_akun
+                            ".$tahun_pagu."
+                            ".$divisi."
+                    ) AS pagu_anggaran
                 FROM
                     akun
                     JOIN (
@@ -133,20 +157,23 @@ class ManajemenKeuangan extends Controller
                             SUM(dspj.total) AS realisasi_anggaran
                         FROM
                             kegiatan_divisi AS kdiv
-                            JOIN laksana_kegiatan AS lkeg ON lkeg.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
-                            JOIN spj ON spj.id_laksana_kegiatan=lkeg.id_laksana_kegiatan
-                            JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
+                            JOIN laksana_kegiatan AS laks ON laks.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
+                            AND laks.deleted_at IS NULL
+                            AND laks.a_verif_kabag_keuangan = '2'
+                            JOIN spj ON spj.id_laksana_kegiatan = laks.id_laksana_kegiatan
+                            JOIN detail_spj AS dspj ON dspj.id_spj = spj.id_spj
                         WHERE
-                            spj.a_verif_kabag_keuangan='2'
+                            spj.a_verif_kabag_keuangan = '2'
                             ".$tahun."
                             ".$divisi."
                         GROUP BY
                             dspj.id_akun
-                    ) AS realisasi ON realisasi.id_akun=akun.id_akun
+                    ) AS realisasi ON realisasi.id_akun = akun.id_akun
                 WHERE
-                    akun.elemen='4'
+                    akun.elemen = '4'
                 ORDER BY
-                    akun.no_akun, akun.nm_akun ASC
+                    akun.no_akun,
+                    akun.nm_akun ASC
             ");
             return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
@@ -200,15 +227,39 @@ class ManajemenKeuangan extends Controller
         try {
             $tahun = ($this->request->tahun == "-") ? " " : " AND date_part('year', spj.created_at)='".$this->request->tahun."'";
             $divisi = ($this->request->divisi == "-") ? " " : " AND kdiv.id_divisi='".$this->request->divisi."'";
+            $tahun_pagu = ($this->request->tahun == "-") ? " " : " AND date_part('year', laks.created_at)='".$this->request->tahun."'";
             $apiGetAll = DB::SELECT("
                 SELECT
                     akun.id_akun,
                     akun.nm_akun,
-                    CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
+                    CONCAT(
+                        akun.elemen,
+                        akun.sub_elemen,
+                        akun.jenis,
+                        akun.no_akun
+                    ) AS no_akun,
                     CASE
                         WHEN realisasi.realisasi_anggaran IS NULL THEN 0
                         ELSE realisasi.realisasi_anggaran
-                        END AS realisasi_anggaran
+                    END AS realisasi_anggaran,
+                    (
+                        SELECT
+                            SUM(dlaks.total)
+                        FROM
+                            kegiatan_divisi AS kdiv
+                            JOIN laksana_kegiatan AS laks ON laks.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
+                            AND laks.deleted_at IS NULL
+                            AND laks.a_verif_kabag_keuangan = '2'
+                            JOIN detail_laksana_kegiatan AS dlaks ON dlaks.id_laksana_kegiatan = laks.id_laksana_kegiatan
+                            AND dlaks.deleted_at IS NULL
+                            JOIN detail_rba AS drba ON drba.id_detail_rba = dlaks.id_detail_rba
+                            AND drba.deleted_at IS NULL
+                        WHERE
+                            kdiv.deleted_at IS NULL
+                            AND akun.id_akun=drba.id_akun
+                            ".$tahun_pagu."
+                            ".$divisi."
+                    ) AS pagu_anggaran
                 FROM
                     akun
                     JOIN (
@@ -217,22 +268,24 @@ class ManajemenKeuangan extends Controller
                             SUM(dspj.total) AS realisasi_anggaran
                         FROM
                             kegiatan_divisi AS kdiv
-                            JOIN laksana_kegiatan AS lkeg ON lkeg.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
-                            JOIN spj ON spj.id_laksana_kegiatan=lkeg.id_laksana_kegiatan
-                            JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
+                            JOIN laksana_kegiatan AS laks ON laks.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
+                            AND laks.deleted_at IS NULL
+                            AND laks.a_verif_kabag_keuangan = '2'
+                            JOIN spj ON spj.id_laksana_kegiatan = laks.id_laksana_kegiatan
+                            JOIN detail_spj AS dspj ON dspj.id_spj = spj.id_spj
                         WHERE
-                            spj.a_verif_kabag_keuangan='2'
+                            spj.a_verif_kabag_keuangan = '2'
                             ".$tahun."
                             ".$divisi."
                         GROUP BY
                             dspj.id_akun
-                    ) AS realisasi ON realisasi.id_akun=akun.id_akun
+                    ) AS realisasi ON realisasi.id_akun = akun.id_akun
                 WHERE
-                    akun.elemen='5'
+                    akun.elemen = '5'
                 ORDER BY
-                    akun.no_akun, akun.nm_akun ASC
+                    akun.no_akun,
+                    akun.nm_akun ASC
             ");
-
             return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);

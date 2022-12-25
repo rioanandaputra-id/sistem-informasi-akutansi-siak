@@ -28,14 +28,17 @@ use App\Http\Controllers\KepalaBagian\Keuangan\KegiatanPendapatanController as K
 use App\Http\Controllers\BendaharaPengeluaran\KegiatanRutinController as BendaharaPengeluaranKegiatanRutinController;
 use App\Http\Controllers\BendaharaPengeluaran\KegiatanRutinPelaksanaanController as BendaharaPengeluaranKegiatanRutinPelaksanaanController;
 use App\Http\Controllers\BendaharaPengeluaran\SPJKegiatanRutinController as BendaharaPengeluaranSPJKegiatanRutinController;
+use App\Http\Controllers\BendaharaPengeluaran\Keuangan\ManajemenKeuanganController as BendaharaPengeluaranManajemenKeuanganController;
 
 use App\Http\Controllers\TimRba\KegiatanMonitoringController as TimRbaKegiatanMonitoringController;
+use App\Http\Controllers\TimRba\Keuangan\ManajemenKeuanganController as TimRbaManajemenKeuanganController;
 
 use App\Http\Controllers\KepalaWilayah\KegiatanMonitoringController as KepalaWilayahKegiatanMonitoringController;
 use App\Http\Controllers\KepalaWilayah\Keuangan\ManajemenKeuangan as KepalaWilayahManajemenKeuanganController;
 
 use App\Http\Controllers\BendaharaPenerimaan\KegiatanMonitoringController as BendaharaPenerimaanKegiatanMonitoringController;
 use App\Http\Controllers\BendaharaPenerimaan\SPJKegiatanController as BendaharaPenerimaanSPJKegiatanController;
+use App\Http\Controllers\BendaharaPenerimaan\Keuangan\ManajemenKeuanganController as BendaharaPenerimaanManajemenKeuanganController;
 
 Auth::routes();
 Auth::routes(['verify' => true]);
@@ -143,8 +146,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('kepalauud.ManajemenKeuangan.pelaporan.viewGetAll');
     });
     Route::controller(KepalaUudExportRbaController::class)->prefix('kepalauud/Export/Rba')->group(function () {
-        Route::get('apiGetAll', 'apiGetAll')->name('kepalauud.Export.Rba.apiGetAll');
-        Route::get('viewGetAll', 'viewGetAll')->name('kepalauud.Export.Rba.viewGetAll');
+        Route::get('export', 'export')->name('kepalauud.Export.Rba.export');
     });
     // =====================================TIM RBA========================================
     Route::controller(TimRbaKegiatanMonitoringController::class)->prefix('timrba/kegiatanMonitoring')->group(function () {
@@ -153,6 +155,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('viewGetAll', 'viewGetAll')->name('timrba.kegiatanMonitoring.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('timrba.kegiatanMonitoring.viewDetail');
         Route::get('viewGetAllLaksanaDetail', 'viewGetAllLaksanaDetail')->name('timrba.KegiatanMonitoring.viewGetAllLaksanaDetail');
+    });
+    Route::controller(TimRbaManajemenKeuanganController::class)->prefix('timrba/ManajemenKeuangan')->group(function () {
+        // PERENCANAAN
+        Route::get('perencanaan/apiGetAll', 'perencanaanApiGetAll')->name('timrba.ManajemenKeuangan.perencanaan.apiGetAll');
+        Route::get('perencanaan/viewGetAll', 'perencanaanViewGetAll')->name('timrba.ManajemenKeuangan.perencanaan.viewGetAll');
+        // PENGANGGARAN PENDAPATAN
+        Route::get('penganggaranPendapatan/viewGetAll', 'penganggaranPendapatanViewGetAll')->name('timrba.ManajemenKeuangan.penganggaranPendapatan.viewGetAll');
+        Route::get('penganggaranPendapatan/apiGetAll', 'penganggaranPendapatanApiGetAll')->name('timrba.ManajemenKeuangan.penganggaranPendapatan.apiGetAll');
+        // PENGANGGARAN PENGELUARAN
+        Route::get('penganggaranPengeluaran/viewGetAll', 'penganggaranPengeluaranViewGetAll')->name('timrba.ManajemenKeuangan.penganggaranPengeluaran.viewGetAll');
+        Route::get('penganggaranPengeluaran/apiGetAll', 'penganggaranPengeluaranApiGetAll')->name('timrba.ManajemenKeuangan.penganggaranPengeluaran.apiGetAll');
+        // PENATAUSAHAAN
+        Route::get('penatausahaan/apiGetAll', 'penatausahaanApiGetAll')->name('timrba.ManajemenKeuangan.penatausahaan.apiGetAll');
+        Route::get('penatausahaan/viewGetAll', 'penatausahaanViewGetAll')->name('timrba.ManajemenKeuangan.penatausahaan.viewGetAll');
+        // PELAPORAN
+        Route::get('pelaporan/apiGetAll', 'pelaporanApiGetAll')->name('timrba.ManajemenKeuangan.pelaporan.apiGetAll');
+        Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('timrba.ManajemenKeuangan.pelaporan.viewGetAll');
     });
     // =====================================KEPALA WILAYAH========================================
     Route::controller(KepalaWilayahKegiatanMonitoringController::class)->prefix('kepalawilayah/KegiatanMonitoring')->group(function () {
@@ -290,6 +309,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('viewGetAll', 'viewGetAll')->name('bendaharapengeluaran.SPJKegiatanRutin.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('bendaharapengeluaran.SPJKegiatanRutin.viewDetail');
     });
+    Route::controller(BendaharaPengeluaranManajemenKeuanganController::class)->prefix('bendaharapengeluaran/ManajemenKeuangan')->group(function () {
+        // PERENCANAAN
+        Route::get('perencanaan/apiGetAll', 'perencanaanApiGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.perencanaan.apiGetAll');
+        Route::get('perencanaan/viewGetAll', 'perencanaanViewGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.perencanaan.viewGetAll');
+        // PENGANGGARAN PENDAPATAN
+        Route::get('penganggaranPendapatan/viewGetAll', 'penganggaranPendapatanViewGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.penganggaranPendapatan.viewGetAll');
+        Route::get('penganggaranPendapatan/apiGetAll', 'penganggaranPendapatanApiGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.penganggaranPendapatan.apiGetAll');
+        // PENGANGGARAN PENGELUARAN
+        Route::get('penganggaranPengeluaran/viewGetAll', 'penganggaranPengeluaranViewGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.penganggaranPengeluaran.viewGetAll');
+        Route::get('penganggaranPengeluaran/apiGetAll', 'penganggaranPengeluaranApiGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.penganggaranPengeluaran.apiGetAll');
+        // PENATAUSAHAAN
+        Route::get('penatausahaan/apiGetAll', 'penatausahaanApiGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.penatausahaan.apiGetAll');
+        Route::get('penatausahaan/viewGetAll', 'penatausahaanViewGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.penatausahaan.viewGetAll');
+        // PELAPORAN
+        Route::get('pelaporan/apiGetAll', 'pelaporanApiGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.pelaporan.apiGetAll');
+        Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('bendaharapengeluaran.ManajemenKeuangan.pelaporan.viewGetAll');
+    });
     // =====================================BENDAHARA PENERIMAAN========================================
     Route::controller(BendaharaPenerimaanKegiatanMonitoringController::class)->prefix('bendaharapenerimaan/KegiatanMonitoring')->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('bendaharapenerimaan.KegiatanMonitoring.apiGetAll');
@@ -315,5 +351,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('apiUpdate', 'apiUpdate')->name('bendaharapenerimaan.SPJKegiatan.apiUpdate');
         Route::get('viewGetAll', 'viewGetAll')->name('bendaharapenerimaan.SPJKegiatan.viewGetAll');
         Route::get('viewDetail', 'viewDetail')->name('bendaharapenerimaan.SPJKegiatan.viewDetail');
+    });
+    Route::controller(BendaharaPenerimaanManajemenKeuanganController::class)->prefix('bendaharapenerimaan/ManajemenKeuangan')->group(function () {
+        // PERENCANAAN
+        Route::get('perencanaan/apiGetAll', 'perencanaanApiGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.perencanaan.apiGetAll');
+        Route::get('perencanaan/viewGetAll', 'perencanaanViewGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.perencanaan.viewGetAll');
+        // PENGANGGARAN PENDAPATAN
+        Route::get('penganggaranPendapatan/viewGetAll', 'penganggaranPendapatanViewGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.penganggaranPendapatan.viewGetAll');
+        Route::get('penganggaranPendapatan/apiGetAll', 'penganggaranPendapatanApiGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.penganggaranPendapatan.apiGetAll');
+        // PENGANGGARAN PENGELUARAN
+        Route::get('penganggaranPengeluaran/viewGetAll', 'penganggaranPengeluaranViewGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.penganggaranPengeluaran.viewGetAll');
+        Route::get('penganggaranPengeluaran/apiGetAll', 'penganggaranPengeluaranApiGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.penganggaranPengeluaran.apiGetAll');
+        // PENATAUSAHAAN
+        Route::get('penatausahaan/apiGetAll', 'penatausahaanApiGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.penatausahaan.apiGetAll');
+        Route::get('penatausahaan/viewGetAll', 'penatausahaanViewGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.penatausahaan.viewGetAll');
+        // PELAPORAN
+        Route::get('pelaporan/apiGetAll', 'pelaporanApiGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.pelaporan.apiGetAll');
+        Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('bendaharapenerimaan.ManajemenKeuangan.pelaporan.viewGetAll');
     });
 });

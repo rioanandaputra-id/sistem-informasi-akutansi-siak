@@ -58,6 +58,7 @@
                                     <tr>
                                         <th colspan="3"><h5>Total</h4></th>
                                         <td></td>
+                                        <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -141,6 +142,13 @@
                         title: 'Nama Akun',
                     },
                     {
+                        data: 'pagu_anggaran',
+                        name: 'pagu_anggaran',
+                        title: 'Pagu Anggaran',
+                        className: 'dt-right',
+                        render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
+                    },
+                    {
                         data: 'realisasi_anggaran',
                         name: 'realisasi_anggaran',
                         title: 'Realisasi',
@@ -164,6 +172,7 @@
         
                     // Update footer
                     $(api.column(3).footer()).html("<h5>"+numFormat(total)+"</h5>");
+                    $(api.column(4).footer()).html("<h5>"+numFormat(total)+"</h5>");
                 },
             });
         }

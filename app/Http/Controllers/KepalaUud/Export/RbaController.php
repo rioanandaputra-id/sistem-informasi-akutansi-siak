@@ -10,6 +10,13 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Divisi;
+use App\Models\Misi;
+use App\Models\Program;
+use App\Models\Kegiatan;
+
+use App\Exports\RbaExcelExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RbaController extends Controller
 {
@@ -20,39 +27,32 @@ class RbaController extends Controller
         $this->request = app(Request::class);
     }
 
-    public function apiGetAll()
+    public function export()
     {
         try {
-            $tahun = ($this->request->tahun == "-") ? " " : " AND pr.periode='".$this->request->tahun."'";
-            $divisi = ($this->request->divisi == "-") ? " " : " AND kdiv.id_divisi='".$this->request->divisi."'";
-            $apiGetAll = DB::SELECT("
+            $id_divisi = $this->request->id_divisi;
+            $divisi = Divisi::find($id_divisi);
+            $records = \DB::SELECT("
                 SELECT
-                    keg.id_kegiatan,
-                    keg.nm_kegiatan,
-                    dvs.nm_divisi,
-                    pr.nm_program,
-                    rba.id_rba,
-                    rba.tgl_submit,
-                    kdiv.id_kegiatan_divisi
+                    msi.id_misi,
+                    msi.nm_misi
                 FROM
-                    kegiatan AS keg
-                    JOIN program AS pr ON pr.id_program = keg.id_program
+                    kegiatan_divisi AS kdiv
+                    JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
+                    AND kgt.deleted_at IS NULL
+                    JOIN program AS pr ON pr.id_program = kgt.id_program
                     AND pr.deleted_at IS NULL
-                    LEFT JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan = keg.id_kegiatan
-                    AND kdiv.deleted_at IS NULL
-                    LEFT JOIN divisi AS dvs ON dvs.id_divisi = kdiv.id_divisi
-                    AND dvs.deleted_at IS NULL
-                    LEFT JOIN rba ON rba.id_kegiatan_divisi = kdiv.id_kegiatan_divisi
-                    AND rba.deleted_at IS NULL
+                    LEFT JOIN misi AS msi ON msi.id_misi = pr.id_misi
+                    AND msi.deleted_at IS NULL
                 WHERE
-                    keg.deleted_at IS NULL
-                    AND pr.id_misi IS NOT NULL
-                    ".$divisi."
-                    ".$tahun."
+                    kdiv.id_divisi = '".$id_divisi."'
                 ORDER BY
-                    keg.nm_kegiatan ASC
+                    msi.nm_misi DESC
             ");
-            return DaTables::of($apiGetAll)->addIndexColumn()->make(true);
+
+            $filename = 'Dokumen RBA '.strtoupper($divisi->nm_divisi).'.xlsx';    
+            return Excel::download(new RbaExcelExport($divisi, $records), $filename);
+
         } catch (QueryException $e) {
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
             return [
@@ -72,17 +72,5 @@ class RbaController extends Controller
                 'response' => null
             ];
         }
-    }
-
-    public function viewGetAll()
-    {
-        $info = [
-            'title' => 'Export Data',
-            'site_active' => 'ExportData',
-        ];
-
-        $divisi = \App\Models\Divisi::whereNull('deleted_at')->orderBy('nm_divisi')->get();
-
-        return view('pages._kepalaUud._export._rba.viewGetAll', compact('info','divisi'));
     }
 }

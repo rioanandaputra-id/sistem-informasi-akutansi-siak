@@ -20,16 +20,13 @@
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col">
-                            <div class="float-left">
+                            <!-- <div class="float-left">
                                 <div class="input-group">
-                                    <select class="form-control mr-2" id="tahun">
-                                        <option value="-" selected>-- Semua Tahun --</option>
-                                        @for($i=0;$i<3;$i++)
-                                        <option value="{{ date('Y')-$i }}">{{ date('Y')-$i }}</option>
-                                        @endfor
-                                    </select>
+                                    <button id="exportAll" type="button" class="btn btn-info noborder">
+                                        <i class="fas fa-print"></i> Export All
+                                    </button>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="float-right text-bold">
                                 <div class="input-group">
                                     <button id="refresh" type="button" class="btn btn-info noborder">
@@ -68,13 +65,55 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $("#refresh").click(function() {
-                //
-            });
+            tbkegiatan();
+            $('#btnAdd').hide();
 
-            $('#tahun').on('change', function() {
-                //
+            $("#refresh").click(function() {
+                $('#tbkegiatan').DataTable().ajax.reload();
             });
         });
+    </script>
+
+    <script>
+        function tbkegiatan() {
+            $('#tbkegiatan').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                searching: true,
+                paging: false,
+                info: true,
+                ordering: false,
+                ajax: {
+                    url: '{{ route('kepalauud.ManajemenKeuangan.pelaporan.apiGetAll') }}',
+                    type: 'GET',
+                },
+                columns: [{
+                        data: 'id_divisi',
+                        name: 'id_divisi',
+                        title: '<input type="checkbox" id="ckAll" />',
+                        width: '5px',
+                        render: function(data, type, row) {
+                            return `<input type="checkbox" class="ckItem" value="${data}" />`;
+                        }
+                    },
+                    {
+                        data: 'nm_divisi',
+                        name: 'nm_divisi',
+                        title: 'Bagian',
+                    },
+                    {
+                        data: 'id_divisi',
+                        name: 'id_divisi',
+                        title: 'Export',
+                        className: 'dt-right',
+                        width: '10%',
+                        render: function(data, type, row) {
+                            return `<a href="{{ url('kepalauud/Export/Rba/export?id_divisi=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-print"></i> Export</a>`;
+                        }
+                    }
+                ]
+            });
+        }
     </script>
 @endpush
