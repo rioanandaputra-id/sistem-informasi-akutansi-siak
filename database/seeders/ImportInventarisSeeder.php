@@ -23,7 +23,7 @@ class ImportInventarisSeeder extends Seeder
                 Akun::create(
                     [
                         'id_akun' => \Str::uuid(),
-                        'no_akun_induk' => '5e297c0e-3f6a-4827-bb4b-0ef7c5398664',
+                        'no_akun_induk' => '313dbf38-3feb-452b-abd1-13084e90bb05',
                         'elemen' => $data[0],
                         'sub_elemen' => $data[1],
                         'jenis' => $data[2],
