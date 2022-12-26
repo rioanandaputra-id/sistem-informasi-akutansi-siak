@@ -21,10 +21,10 @@ class ProgramSeeder extends Seeder
             if (!$firstline) {
                 Program::create(
                     [
-                        'id_program' => \Str::uuid(),
-                        'id_misi' => $data[0],
-                        'nm_program' => $data[1],
-                        'periode' => $data[2],
+                        'id_program' => $data[0],
+                        'id_misi' => $data[1],
+                        'nm_program' => $data[2],
+                        'periode' => $data[3],
                         'a_aktif' => 1,
                         'created_at' => now()
                     ]

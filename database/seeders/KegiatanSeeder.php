@@ -21,9 +21,9 @@ class KegiatanSeeder extends Seeder
             if (!$firstline) {
                 Kegiatan::create(
                     [
-                        'id_kegiatan' => \Str::uuid(),
-                        'id_program' => $data[0],
-                        'nm_kegiatan' => $data[1],
+                        'id_kegiatan' => $data[0],
+                        'id_program' => $data[1],
+                        'nm_kegiatan' => $data[2],
                         'a_aktif' => 1,
                         'created_at' => now()
                     ]
