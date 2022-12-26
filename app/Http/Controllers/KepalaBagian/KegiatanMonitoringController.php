@@ -346,7 +346,7 @@ class KegiatanMonitoringController extends Controller
                 AND lkgt.id_kegiatan_divisi = '" . $id_kegiatan_divisi . "'
             ORDER BY lkgt.created_at ASC
         ");
-        $elemen = ($kegiatan[0]->nm_program=='Non Program (Pendapatan)') ? '4' : '5';
+        $elemen = ($kegiatan[0]->nm_program=='Non Program (Pendapatan)') ? "'4'" : "'1','5'";
         $akun = \DB::SELECT("
             SELECT
                 akn.id_akun,
@@ -355,7 +355,7 @@ class KegiatanMonitoringController extends Controller
             FROM
                 akun AS akn
             WHERE
-                akn.elemen='".$elemen."'
+                akn.elemen IN (".$elemen.")
                 AND akn.no_akun > '0000'
                 AND akn.deleted_at IS NULL
         ");
