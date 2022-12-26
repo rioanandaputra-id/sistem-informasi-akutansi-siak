@@ -17,7 +17,7 @@ class MisiSeeder extends Seeder
         Misi::truncate();
         $csvFile = fopen(base_path("docs/csv/misi.csv"), "r");
         $firstline = true;
-        while (($data = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+        while (($data = fgetcsv($csvFile, 2000, ";")) !== FALSE) {
             if (!$firstline) {
                 Misi::create(
                     [
