@@ -342,7 +342,7 @@ class KegiatanMonitoringController extends Controller
             FROM
                 akun AS akn
             WHERE
-                akn.elemen='5'
+                akn.elemen IN ('1','5')
                 AND akn.no_akun > '0000'
                 AND akn.deleted_at IS NULL
         ");

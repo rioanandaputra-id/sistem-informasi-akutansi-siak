@@ -90,7 +90,7 @@ class DashboardController extends Controller
                     FROM
                         rba
                         JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba
-                        JOIN akun AS akn ON akn.id_akun=drba.id_akun AND akn.deleted_at IS NULL AND akn.elemen='5'
+                        JOIN akun AS akn ON akn.id_akun=drba.id_akun AND akn.deleted_at IS NULL AND  akn.elemen IN ('1','5')
                     WHERE
                         rba.deleted_at IS NULL
                     GROUP BY
@@ -104,7 +104,7 @@ class DashboardController extends Controller
                         laksana_kegiatan AS laks
                         JOIN spj ON spj.id_laksana_kegiatan=laks.id_laksana_kegiatan
                         JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
-                        JOIN akun AS akn ON akn.id_akun=dspj.id_akun AND akn.deleted_at IS NULL AND akn.elemen='5'
+                        JOIN akun AS akn ON akn.id_akun=dspj.id_akun AND akn.deleted_at IS NULL AND akn.elemen IN ('1','5')
                     WHERE
                         laks.a_verif_kabag_keuangan='2'
                         AND (spj.a_verif_kabag_keuangan='2' OR spj.a_verif_bendahara_pengeluaran='2')
