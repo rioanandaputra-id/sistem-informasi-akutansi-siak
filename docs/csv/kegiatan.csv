@@ -1,12 +1,80 @@
-"id_kegiatan","id_program","nm_kegiatan","a_aktif","created_at","updated_at","deleted_at","id_updater"
-"ed9640f9-921c-4e89-a30f-88471028d721","3c4ef243-efa8-44f1-98fc-e87d8683bd97","Pengundian hadiah Utama 2 Sepeda Motor","1","28/11/2022 13:29:28","28/11/2022 13:29:28",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"f8b64dc2-67f8-40c1-8fb1-075420917c6d","3c4ef243-efa8-44f1-98fc-e87d8683bd97","Pengundian hadiah Hiburan","1","28/11/2022 13:29:37","28/11/2022 13:29:37",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"d62419f1-2288-4f3f-9cfa-ab6174084246","3c4ef243-efa8-44f1-98fc-e87d8683bd97","Sertifikat dan Piagam Donor Sukarela","1","28/11/2022 13:29:47","28/11/2022 13:29:47",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"2d8a56fb-78c7-4183-9fb5-6112092c471f","3c4ef243-efa8-44f1-98fc-e87d8683bd97","Souvenir dan Snack donor","1","28/11/2022 13:29:55","28/11/2022 13:29:55",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"632afee2-508b-4be3-8269-35cc76d7053c","db2f7e33-b772-4743-864b-92e3a96a8bfd","Pemberian Plakat","1","28/11/2022 13:30:10","28/11/2022 13:30:10",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"fba09e97-961f-46a8-8014-722b05615ed1","db2f7e33-b772-4743-864b-92e3a96a8bfd","Pemberian Cindera mata Berupa Sepeda, Kulkas, Tv dll","1","28/11/2022 13:30:20","28/11/2022 13:30:20",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"b6c7524a-554f-49d4-82ff-4c9cd85f987e","db2f7e33-b772-4743-864b-92e3a96a8bfd","Family Gathering Koordinator Donor","1","28/11/2022 13:30:29","28/11/2022 13:30:29",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"cfe6bf90-54ad-4cec-b265-c6beb61d6acc","db2f7e33-b772-4743-864b-92e3a96a8bfd","Pembuatan Kalender Donor Darah","1","28/11/2022 13:30:36","28/11/2022 13:30:36",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"a778fbdf-2a33-414d-b3c9-7b46656e9d8d","c3bf3dad-1199-4b55-a4e3-c97e5ec66e21","Pengadaan Barang Elektronik : Kamera, Laptop dll","1","28/11/2022 13:30:51","28/11/2022 13:30:51",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"c76f5a30-f73a-46a0-a074-8c636ac4a2e6","066dbc18-18c6-433e-960b-251566016fa2","Soft Opening Klinik","1","28/11/2022 13:31:06","28/11/2022 13:31:06",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"efd21a8f-64e0-42c7-a436-8eafb079e9b3","6089f744-60c2-480b-9083-8e91174ea97d","Sosialisasi Instansi","1","28/11/2022 13:31:15","28/11/2022 13:31:15",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
+Program ;Kegiatan 
+89c2dc25-d37f-463f-942f-6b0d7f811b97;Pemberian Piagam Donor
+89c2dc25-d37f-463f-942f-6b0d7f811b97;Pemberian Kaos Donor Pemula
+89c2dc25-d37f-463f-942f-6b0d7f811b97;Pengundian Doorprize Donor Darah Sukarela (DDS)
+7f765f45-84e0-405f-b423-55e96108dc7b;Family Gathering Koordinator Donor 
+f0358309-df98-4c9e-aaa5-618a2063a02e;Pengadaan Sarana Prasarana Studio Podcast
+e94c09b2-1c4b-4d71-8c3b-80b1f2251711;Pameran Expo
+e94c09b2-1c4b-4d71-8c3b-80b1f2251711;Buka Gerai Donor Baru
+322afa3e-abef-40e5-ba1e-69a9257e8954;Pemeriksaan Laboratorium dan Pengobatan Gratis
+322afa3e-abef-40e5-ba1e-69a9257e8954;Santunan kepada Penderita Tale dan Panti Auhan 
+322afa3e-abef-40e5-ba1e-69a9257e8954;Jum'at Berkah
+9bf1eeec-aa1a-4653-b7ec-9664d389225e;Memberika Sosialisasi kepada Instansi tentang Donor Darah
+9bf1eeec-aa1a-4653-b7ec-9664d389225e;Memberikan Surat Himbauan Donor kembali
+9bf1eeec-aa1a-4653-b7ec-9664d389225e;Mengadakan pertemuan dengan Koordinator Donor Darah 
+c0ce8752-6866-4f42-b295-60e7fbe15774;Memberikan Cendramata atau Suvenir untuk
+c0ce8752-6866-4f42-b295-60e7fbe15774;Mengadakan Jalan Sehat Untuk Pendonor
+7ba4edd5-bd1e-4b7b-a35e-79f1965d1534;Donor Darah di Masjid minimal 3 kegiatan
+8f1df69f-70a9-4f99-9623-1ad719aaae78;Door to Door ke Pendonor 
+749bab72-61f0-44a3-84be-ab8a06fa6ef0;Pengadaan Sarana dan Prsarana 
+9b3af807-b7e9-43b7-8c7e-89e403493fc5;Pengadaan Material pengelolaan Darah 
+834d4963-25ff-479f-b356-c97b0b3a4da9;Penambahan sarana dan Prasarana pengelolaan darah 
+99eee0df-1c2b-4b71-846e-0c26040edd8f;Pengadaan sarana dan prasarana Pengawasan Mutu
+99eee0df-1c2b-4b71-846e-0c26040edd8f;Mengikuti kegiatan Pemantapan Mutu Eksternal (PME)
+99eee0df-1c2b-4b71-846e-0c26040edd8f;Melaksanakan kegiatan Pemantapan Mutu Internal (PMI)
+99eee0df-1c2b-4b71-846e-0c26040edd8f;Kalibrasi seluruh alat yang digunakan dalam proses pengolahan darah
+99eee0df-1c2b-4b71-846e-0c26040edd8f;Kualifikasi seluruh alat baru dan alat yg telah digunakan dalam proses pengolahan darah
+8b9b30c8-eb93-4629-bd59-37c24e441261;Pelulusan bahan awal
+89a3c3ee-ea0f-4342-9dce-035a90911e13;Pengiriman sampel uji untuk pemeriksaan uji mutu (QC)
+89a3c3ee-ea0f-4342-9dce-035a90911e13;pemeriksaan uji mutu darah (QC)
+8315579a-4133-42c5-9c58-7d77f877207f;Penyusunan Naskah Dinas, Pengarsipan dan Pendistibusian 
+eb524f37-32e4-457d-8a50-9574fb467b09;Rapat Koordinasi (Rapat Manajemen, Rapat Lengkap dan Rapat Eksternal 
+2ff1a290-d47d-48e8-b9d3-250ce6d80b88;Pengadaan perpustakaan di lingkungan UDD Pembina PMI provinsi Lampung
+2ff1a290-d47d-48e8-b9d3-250ce6d80b88;Melakukan opname dan penomoran buku-buku perpustakaan
+2ff1a290-d47d-48e8-b9d3-250ce6d80b88;Membuatan kartu anggota perpustakaan
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pelatihan Manajemen 
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pelatihan Teknis UTDP
+33785e35-76f4-476f-bc0f-cc58e80bf251;Petihan Non Teknis UTDP
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pelatihan Security System 
+33785e35-76f4-476f-bc0f-cc58e80bf251;Publik Speaking dan Pemasaran, multimedia dan digital marketing (kehumasan)
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pelatihan Staf Pelayanan Prima 
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pelatihan Hemodialisa Perawat dan Dokter
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pelatihan TOT 
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pendidikan Profesi Berkelanjutan 
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pelatihan Kalibrasi 
+33785e35-76f4-476f-bc0f-cc58e80bf251;Pelahan Penyusunan Laporan Keuangan 
+0295a402-1100-43b6-9011-5dd93c0f8663;Rekrutimen Pegawai
+bf296ca4-7cea-4ad3-91af-cb2bd46ea152;Pengadaaan Sarana Prasarana Adm dan Kepegawaian 
+5ad094e6-5695-4d87-be6f-4d3ef17776c3;Kajian dan pengembangan soft skill Pegawain 
+bf7b09c4-ae10-469d-8be6-b7da40efbc26;Penyusunan RBA 
+79e420c8-ea3e-4bb1-bbaa-0b7fa1e6897d;Family Gathering Pegawai UDD
+79e420c8-ea3e-4bb1-bbaa-0b7fa1e6897d;Paket Sembako Ramadhan
+79e420c8-ea3e-4bb1-bbaa-0b7fa1e6897d;Umroh Pegawai
+79e420c8-ea3e-4bb1-bbaa-0b7fa1e6897d;Paket Hari Raya
+eb800fa5-f756-4410-bd91-d219c6c6c6ea;Kunjangan Audit Pemasok/suplier
+6cd265cb-218e-45f0-aeae-468e0da15a13;Penyusunana Laporan Keuangan 
+4dff0d3b-d641-44fb-9c42-38e8ba55c47e;Pengadaan Sarana dan Prasaeran 
+adf6f8bc-4659-4d7b-a48b-3d4efbedae35;Renovasi dan perbaikan 
+c7f59f48-45bb-4cc5-9b33-ea0f33aadbbe;Kunjungan  dan Monitoring ke UTD kab/Kota
+c7f59f48-45bb-4cc5-9b33-ea0f33aadbbe;Pertemuan seluruh UTD
+eae5944c-db91-4b63-a584-abcf6c5b1eaa;Digitalisasi Dokumen 
+eae5944c-db91-4b63-a584-abcf6c5b1eaa;Kaji Ulang Standar Prosedur Operasional (SPo)
+eae5944c-db91-4b63-a584-abcf6c5b1eaa;Kaji Ulang Pedoman Mutu 
+0a84f602-33c6-41b2-a8a4-df1c684c4410;Pengadaan Sarana Prasarana 
+e02c41f6-9d54-49c3-8f3d-b0ddec415cad;Akreditasi UDD oleh Kemenkes
+e02c41f6-9d54-49c3-8f3d-b0ddec415cad;Sertifikasi BPPOM
+dfb6623a-8a95-4908-88a1-209650fab1d7;Audit SPO
+b7e3362c-e3bf-4048-8328-5047f624bbaf;Penambahan module bagian Komponen Darah dengan sistem paperless
+b7e3362c-e3bf-4048-8328-5047f624bbaf;Penambahan module bagian release Darah dengan sistem paperless
+b7e3362c-e3bf-4048-8328-5047f624bbaf;Penambahan module bagian crossmatch Darah dengan sistem paperless
+b7e3362c-e3bf-4048-8328-5047f624bbaf;penambahan module bagian IMLTD dengan sistem paperless
+b7e3362c-e3bf-4048-8328-5047f624bbaf;Penambahan module permintaan barang dengan sistem paperless 
+b7e3362c-e3bf-4048-8328-5047f624bbaf;Pengadaan TAB android
+d1c5c68e-c173-45a1-b7c2-51c3e4362de9;Pengadaan Library, Security server Utama
+934a2192-88c3-4cb0-a56a-a7ecd5a894b9;pembuatan sistem pengambilan mobil unit
+934a2192-88c3-4cb0-a56a-a7ecd5a894b9;Pengadaan TAB android
+934a2192-88c3-4cb0-a56a-a7ecd5a894b9;Pengadaan provider internet mobil unit
+ec3ba1f3-452f-4719-9d9f-8aec49cf4b18;Pengadaan Sarana dan Prasarana IT
+ec3ba1f3-452f-4719-9d9f-8aec49cf4b18;Sosialisasi Aplikasi 
+ec3ba1f3-452f-4719-9d9f-8aec49cf4b18;Traininng IT untuuk Sluruh UDD
+9275e41a-b048-4316-ad0b-22b7521db3d6;Pengadaan SIM Klinik

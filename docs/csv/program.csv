@@ -1,16 +1,39 @@
-"id_program","id_misi","nm_program","periode","a_aktif","created_at","updated_at","deleted_at","id_updater"
-"3c4ef243-efa8-44f1-98fc-e87d8683bd97","e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce","Penghargaan Donor Sukarela Perorangan","2022","1","28/11/2022 13:24:42","28/11/2022 13:24:42",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"db2f7e33-b772-4743-864b-92e3a96a8bfd","e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce","Penghargaan Donor Instansi","2022","1","28/11/2022 13:24:51","28/11/2022 13:24:51",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"c3bf3dad-1199-4b55-a4e3-c97e5ec66e21","e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce","Sarana dan Prasarana Kegiatan Penunjang Humas","2022","1","28/11/2022 13:25:01","28/11/2022 13:25:01",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"066dbc18-18c6-433e-960b-251566016fa2","e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce","Peningkatan  dan penambahan Layanan","2022","1","28/11/2022 13:25:08","28/11/2022 13:25:08",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"6089f744-60c2-480b-9083-8e91174ea97d","e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce","Meningkatkan peminaaan kepada instansi/Kelompok donor","2022","1","28/11/2022 13:25:14","28/11/2022 13:25:14",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"5c3a113d-8485-48d0-8927-84dcad818770","2711ecb5-f385-4018-b852-d83547eb3142","Penyegaran Personil","2022","1","28/11/2022 13:25:39","28/11/2022 13:25:39",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"491f0794-cccc-419a-ab13-824fc2881c6d","702f7bd5-e10c-4890-8db7-ef76a037e9ec","Peningkatan alat pengujian","2022","1","28/11/2022 13:25:47","28/11/2022 13:25:47",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"5429c8a2-dd2c-4c96-8cb1-216721f26544","702f7bd5-e10c-4890-8db7-ef76a037e9ec","Peningkatan kualitas trombosit","2022","1","28/11/2022 13:25:54","28/11/2022 13:25:54",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"0f567e30-3f12-4522-b06b-f7f22a9e5696","756a9d30-81db-42b0-8ed7-b9b8c43de93e","Penambahan module bagian Komponen Darah dengan sistem paperless","2022","1","28/11/2022 13:26:21","28/11/2022 13:26:21",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"59756a29-e462-442d-b42a-beaab39b662f","756a9d30-81db-42b0-8ed7-b9b8c43de93e","Penambahan module bagian release Darah dengan sistem paperless","2022","1","28/11/2022 13:26:29","28/11/2022 13:26:29",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"d48d5920-e14a-4f4a-ae67-2faf837004f1","756a9d30-81db-42b0-8ed7-b9b8c43de93e","Penambahan module bagian crossmatch Darah dengan sistem paperless","2022","1","28/11/2022 13:26:37","28/11/2022 13:26:37",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"f91a7eb2-2944-4385-b2cc-7f4775b60169","756a9d30-81db-42b0-8ed7-b9b8c43de93e","penambahan module bagian IMLTD dengan sistem paperless","2022","1","28/11/2022 13:26:44","28/11/2022 13:26:44",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"5f4c7333-c26f-435f-8e72-09cfc8682c6d","756a9d30-81db-42b0-8ed7-b9b8c43de93e","Penambahan module permintaan barang dengan sistem paperless","2022","1","28/11/2022 13:26:51","28/11/2022 13:26:51",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"78064ba5-d3c1-455c-9380-f7ee530fc8e5","756a9d30-81db-42b0-8ed7-b9b8c43de93e","Upgrade Library, Security server Utama","2022","1","28/11/2022 13:26:58","28/11/2022 13:26:58",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
-"dc515dba-e0c8-493b-b9d1-9539c41a192f","756a9d30-81db-42b0-8ed7-b9b8c43de93e","Perubahan Sistem mobil unit donor darah menjadi paperless","2022","1","28/11/2022 13:27:05","28/11/2022 13:27:05",,"0c289cce-4442-4c93-8923-b9c816dd17ed"
+id_misi;nm_program;periode
+e69f4e55-2a0a-4489-933c-f456072b06db;Penghargaan Donor Sukarela Perorangan;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Penghargaan Donor Instansi;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Pembuatan Studio Podcast;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Peningkatan dan Penambahan Layanan ;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Bakti Sosial;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Meningkatkan Pembinaan kepada instansi/kelompok Donor;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Meningkatkan Pelayanan Donor Darah Sukarela;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Kegiatan Donor Darah Khusus Bulan Ramadhan;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Program Donor Darah Bersama Keluarga ;2023
+e69f4e55-2a0a-4489-933c-f456072b06db;Peningkatan layanan Pengelolaan Donor ;2023
+e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce;Menjamin Pelayanan Darah Yang Berkualitas;2023
+e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce;Meningkatkan sarana dan prasarana yang sesuai standar dalam menghasilkan darah yang berkualitas;2023
+e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce;Peningkatan Alat Pengujian;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Penjaminan Mutu Bahan Awal;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Penjaminan Mutu Produk Jadi;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Naskah Dinas dan Surat Menyurat;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Peningkatan Koordinasi dan Evaluasi seluruh unit kerja;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Peningkatan pengelolaan perpustakaan;2023
+2711ecb5-f385-4018-b852-d83547eb3142;Peningkatan pembinaan kualitas SDM melalui pelaksanaan pendidikan;2023
+2711ecb5-f385-4018-b852-d83547eb3142;Rekrutimen Pegaewai ;2023
+2711ecb5-f385-4018-b852-d83547eb3142;Peningkatan pembukuan dan penataan dokumen perlengkap;2023
+2711ecb5-f385-4018-b852-d83547eb3142;Knowledge sharing Session ;2023
+2711ecb5-f385-4018-b852-d83547eb3142;Program Penyusunan RBA ;2023
+2711ecb5-f385-4018-b852-d83547eb3142;Reward Pegawai;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Audit Pemasok;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Penyusunan Laporan Keuangan dan Pajak ;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Pengadaan Kebutuhah Kantor umum ;2023
+702f7bd5-e10c-4890-8db7-ef76a037e9ec;Renovasi dan Perbaikan Gedung;2023
+2711ecb5-f385-4018-b852-d83547eb3142;Pembinaan UTD;2023
+2711ecb5-f385-4018-b852-d83547eb3142;Manajemen Dokumen;2023
+e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce;Pelulusan Produk;2023
+e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce;Akreditasi UDD;2023
+e05f8070-dfeb-429a-bc3f-3ee5e2b5c7ce;Audit Internal Mutu ;2023
+756a9d30-81db-42b0-8ed7-b9b8c43de93e;Penambahan module APK;2023
+756a9d30-81db-42b0-8ed7-b9b8c43de93e;Upgrade Library, Security server Utama;2023
+756a9d30-81db-42b0-8ed7-b9b8c43de93e;Perubahan Sistem mobil unit donor darah menjadi paperless;2023
+756a9d30-81db-42b0-8ed7-b9b8c43de93e;Sinkronisasi data donor selampung;2023
+756a9d30-81db-42b0-8ed7-b9b8c43de93e;Pengadaan SIM Klinik ;2023

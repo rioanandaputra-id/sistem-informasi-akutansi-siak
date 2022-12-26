@@ -17,15 +17,15 @@ class ProgramSeeder extends Seeder
         Program::truncate();
         $csvFile = fopen(base_path("docs/csv/program.csv"), "r");
         $firstline = true;
-        while (($data = fgetcsv($csvFile, 2000, ",")) !== FALSE) {
+        while (($data = fgetcsv($csvFile, 2000, ";")) !== FALSE) {
             if (!$firstline) {
                 Program::create(
                     [
-                        'id_program' => $data[0],
-                        'id_misi' => $data[1],
-                        'nm_program' => $data[2],
-                        'periode' => $data[3],
-                        'a_aktif' => $data[4],
+                        'id_program' => \Str::uuid(),
+                        'id_misi' => $data[0],
+                        'nm_program' => $data[1],
+                        'periode' => $data[2],
+                        'a_aktif' => 1,
                         'created_at' => now()
                     ]
                 );  
