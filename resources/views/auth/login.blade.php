@@ -74,7 +74,7 @@
                     </div>
                 </form>
 
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col">
                         @if (Route::has('password.request'))
                             Lupa Password ?
@@ -94,7 +94,7 @@
                             </a>
                         @endif
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

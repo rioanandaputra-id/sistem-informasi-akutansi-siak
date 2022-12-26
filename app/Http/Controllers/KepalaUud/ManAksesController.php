@@ -183,6 +183,7 @@ class ManAksesController extends Controller
             $gender = $this->request->gender;
             $address = $this->request->address;
             $created_at = now();
+            $email_verified_at = now();
             $id_updater = Auth::user()->id_user;
             User::create([
                 'id_user' => $id_user,
@@ -195,6 +196,7 @@ class ManAksesController extends Controller
                 'gender' => $gender,
                 'address' => $address,
                 'created_at' => $created_at,
+                'email_verified_at' => $email_verified_at,
                 'id_updater' => $id_updater,
             ]);
             RoleUser::create([
@@ -248,6 +250,7 @@ class ManAksesController extends Controller
             $gender = $this->request->gender;
             $address = $this->request->address;
             $updated_at = now();
+            $email_verified_at = now();
             $id_updater = Auth::user()->id_user;
             User::where('id_user', $id_user)->update([
                 'id_divisi' => $id_divisi,
@@ -256,6 +259,7 @@ class ManAksesController extends Controller
                 'password' => ($password) ? bcrypt($password) : DB::raw('password'),
                 'phone' => $phone,
                 'email' => $email,
+                'email_verified_at' => $email_verified_at,
                 'gender' => $gender,
                 'address' => $address,
                 'updated_at' => $updated_at,
