@@ -372,8 +372,7 @@ class KegiatanMonitoringController extends Controller
             ->where('elemen','5')
             ->where('sub_elemen','7')
             ->where('jenis','06')
-            ->orderBy('LENGTH(keterangan)', 'ASC')
-            ->orderBy('keterangan', 'ASC')
+            ->orderBy(DB::raw('LENGTH(keterangan), keterangan'))
             ->get();
         $filename = 'Akun Persediaan.xlsx';    
         return Excel::download(new DetailRbaTemplate($akun), $filename);
