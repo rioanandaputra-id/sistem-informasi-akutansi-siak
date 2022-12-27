@@ -1,7 +1,7 @@
 <table>
     <thead>
-        <th>SAMPLE KODE</th>
-        <th>SAMPLE NAME</th>
+        <th>KODE</th>
+        <th>NAME</th>
         <th>VOLUME</th>
         <th>SATUAN</th>
         <th>INDIKATOR</th>
