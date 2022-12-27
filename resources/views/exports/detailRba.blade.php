@@ -1,4 +1,4 @@
-<table class="table table-borderless">
+<table>
     <thead>
         <th>SAMPLE KODE</th>
         <th>SAMPLE NAME</th>
