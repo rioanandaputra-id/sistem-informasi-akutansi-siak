@@ -214,8 +214,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('apiGetAll', 'apiGetAll')->name('kepalabagian.KegiatanMonitoring.apiGetAll');
 
         Route::post('apiCreateDetailRba', 'apiCreateDetailRba')->name('kepalabagian.KegiatanMonitoring.apiCreateDetailRba');
+        Route::post('apiCreateImportDetailRba', 'apiCreateImportDetailRba')->name('kepalabagian.KegiatanMonitoring.apiCreateImportDetailRba');
         Route::post('apiUpdateDetailRba', 'apiUpdateDetailRba')->name('kepalabagian.KegiatanMonitoring.apiUpdateDetailRba');
         Route::post('apiDeleteDetailRba', 'apiDeleteDetailRba')->name('kepalabagian.KegiatanMonitoring.apiDeleteDetailRba');
+        Route::get('apiGetAkun', 'apiGetAkun')->name('kepalabagian.KegiatanMonitoring.apiGetAkun');
 
         Route::post('apiCreateLaksana', 'apiCreateLaksana')->name('kepalabagian.KegiatanMonitoring.apiCreateLaksana');
         Route::post('apiUpdateLaksana', 'apiUpdateLaksana')->name('kepalabagian.KegiatanMonitoring.apiUpdateLaksana');

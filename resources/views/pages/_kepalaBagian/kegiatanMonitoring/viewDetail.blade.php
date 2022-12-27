@@ -45,6 +45,7 @@
                                     $lockBtnDetailRba = $kgt->tgl_submit ? 'disabled' : '';
                                     $lockBtnLaksana = $kgt->rba_a_verif_wilayah == 'Disetujui Kepala Pengurus Wilayah' ? '' : 'disabled';
                                     $IdRba = $kgt->id_rba;
+                                    $lockBtnImport = ($kgt->nm_divisi=="Bagian Pengelolaan Darah" && $kgt->tgl_submit != null) ? '' : 'disabled';
                                 @endphp
                                 <table>
                                     <tbody>
@@ -152,8 +153,11 @@
                                         <b>RINCIAN RENCANA BISNIS & ANGGARAN KEGIATAN</b>
                                     </div>
                                     <div class="float-right">
+                                        <button id="importDetailRba"
+                                            class="btn btn-sm noborder btn-light"><i class="fas fa-file-import"></i>
+                                            Import</button>
                                         <button id="addDetailRba"
-                                            class="btn btn-sm noborder btn-light"><i class="fas fa-plus-circle"></i>
+                                            class="btn btn-sm noborder btn-light ml-2"><i class="fas fa-plus-circle"></i>
                                             Tambah</button>
                                         <button id="deleteDetailRba"
                                             class="btn btn-sm noborder btn-light ml-2"><i class="fas fa-trash"></i>
@@ -309,6 +313,42 @@
                         </div>
                     </div>
                     @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="importDetailRbaMdl" class="modal" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Detail RENCANA BISNIS & ANGGARAN</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formimportDetailRbaMdl" enctype="multipart/form-data">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <h5>Instruksi Import Data:</h5>
+                                <ol>
+                                    <li>Silahkan download template import data <a href="{{ route('kepalabagian.KegiatanMonitoring.apiGetAkun') }}" class="btn btn-warning btn-xs ml-2">Download Template</a></li>
+                                    <li>Upload file pada form dibawah dan klik <strong>Submit</strong></li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <label for="fileimportDetailRbaMdl">File: <i class="text-red">*</i></label>
+                                <input type="file" class="form-control" id="fileimportDetailRbaMdl">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnimportDetailRbaMdl" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                 </div>
             </div>
         </div>
@@ -536,6 +576,9 @@
                 $('#addDetailRba').prop("disabled", true);
                 $('#deleteDetailRba').prop("disabled", true);
             }
+            if ("{!! $lockBtnImport !!}" == 'disabled') {
+                $('#importDetailRba').prop("disabled", true);
+            }
 
             if ("{!! $lockBtnLaksana !!}" == 'disabled') {
                 $('#addLaksKegiatan').prop("disabled", true);
@@ -562,6 +605,10 @@
                 $('#addDetailRbaMdl').modal('show');
             });
 
+            $("#importDetailRba").click(function() {
+                $('#importDetailRbaMdl').modal('show');
+            });
+
             $("#indikatoraddDetailRbaMdl").keyup(function() {
                 $("#totaladdDetailRbaMdl").val($("#voladdDetailRbaMdl").val() * $("#tarifaddDetailRbaMdl").val() * $(this).val());
             });
@@ -584,6 +631,55 @@
 
             $("#volupdateDetailRbaMdl").keyup(function() {
                 $("#totalupdateDetailRbaMdl").val($("#tarifupdateDetailRbaMdl").val() * $("#indikatorupdateDetailRbaMdl").val() * $(this).val());
+            });
+
+            $("#btnimportDetailRbaMdl").click(function() {
+
+                var formData = new FormData();
+                formData.append("_token", "{!! csrf_token() !!}");
+                formData.append("id_rba", "{!! $IdRba !!}");
+                formData.append("file", $('#fileimportDetailRbaMdl')[0].files[0]);
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('kepalabagian.KegiatanMonitoring.apiCreateImportDetailRba') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function() {
+                        $(this).prop("disabled", true);
+                        Swal.showLoading();
+                    },
+                }).done(function(res) {
+                    if (res.status) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Berhasil',
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Gagal',
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                    }
+                }).fail(function(res) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Tambah Rincian RENCANA BISNIS & ANGGARAN Gagal',
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+                    console.log(res);
+                    $(this).prop("disabled", false);
+                });
             });
 
             $("#btnaddDetailRbaMdl").click(function() {

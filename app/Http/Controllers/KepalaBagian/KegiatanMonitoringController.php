@@ -14,6 +14,9 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Imports\DetailRbaImport;
+use App\Exports\DetailRbaTemplate;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KegiatanMonitoringController extends Controller
 {
@@ -360,6 +363,68 @@ class KegiatanMonitoringController extends Controller
                 AND akn.deleted_at IS NULL
         ");
         return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
+    }
+
+    public function apiGetAkun()
+    {
+        $akun = \App\Models\Akun::where('elemen','5')->where('sub_elemen','7')->where('jenis','06')->orderBy('keterangan','ASC')->get();
+        $filename = 'Akun Persediaan.xlsx';    
+        return Excel::download(new DetailRbaTemplate($akun), $filename);
+    }
+
+    public function apiCreateImportDetailRba()
+    {
+        try {
+            DB::beginTransaction();
+            $rules = [
+                'id_rba' => 'required|uuid',
+                'file' => 'required'
+            ];
+            $validator = Validator::make(request()->all(), $rules);
+            if ($validator->fails()) {
+                return [
+                    'status' => false,
+                    'latency' => AppLatency(),
+                    'message' => 'BadRequest',
+                    'error' => $validator->errors(),
+                    'response' => null
+                ];
+            }
+            $id_rba = $this->request->id_rba;
+            $file = $this->request->file('file');
+            // membuat nama file unik
+            $nama_file = rand().$file->getClientOriginalName();
+            // upload ke folder file_siswa di dalam folder public
+            $file->move('importPersediaan',$nama_file);
+            Excel::import(new DetailRbaImport($id_rba), public_path('/importPersediaan/'.$nama_file));
+            return [
+                'status' => true,
+                'latency' => AppLatency(),
+                'message' => 'Created',
+                'error' => null,
+                'response' => ['id_rba' => $id_rba]
+            ];
+        } catch (QueryException $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            DB::rollBack();
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
     }
 
     public function apiCreateDetailRba()
