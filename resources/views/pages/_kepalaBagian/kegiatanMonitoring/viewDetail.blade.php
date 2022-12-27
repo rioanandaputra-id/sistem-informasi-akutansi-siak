@@ -45,7 +45,7 @@
                                     $lockBtnDetailRba = $kgt->tgl_submit ? 'disabled' : '';
                                     $lockBtnLaksana = $kgt->rba_a_verif_wilayah == 'Disetujui Kepala Pengurus Wilayah' ? '' : 'disabled';
                                     $IdRba = $kgt->id_rba;
-                                    $lockBtnImport = ($kgt->nm_divisi=="Bagian Pengelolaan Darah" && $kgt->tgl_submit != null) ? '' : 'disabled';
+                                    $lockBtnImport = ($kgt->nm_divisi=="Bagian Pengelolaan Darah" AND empty($kgt->tgl_submit)) ? '' : 'disabled';
                                 @endphp
                                 <table>
                                     <tbody>
