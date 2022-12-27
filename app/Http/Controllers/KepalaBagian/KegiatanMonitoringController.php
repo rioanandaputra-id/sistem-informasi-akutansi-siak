@@ -397,6 +397,7 @@ class KegiatanMonitoringController extends Controller
                     'response' => null
                 ];
             }
+            $id_detail_rba = guid();
             $id_rba = $this->request->id_rba;
             $file = $this->request->file('file');
             // membuat nama file unik
@@ -404,6 +405,7 @@ class KegiatanMonitoringController extends Controller
             // upload ke folder file_siswa di dalam folder public
             $file->move('importPersediaan',$nama_file);
             Excel::import(new DetailRbaImport($id_rba), public_path('/importPersediaan/'.$nama_file));
+            DB::commit();
             return [
                 'status' => true,
                 'latency' => AppLatency(),

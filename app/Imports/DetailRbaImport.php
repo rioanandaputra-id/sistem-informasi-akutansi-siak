@@ -3,37 +3,40 @@
 namespace App\Imports;
 
 use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Illuminate\Support\Collection;
 use App\Models\Akun;
 use App\Models\DetailRba;
 
-class DetailRbaImport implements ToModel, WithHeadingRow
+class DetailRbaImport implements ToCollection
 {
-    private $idRba; 
+    private $id_rba;
 
     public function __construct($id_rba)
     {
-        $this->idRba = $id_rba; 
+        $this->id_rba = $id_rba; 
     }
 
-    public function model(array $row)
+    public function collection(Collection $rows)
     {
-        $akun = Akun::where('keterangan', $row['SAMPLE KODE'])->whereNull('deleted_at')->first();
-        if(!is_null($row['VOLUME'])) {
-            return new DetailRba([
-                'id_detail_rba' => \Str::uuid(),
-                'id_rba'        => $this->idRba,
-                'id_akun'       => $akun->id_akun,
-                'nm_akun'       => $row['SAMPLE NAME'],
-                'vol'           => $row['VOLUME'],
-                'satuan'        => $row['SATUAN'],
-                'indikator'     => $row['INDIKATOR'],
-                'tarif'         => $row['TARIF'],
-                'total'         => $row['VOLUME'] * $row['INDIKATOR'] * $row['TARIF'],
-                'created_at'    => now(),
-                'a_setuju'      => 1,
-            ]);
+        foreach($rows AS $n=>$r) {
+            if($n > 0 AND !is_null($r[5])) {
+                $akun = Akun::where('keterangan', $r[0])->whereNull('deleted_at')->first();
+                if(!is_null($akun)) {
+                    DetailRba::create([
+                        'id_detail_rba' => guid(),
+                        'id_rba'        => $this->id_rba,
+                        'id_akun'       => $akun->id_akun,
+                        'vol'           => $r[2],
+                        'satuan'        => (is_null($r[3])) ? '-' : $r[3],
+                        'indikator'     => $r[4],
+                        'tarif'         => $r[5],
+                        'total'         => ($r[2] * $r[4] * $r[5]),
+                        'created_at'    => now(),
+                        'a_setuju'      => 1,
+                    ]);
+                }
+            }
         }
     }
 }
