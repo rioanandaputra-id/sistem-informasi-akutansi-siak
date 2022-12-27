@@ -367,7 +367,7 @@ class KegiatanMonitoringController extends Controller
 
     public function apiGetAkun()
     {
-        $akun = \App\Models\Akun::where('elemen','5')->where('sub_elemen','7')->where('jenis','06')->orderBy('keterangan','ASC')->get();
+        $akun = \App\Models\Akun::where('elemen','5')->where('sub_elemen','7')->where('jenis','06')->orderByRaw("CAST(keterangan as UNSIGNED) ASC")->get();
         $filename = 'Akun Persediaan.xlsx';    
         return Excel::download(new DetailRbaTemplate($akun), $filename);
     }
