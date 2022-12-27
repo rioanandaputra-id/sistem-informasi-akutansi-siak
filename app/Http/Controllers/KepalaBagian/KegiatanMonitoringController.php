@@ -372,6 +372,7 @@ class KegiatanMonitoringController extends Controller
             ->where('elemen','5')
             ->where('sub_elemen','7')
             ->where('jenis','06')
+            ->where('no_akun','>','0000')
             ->orderBy(DB::raw('LENGTH(keterangan), keterangan'))
             ->get();
         $filename = 'Akun Persediaan.xlsx';    
