@@ -20,18 +20,20 @@ class DetailRbaImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $akun = Akun::where('keterangan', $row['SAMPLE KODE'])->whereNull('deleted_at')->first();
-        return new DetailRba([
-            'id_detail_rba' => \Str::uuid(),
-            'id_rba'        => $this->idRba,
-            'id_akun'       => $akun->id_akun,
-            'nm_akun'       => $row['SAMPLE NAME'],
-            'vol'           => $row['VOLUME'],
-            'satuan'        => $row['SATUAN'],
-            'indikator'     => $row['INDIKATOR'],
-            'tarif'         => $row['TARIF'],
-            'total'         => $row['VOLUME'] * $row['INDIKATOR'] * $row['TARIF'],
-            'created_at'    => now(),
-            'a_setuju'      => 1,
-        ]);
+        if(!is_null($row['VOLUME'])) {
+            return new DetailRba([
+                'id_detail_rba' => \Str::uuid(),
+                'id_rba'        => $this->idRba,
+                'id_akun'       => $akun->id_akun,
+                'nm_akun'       => $row['SAMPLE NAME'],
+                'vol'           => $row['VOLUME'],
+                'satuan'        => $row['SATUAN'],
+                'indikator'     => $row['INDIKATOR'],
+                'tarif'         => $row['TARIF'],
+                'total'         => $row['VOLUME'] * $row['INDIKATOR'] * $row['TARIF'],
+                'created_at'    => now(),
+                'a_setuju'      => 1,
+            ]);
+        }
     }
 }
