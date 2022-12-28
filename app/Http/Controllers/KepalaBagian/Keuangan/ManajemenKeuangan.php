@@ -359,8 +359,20 @@ class ManajemenKeuangan extends Controller
     public function pelaporanApiGetAll()
     {
         try {
-            
-            //
+            $apiGetAll = DB::SELECT("
+                SELECT
+                    dvs.id_divisi,
+                    dvs.nm_divisi
+                FROM
+                    divisi AS dvs
+                WHERE
+                    dvs.deleted_at IS NULL
+                    AND dvs.id_divisi='".\Auth::user()->id_divisi."'
+                ORDER BY
+                    dvs.nm_divisi ASC
+            ");
+
+            return DaTables::of($apiGetAll)->make(true);
 
         } catch (QueryException $e) {
             logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
