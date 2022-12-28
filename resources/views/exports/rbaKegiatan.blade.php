@@ -51,4 +51,10 @@
         </tr>
         @endforeach
     </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="6">TOTAL</th>
+            <th>{{ array_sum(array_column($records->detail, 'total')) }}</th>
+        </tr>
+    </tfoot>
 </table>
