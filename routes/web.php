@@ -147,6 +147,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     Route::controller(KepalaUudExportRbaController::class)->prefix('kepalauud/Export/Rba')->group(function () {
         Route::get('export', 'export')->name('kepalauud.Export.Rba.export');
+        Route::get('exportKegiatan', 'exportKegiatan')->name('kepalauud.Export.Rba.exportKegiatan');
     });
     // =====================================TIM RBA========================================
     Route::controller(TimRbaKegiatanMonitoringController::class)->prefix('timrba/kegiatanMonitoring')->group(function () {
@@ -274,6 +275,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('penatausahaan/viewGetAll', 'penatausahaanViewGetAll')->name('kepalabagian.ManajemenKeuangan.penatausahaan.viewGetAll');
         // PELAPORAN
         Route::get('pelaporan/apiGetAll', 'pelaporanApiGetAll')->name('kepalabagian.ManajemenKeuangan.pelaporan.apiGetAll');
+        Route::get('pelaporan/apiKegiatanGetAll', 'pelaporanKegiatanapiGetAll')->name('kepalabagian.ManajemenKeuangan.pelaporan.apiKegiatanGetAll');
         Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('kepalabagian.ManajemenKeuangan.pelaporan.viewGetAll');
     });
     Route::controller(KepalaBagianKegiatanPendapatanController::class)->prefix('kepalabagian/kegiatanPendapatan')->group(function () {

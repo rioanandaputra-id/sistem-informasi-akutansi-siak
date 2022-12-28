@@ -39,6 +39,15 @@
                     <hr> -->
                     <div class="row">
                         <div class="col">
+                            <table class="table table-striped teble-bordered" id="tbdivisi" style="width: 100%">
+                                <thead class="bg-info"></thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
                                 <thead class="bg-info"></thead>
                             </table>
@@ -65,18 +74,20 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
+            tbdivisi();
             tbkegiatan();
             $('#btnAdd').hide();
 
             $("#refresh").click(function() {
+                $('#tbdivisi').DataTable().ajax.reload();
                 $('#tbkegiatan').DataTable().ajax.reload();
             });
         });
     </script>
 
     <script>
-        function tbkegiatan() {
-            $('#tbkegiatan').DataTable({
+        function tbdivisi() {
+            $('#tbdivisi').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
@@ -110,6 +121,49 @@
                         width: '10%',
                         render: function(data, type, row) {
                             return `<a href="{{ url('kepalauud/Export/Rba/export?id_divisi=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
+                        }
+                    }
+                ]
+            });
+        }
+        function tbkegiatan() {
+            $('#tbkegiatan').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                searching: true,
+                paging: false,
+                info: true,
+                ordering: false,
+                ajax: {
+                    url: '{{ route('kepalabagian.ManajemenKeuangan.pelaporan.apiKegiatanGetAll') }}',
+                    type: 'GET',
+                },
+                columns: [{
+                        data: 'id_kegiatan',
+                        name: 'id_kegiatan',
+                        title: '<input type="checkbox" id="ckAll" />',
+                        width: '5px',
+                        render: function(data, type, row) {
+                            return `<input type="checkbox" class="ckItem" value="${data}" />`;
+                        }
+                    },
+                    {
+                        data: 'nm_kegiatan',
+                        name: 'nm_kegiatan',
+                        title: 'Kegiatan',
+                        render: function(data, type, row) {
+                            return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
+                        }
+                    },
+                    {
+                        data: 'id_kegiatan',
+                        name: 'id_kegiatan',
+                        title: 'Export',
+                        className: 'dt-right',
+                        width: '10%',
+                        render: function(data, type, row) {
+                            return `<a href="{{ url('kepalauud/Export/Rba/exportKegiatan?id_kegiatan=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
                         }
                     }
                 ]
