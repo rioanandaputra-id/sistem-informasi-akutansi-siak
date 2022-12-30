@@ -25,7 +25,8 @@ class RbaExcelExport implements FromView, WithTitle
         $divisi = $this->divisi;
         $records = $this->records;
         foreach($records AS $item) {
-            $item->program = Program::where('id_misi', $item->id_misi)->whereNull('deleted_at')->orderBy('nm_program')->get();
+            $item->id_program = explode(',', $item->id_program);
+            $item->program = Program::whereIn('id_program', $item->id_program)->get();
             foreach($item->program AS $values) {
                 $values->kegiatan = DB::SELECT("
                     SELECT

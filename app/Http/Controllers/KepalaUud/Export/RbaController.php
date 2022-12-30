@@ -34,21 +34,25 @@ class RbaController extends Controller
             $id_divisi = $this->request->id_divisi;
             $divisi = Divisi::find($id_divisi);
             $records = \DB::SELECT("
-                SELECT DISTINCT
-                    msi.id_misi,
-                    msi.nm_misi
+                SELECT
+                    DISTINCT msi.id_misi,
+                    array_to_string(array_agg(pr.id_program), ',') AS id_program,
+                    CASE WHEN msi.id_misi IS NULL THEN '-' ELSE msi.nm_misi END AS nm_misi
                 FROM
                     kegiatan_divisi AS kdiv
                     JOIN kegiatan AS kgt ON kgt.id_kegiatan = kdiv.id_kegiatan
                     AND kgt.deleted_at IS NULL
                     JOIN program AS pr ON pr.id_program = kgt.id_program
                     AND pr.deleted_at IS NULL
-                    JOIN misi AS msi ON msi.id_misi = pr.id_misi
+                    LEFT JOIN misi AS msi ON msi.id_misi = pr.id_misi
                     AND msi.deleted_at IS NULL
                 WHERE
                     kdiv.id_divisi = '".$id_divisi."'
+                GROUP BY
+                    msi.id_misi,
+                    nm_misi
                 ORDER BY
-                    msi.nm_misi DESC
+                    nm_misi DESC
             ");
 
             $filename = 'Dokumen RBA '.strtoupper($divisi->nm_divisi).'.xlsx';    

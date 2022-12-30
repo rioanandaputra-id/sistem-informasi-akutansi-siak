@@ -18,34 +18,6 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <!-- <div class="row mb-3">
-                        <div class="col">
-                            <div class="float-left">
-                                <div class="input-group">
-                                    <button id="exportAll" type="button" class="btn btn-info noborder">
-                                        <i class="fas fa-print"></i> Export All
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="float-right text-bold">
-                                <div class="input-group">
-                                    <button id="refresh" type="button" class="btn btn-info noborder">
-                                        <i class="fas fa-sync"></i> Refresh
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr> -->
-                    <div class="row">
-                        <div class="col">
-                            <table class="table table-striped teble-bordered" id="tbdivisi" style="width: 100%">
-                                <thead class="bg-info"></thead>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
                     <div class="row">
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
@@ -74,58 +46,16 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            tbdivisi();
             tbkegiatan();
             $('#btnAdd').hide();
 
             $("#refresh").click(function() {
-                $('#tbdivisi').DataTable().ajax.reload();
                 $('#tbkegiatan').DataTable().ajax.reload();
             });
         });
     </script>
 
     <script>
-        function tbdivisi() {
-            $('#tbdivisi').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                searching: true,
-                paging: false,
-                info: true,
-                ordering: false,
-                ajax: {
-                    url: '{{ route('kepalabagian.ManajemenKeuangan.pelaporan.apiGetAll') }}',
-                    type: 'GET',
-                },
-                columns: [{
-                        data: 'id_divisi',
-                        name: 'id_divisi',
-                        title: '<input type="checkbox" id="ckAll" />',
-                        width: '5px',
-                        render: function(data, type, row) {
-                            return `<input type="checkbox" class="ckItem" value="${data}" />`;
-                        }
-                    },
-                    {
-                        data: 'nm_divisi',
-                        name: 'nm_divisi',
-                        title: 'Bagian',
-                    },
-                    {
-                        data: 'id_divisi',
-                        name: 'id_divisi',
-                        title: 'Export',
-                        className: 'dt-right',
-                        width: '10%',
-                        render: function(data, type, row) {
-                            return `<a href="{{ url('kepalauud/Export/Rba/export?id_divisi=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
-                        }
-                    }
-                ]
-            });
-        }
         function tbkegiatan() {
             $('#tbkegiatan').DataTable({
                 processing: true,
@@ -136,7 +66,7 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kepalabagian.ManajemenKeuangan.pelaporan.apiKegiatanGetAll') }}',
+                    url: '{{ route('kepalabagian.ManajemenKeuangan.pelaporan.Rba211.apiGetAll') }}',
                     type: 'GET',
                 },
                 columns: [{
@@ -149,12 +79,14 @@
                         }
                     },
                     {
+                        data: 'nm_program',
+                        name: 'nm_program',
+                        title: 'Program',
+                    },
+                    {
                         data: 'nm_kegiatan',
                         name: 'nm_kegiatan',
                         title: 'Kegiatan',
-                        render: function(data, type, row) {
-                            return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
-                        }
                     },
                     {
                         data: 'id_kegiatan',

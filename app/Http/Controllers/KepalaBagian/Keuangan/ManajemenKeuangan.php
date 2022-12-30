@@ -33,35 +33,24 @@ class ManajemenKeuangan extends Controller
     public function perencanaanApiGetAll()
     {
         try {
-            $tahun = ($this->request->tahun == "-") ? " " : " AND date_part('year', rba.tgl_submit)='".$this->request->tahun."'";
+            $tahun = ($this->request->tahun == "-") ? " " : " AND pr.periode='".$this->request->tahun."'";
             $apiGetAll = DB::SELECT("
                 SELECT
-                    akun.id_akun,
-                    akun.nm_akun,
-                    CONCAT(akun.elemen, akun.sub_elemen, akun.jenis, akun.no_akun) AS no_akun,
-                    CASE
-                        WHEN rencana.rencana_anggaran IS NULL THEN 0
-                        ELSE rencana.rencana_anggaran
-                        END AS rencana_anggaran
+                    kdiv.id_kegiatan_divisi,
+                    pr.nm_program,
+                    kgt.nm_kegiatan,
+                    pr.periode
                 FROM
-                    akun
-                    JOIN (
-                        SELECT
-                            drba.id_akun,
-                            SUM(drba.total) AS rencana_anggaran
-                        FROM
-                            kegiatan_divisi AS kdiv
-                            JOIN rba ON rba.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
-                            JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba
-                        WHERE
-                            kdiv.id_divisi='".Auth::user()->id_divisi."'
-                            AND rba.a_verif_wilayah='2'
-                            ".$tahun."
-                        GROUP BY
-                            drba.id_akun
-                    ) AS rencana ON rencana.id_akun=akun.id_akun
+                    kegiatan_divisi AS kdiv
+                    JOIN kegiatan AS kgt ON kgt.id_kegiatan=kdiv.id_kegiatan AND kgt.deleted_at IS NULL
+                    JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL
+                WHERE
+                    kdiv.deleted_at IS NULL
+                    AND kdiv.id_divisi='".\Auth::user()->id_divisi."'
+                    ".$tahun."
                 ORDER BY
-                    akun.no_akun, akun.nm_akun ASC
+                    pr.nm_program,
+                    kgt.nm_kegiatan ASC
             ");
             return DaTables::of($apiGetAll)->make(true);
         } catch (QueryException $e) {
@@ -347,16 +336,16 @@ class ManajemenKeuangan extends Controller
         }
     }
 
-    public function pelaporanViewGetAll()
+    public function pelaporanRba21ViewGetAll()
     {
         $info = [
-            'title' => 'Pelaporan',
-            'site_active' => 'Pelaporan'
+            'title' => 'Pelaporan RBA 2.1',
+            'site_active' => 'PelaporanRba21'
         ];
-        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.pelaporan.viewGetAll', compact('info'));
+        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.pelaporan.rba21.viewGetAll', compact('info'));
     }
 
-    public function pelaporanApiGetAll()
+    public function pelaporanRba21ApiGetAll()
     {
         try {
             $apiGetAll = DB::SELECT("
@@ -395,7 +384,71 @@ class ManajemenKeuangan extends Controller
         }
     }
 
-    public function pelaporanKegiatanapiGetAll()
+    public function pelaporanRba211ViewGetAll()
+    {
+        $info = [
+            'title' => 'Pelaporan RBA 2.1.1',
+            'site_active' => 'PelaporanRba211'
+        ];
+        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.pelaporan.rba211.viewGetAll', compact('info'));
+    }
+
+    public function pelaporanRba211ApiGetAll()
+    {
+        try {
+            $apiGetAll = DB::SELECT("
+                SELECT
+                    kgt.id_kegiatan,
+                    kgt.nm_kegiatan,
+                    pr.nm_program,
+                    msi.nm_misi
+                FROM
+                    divisi AS dvs
+                    JOIN kegiatan_divisi AS kdiv ON kdiv.id_divisi=dvs.id_divisi AND kdiv.deleted_at IS NULL
+                    JOIN rba ON rba.id_kegiatan_divisi=kdiv.id_kegiatan_divisi AND rba.deleted_at IS NULL AND rba.tgl_submit IS NOT NULL
+                    JOIN kegiatan AS kgt ON kgt.id_kegiatan=kdiv.id_kegiatan AND kgt.deleted_at IS NULL
+                    JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL
+                    LEFT JOIN misi AS msi ON msi.id_misi=pr.id_misi AND msi.deleted_at IS NULL
+                WHERE
+                    dvs.id_divisi='".\Auth::user()->id_divisi."'
+                    AND dvs.deleted_at IS NULL
+                ORDER BY
+                    kgt.nm_kegiatan ASC
+            ");
+
+            return DaTables::of($apiGetAll)->make(true);
+
+        } catch (QueryException $e) {
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
+    public function pelaporanRba211GabunganViewGetAll()
+    {
+        $info = [
+            'title' => 'Pelaporan RBA 2.1.1 Gabungan',
+            'site_active' => 'PelaporanRba211Gabungan'
+        ];
+        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.pelaporan.rba211Gabungan.viewGetAll', compact('info'));
+    }
+
+    public function pelaporanRba211GabunganApiGetAll()
     {
         try {
             $apiGetAll = DB::SELECT("

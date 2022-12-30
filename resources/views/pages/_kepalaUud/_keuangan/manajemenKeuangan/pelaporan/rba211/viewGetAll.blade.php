@@ -18,13 +18,16 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <!-- <div class="row mb-3">
+                    <div class="row mb-3">
                         <div class="col">
                             <div class="float-left">
                                 <div class="input-group">
-                                    <button id="exportAll" type="button" class="btn btn-info noborder">
-                                        <i class="fas fa-print"></i> Export All
-                                    </button>
+                                    <select class="form-control mr-2" id="divisi">
+                                        <option value="All" selected>-- Semua Bagian --</option>
+                                        @foreach(\App\Models\Divisi::whereNull('deleted_at')->where('nm_divisi','!=','-')->orderBy('nm_divisi')->get() AS $n=>$r)
+                                        <option value="{{ $r->id_divisi }}">{{ $r->nm_divisi }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="float-right text-bold">
@@ -36,7 +39,7 @@
                             </div>
                         </div>
                     </div>
-                    <hr> -->
+                    <hr>
                     <div class="row">
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
@@ -71,6 +74,10 @@
             $("#refresh").click(function() {
                 $('#tbkegiatan').DataTable().ajax.reload();
             });
+            $('#divisi').on('change', function() {
+                $('#tbkegiatan').DataTable().clear().destroy();
+                tbkegiatan();
+            });
         });
     </script>
 
@@ -85,12 +92,15 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kepalauud.ManajemenKeuangan.pelaporan.apiGetAll') }}',
+                    url: '{{ route('kepalauud.ManajemenKeuangan.pelaporan.Rba211.apiGetAll') }}',
                     type: 'GET',
+                    data: {
+                        id_divisi: $('#divisi').val(),
+                    }
                 },
                 columns: [{
-                        data: 'id_divisi',
-                        name: 'id_divisi',
+                        data: 'id_kegiatan',
+                        name: 'id_kegiatan',
                         title: '<input type="checkbox" id="ckAll" />',
                         width: '5px',
                         render: function(data, type, row) {
@@ -98,18 +108,28 @@
                         }
                     },
                     {
-                        data: 'nm_divisi',
-                        name: 'nm_divisi',
-                        title: 'Bagian',
+                        data: 'nm_program',
+                        name: 'nm_program',
+                        title: 'Program',
                     },
                     {
-                        data: 'id_divisi',
-                        name: 'id_divisi',
+                        data: 'nm_kegiatan',
+                        name: 'nm_kegiatan',
+                        title: 'Kegiatan',
+                    },
+                    {
+                        data: 'nm_divisi',
+                        name: 'nm_divisi',
+                        title: 'Divisi',
+                    },
+                    {
+                        data: 'id_kegiatan',
+                        name: 'id_kegiatan',
                         title: 'Export',
                         className: 'dt-right',
                         width: '10%',
                         render: function(data, type, row) {
-                            return `<a href="{{ url('kepalauud/Export/Rba/export?id_divisi=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
+                            return `<a href="{{ url('kepalauud/Export/Rba/exportKegiatan?id_kegiatan=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
                         }
                     }
                 ]

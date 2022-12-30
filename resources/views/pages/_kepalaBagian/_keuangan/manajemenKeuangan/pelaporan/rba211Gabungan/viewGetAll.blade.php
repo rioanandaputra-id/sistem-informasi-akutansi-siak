@@ -18,28 +18,6 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <div class="float-left">
-                                <div class="input-group">
-                                    <select class="form-control mr-2" id="tahun">
-                                        <option value="-" selected>-- Semua Tahun --</option>
-                                        @for($i=0;$i<3;$i++)
-                                        <option value="{{ date('Y')-$i }}">{{ date('Y')-$i }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="float-right text-bold">
-                                <div class="input-group">
-                                    <button id="refresh" type="button" class="btn btn-info noborder">
-                                        <i class="fas fa-sync"></i> Refresh
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
                     <div class="row">
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
@@ -74,11 +52,6 @@
             $("#refresh").click(function() {
                 $('#tbkegiatan').DataTable().ajax.reload();
             });
-
-            $('#tahun').on('change', function() {
-                $('#tbkegiatan').DataTable().clear().destroy();
-                tbkegiatan();
-            });
         });
     </script>
 
@@ -93,15 +66,12 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kepalabagian.ManajemenKeuangan.perencanaan.apiGetAll') }}',
+                    url: '{{ route('kepalabagian.ManajemenKeuangan.pelaporan.Rba211.apiGetAll') }}',
                     type: 'GET',
-                    data: {
-                        tahun: $('#tahun').val()
-                    }
                 },
                 columns: [{
-                        data: 'id_kegiatan_divisi',
-                        name: 'id_kegiatan_divisi',
+                        data: 'id_kegiatan',
+                        name: 'id_kegiatan',
                         title: '<input type="checkbox" id="ckAll" />',
                         width: '5px',
                         render: function(data, type, row) {
@@ -109,21 +79,24 @@
                         }
                     },
                     {
-                        data: 'nm_program',
-                        name: 'nm_program',
-                        title: 'Program',
-                    },
-                    {
-                        data: 'periode',
-                        name: 'periode',
-                        title: 'Periode',
-                    },
-                    {
                         data: 'nm_kegiatan',
                         name: 'nm_kegiatan',
                         title: 'Kegiatan',
+                        render: function(data, type, row) {
+                            return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
+                        }
                     },
-                ],
+                    {
+                        data: 'id_kegiatan',
+                        name: 'id_kegiatan',
+                        title: 'Export',
+                        className: 'dt-right',
+                        width: '10%',
+                        render: function(data, type, row) {
+                            return `<a href="{{ url('kepalauud/Export/Rba/exportKegiatan?id_kegiatan=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
+                        }
+                    }
+                ]
             });
         }
     </script>

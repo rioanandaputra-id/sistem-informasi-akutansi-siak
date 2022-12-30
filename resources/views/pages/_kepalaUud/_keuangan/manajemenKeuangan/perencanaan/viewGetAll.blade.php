@@ -54,12 +54,6 @@
                         <div class="col">
                             <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
                                 <thead class="bg-info"></thead>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3"><h5>Total</h4></th>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -122,8 +116,8 @@
                     }
                 },
                 columns: [{
-                        data: 'id_akun',
-                        name: 'id_akun',
+                        data: 'id_kegiatan_divisi',
+                        name: 'id_kegiatan_divisi',
                         title: '<input type="checkbox" id="ckAll" />',
                         width: '5px',
                         render: function(data, type, row) {
@@ -131,40 +125,26 @@
                         }
                     },
                     {
-                        data: 'no_akun',
-                        name: 'no_akun',
-                        title: 'No. Akun',
+                        data: 'nm_program',
+                        name: 'nm_program',
+                        title: 'Program',
                     },
                     {
-                        data: 'nm_akun',
-                        name: 'nm_akun',
-                        title: 'Nama Akun',
+                        data: 'periode',
+                        name: 'periode',
+                        title: 'Periode',
                     },
                     {
-                        data: 'rencana_anggaran',
-                        name: 'rencana_anggaran',
-                        title: 'Rencana Anggaran',
-                        className: 'dt-right',
-                        render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
-                    }
+                        data: 'nm_kegiatan',
+                        name: 'nm_kegiatan',
+                        title: 'Kegiatan',
+                    },
+                    {
+                        data: 'nm_divisi',
+                        name: 'nm_divisi',
+                        title: 'Divisi',
+                    },
                 ],
-                footerCallback: function (row, data, start, end, display) {
-                    var api = this.api();
-                    var intVal = function (i) {
-                        return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
-                    };
-                    var numFormat = $.fn.dataTable.render.number( '.', ',', 0, 'Rp. ' ).display;
-                    // Total over all pages
-                    total = api
-                        .column(3)
-                        .data()
-                        .reduce(function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-        
-                    // Update footer
-                    $(api.column(3).footer()).html("<h5>"+numFormat(total)+"</h5>");
-                },
             });
         }
     </script>
