@@ -40,6 +40,8 @@ class DashboardController extends Controller
                 SUM(laks.realisasi_pendapatan) AS realisasi_pendapatan
             FROM
                 kegiatan_divisi AS kdiv
+                JOIN kegiatan AS kgt ON kgt.id_kegiatan=kdiv.id_kegiatan AND kgt.deleted_at IS NULL
+                JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL AND pr.periode='".date('Y')."'
                 LEFT JOIN (
                     SELECT
                         rba.id_kegiatan_divisi,
@@ -69,8 +71,7 @@ class DashboardController extends Controller
                         laks.id_kegiatan_divisi
                 ) AS laks ON laks.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
             WHERE
-                kdiv.a_verif_rba='2'
-                AND date_part('year', kdiv.created_at)='".date('Y')."'
+                kdiv.a_verif_rba IS NOT NULL
                 ".$id_divisi."
             GROUP BY
                 kdiv.id_divisi
@@ -83,6 +84,8 @@ class DashboardController extends Controller
                 SUM(laks.realisasi_pengeluaran) AS realisasi_pengeluaran
             FROM
                 kegiatan_divisi AS kdiv
+                JOIN kegiatan AS kgt ON kgt.id_kegiatan=kdiv.id_kegiatan AND kgt.deleted_at IS NULL
+                JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL AND pr.periode='".date('Y')."'
                 LEFT JOIN (
                     SELECT
                         rba.id_kegiatan_divisi,
@@ -112,8 +115,7 @@ class DashboardController extends Controller
                         laks.id_kegiatan_divisi
                 ) AS laks ON laks.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
             WHERE
-                kdiv.a_verif_rba='2'
-                AND date_part('year', kdiv.created_at)='".date('Y')."'
+                kdiv.a_verif_rba IS NOT NULL
                 ".$id_divisi."
             GROUP BY
                 kdiv.id_divisi
