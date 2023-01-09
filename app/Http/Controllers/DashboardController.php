@@ -48,7 +48,7 @@ class DashboardController extends Controller
                         SUM(drba.total) AS rencana_pendapatan
                     FROM
                         rba
-                        JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba
+                        JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba AND drba.deleted_at IS NULL
                         JOIN akun AS akn ON akn.id_akun=drba.id_akun AND akn.deleted_at IS NULL AND akn.elemen='4'
                     WHERE
                         rba.deleted_at IS NULL
@@ -61,8 +61,8 @@ class DashboardController extends Controller
                         SUM(dspj.total) AS realisasi_pendapatan
                     FROM
                         laksana_kegiatan AS laks
-                        JOIN spj ON spj.id_laksana_kegiatan=laks.id_laksana_kegiatan
-                        JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
+                        JOIN spj ON spj.id_laksana_kegiatan=laks.id_laksana_kegiatan AND spj.deleted_at IS NULL
+                        JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj AND dspj.deleted_at IS NULL
                         JOIN akun AS akn ON akn.id_akun=dspj.id_akun AND akn.deleted_at IS NULL AND akn.elemen='4'
                     WHERE
                         laks.a_verif_kabag_keuangan='2'
@@ -71,7 +71,8 @@ class DashboardController extends Controller
                         laks.id_kegiatan_divisi
                 ) AS laks ON laks.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
             WHERE
-                kdiv.a_verif_rba IS NOT NULL
+                kdiv.deleted_at IS NULL
+                AND kdiv.a_verif_rba IS NOT NULL
                 ".$id_divisi."
             GROUP BY
                 kdiv.id_divisi
@@ -92,8 +93,8 @@ class DashboardController extends Controller
                         SUM(drba.total) AS rencana_pengeluaran
                     FROM
                         rba
-                        JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba
-                        JOIN akun AS akn ON akn.id_akun=drba.id_akun AND akn.deleted_at IS NULL AND  akn.elemen IN ('1','5')
+                        JOIN detail_rba AS drba ON drba.id_rba=rba.id_rba AND drba.deleted_at IS NULL
+                        JOIN akun AS akn ON akn.id_akun=drba.id_akun AND akn.deleted_at IS NULL AND akn.elemen IN ('1','5')
                     WHERE
                         rba.deleted_at IS NULL
                     GROUP BY
@@ -105,8 +106,8 @@ class DashboardController extends Controller
                         SUM(dspj.total) AS realisasi_pengeluaran
                     FROM
                         laksana_kegiatan AS laks
-                        JOIN spj ON spj.id_laksana_kegiatan=laks.id_laksana_kegiatan
-                        JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj
+                        JOIN spj ON spj.id_laksana_kegiatan=laks.id_laksana_kegiatan AND spj.deleted_at IS NULL
+                        JOIN detail_spj AS dspj ON dspj.id_spj=spj.id_spj AND dspj.deleted_at IS NULL
                         JOIN akun AS akn ON akn.id_akun=dspj.id_akun AND akn.deleted_at IS NULL AND akn.elemen IN ('1','5')
                     WHERE
                         laks.a_verif_kabag_keuangan='2'
@@ -115,7 +116,8 @@ class DashboardController extends Controller
                         laks.id_kegiatan_divisi
                 ) AS laks ON laks.id_kegiatan_divisi=kdiv.id_kegiatan_divisi
             WHERE
-                kdiv.a_verif_rba IS NOT NULL
+                kdiv.deleted_at IS NULL
+                AND kdiv.a_verif_rba IS NOT NULL
                 ".$id_divisi."
             GROUP BY
                 kdiv.id_divisi
