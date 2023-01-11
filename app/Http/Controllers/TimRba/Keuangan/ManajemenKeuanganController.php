@@ -259,13 +259,13 @@ class ManajemenKeuanganController extends Controller
                     no_akun ASC
             ");
             foreach($apiGetAll AS $r) {
-                $akun = \App\Models\Akun::whereNull('deleted_at')->where('no_akun_induk', $r->id_akun)->pluck('id_akun');
+                $jenis = \App\Models\Akun::whereNull('deleted_at')->where('no_akun_induk', $r->id_akun)->pluck('id_akun');
                 if($this->request->subAkun == null) {
-                    $akun = \App\Models\Akun::whereNull('deleted_at')->whereIn('no_akun_induk', $akun)->pluck('id_akun');
+                    $akun = \App\Models\Akun::whereNull('deleted_at')->whereIn('no_akun_induk', $jenis)->pluck('id_akun');
                     if(count($akun) == 0) {
-                        $akun = array($r->id_akun);
+                        $akun = $jenis;
                     }
-                } else if (count($akun) == 0) {
+                } else if (count($jenis) == 0) {
                     $akun = array($r->id_akun);
                 }
                 //REFACTOR
