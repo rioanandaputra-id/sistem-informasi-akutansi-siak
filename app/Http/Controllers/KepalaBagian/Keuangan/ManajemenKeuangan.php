@@ -258,15 +258,11 @@ class ManajemenKeuangan extends Controller
                 }
                 //REFACTOR
                 $idAkun = array();
-                if(count($akun) > 0) {
-                    foreach($akun AS $value) {
-                        array_push($idAkun, "'".$value."'");
-                    }
-                    $idAkun = implode(',', $idAkun);
-                    $idAkun = " AND drba.id_akun IN (".$idAkun.") ";
-                } else {
-                    $idAkun = " ";
+                foreach($akun AS $value) {
+                   array_push($idAkun, "'".$value."'");
                 }
+                $idAkun = implode(',', $idAkun);
+                $idAkun = " AND drba.id_akun IN (".$idAkun.") ";
 
                 $pagu_anggaran = DB::SELECT("
                     SELECT

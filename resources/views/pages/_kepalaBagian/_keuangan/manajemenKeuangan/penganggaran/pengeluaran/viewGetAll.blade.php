@@ -143,8 +143,6 @@
                         render: function(data, type, row) {
                             if(data == null) {
                                 data = 0;
-                            } else {
-                                data = data;
                             }
                             return DataTable.render.number( '.', ',', 0, 'Rp. ' ).display(data);
                         }
@@ -157,8 +155,6 @@
                         render: function(data, type, row) {
                             if(data == null) {
                                 data = 0;
-                            } else {
-                                data = data;
                             }
                             return DataTable.render.number( '.', ',', 0, 'Rp. ' ).display(data);
                         }

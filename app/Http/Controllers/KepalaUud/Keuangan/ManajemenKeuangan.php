@@ -210,6 +210,7 @@ class ManajemenKeuangan extends Controller
                 AND akn.no_akun > '0000'
                 AND akn.deleted_at IS NULL
         ");
+        
         return view('pages._kepalaUud._keuangan.manajemenKeuangan.penganggaran.pengeluaran.viewGetAll', compact('info'));
     }
 
@@ -258,15 +259,11 @@ class ManajemenKeuangan extends Controller
                 }
                 //REFACTOR
                 $idAkun = array();
-                if(count($akun) > 0) {
-                    foreach($akun AS $value) {
-                        array_push($idAkun, "'".$value."'");
-                    }
-                    $idAkun = implode(',', $idAkun);
-                    $idAkun = " AND drba.id_akun IN (".$idAkun.") ";
-                } else {
-                    $idAkun = " ";
+                foreach($akun AS $value) {
+                   array_push($idAkun, "'".$value."'");
                 }
+                $idAkun = implode(',', $idAkun);
+                $idAkun = " AND drba.id_akun IN (".$idAkun.") ";
 
                 $pagu_anggaran = DB::SELECT("
                     SELECT
