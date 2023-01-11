@@ -225,7 +225,7 @@ class ManajemenKeuangan extends Controller
     public function penganggaranPengeluaranApiGetAll()
     {
         try {
-            $tahun = ($this->request->tahun == "-") ? " " : " AND date_part('year', spj.created_at)='".$this->request->tahun."'";
+            $tahun = ($this->request->tahun == "-") ? " " : " AND pr.periode='".$this->request->tahun."'";
             $divisi = ($this->request->divisi == "-") ? " " : " AND kdiv.id_divisi='".$this->request->divisi."'";
 
             if($this->request->subAkun == null) {
