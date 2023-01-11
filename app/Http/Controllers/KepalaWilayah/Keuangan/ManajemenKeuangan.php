@@ -267,7 +267,9 @@ class ManajemenKeuangan extends Controller
                     }
                 } else if (count($jenis) == 0) {
                     $akun = array($r->id_akun);
-                }
+                } else {
+                    $akun = $jenis;
+                } 
                 //REFACTOR
                 $idAkun = array();
                 foreach($akun AS $value) {
