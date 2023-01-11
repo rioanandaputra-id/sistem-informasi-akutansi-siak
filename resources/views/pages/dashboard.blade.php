@@ -103,7 +103,7 @@
             </div>
         </div>
     </div>
-    @if(\Auth::user()->id_divisi == NULL)
+    @if(is_null(\Auth::user()->id_divisi))
     <div class="row">
         <div class="col">
             <div class="card card-info">
