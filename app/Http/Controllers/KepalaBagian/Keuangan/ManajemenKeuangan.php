@@ -253,6 +253,9 @@ class ManajemenKeuangan extends Controller
                 $akun = \App\Models\Akun::whereNull('deleted_at')->where('no_akun_induk', $r->id_akun)->pluck('id_akun');
                 if($this->request->subAkun == null) {
                     $akun = \App\Models\Akun::whereNull('deleted_at')->whereIn('no_akun_induk', $akun)->pluck('id_akun');
+                    if(count($akun) == 0) {
+                        $akun = array($r->id_akun);
+                    }
                 } else if (count($akun) == 0) {
                     $akun = array($r->id_akun);
                 }
