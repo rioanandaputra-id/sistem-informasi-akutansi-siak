@@ -220,7 +220,7 @@ class ManajemenKeuangan extends Controller
             $divisi = ($this->request->divisi == "-") ? " " : " AND kdiv.id_divisi='".$this->request->divisi."'";
 
             if($this->request->subAkun == null) {
-                $subElemen = \App\Models\Akun::whereNull('deleted_at')->where('sub_elemen', '>', '0')->where('jenis', '0')->pluck('id_akun');
+                $subElemen = \App\Models\Akun::whereNull('deleted_at')->where('sub_elemen', '>', '0')->where('jenis', '00')->pluck('id_akun');
             } else {
                 $subElemen = \App\Models\Akun::whereNull('deleted_at')->where('no_akun_induk', $this->request->subAkun)->pluck('id_akun');
             }
