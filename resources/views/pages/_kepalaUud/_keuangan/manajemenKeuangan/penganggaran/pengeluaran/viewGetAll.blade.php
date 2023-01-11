@@ -89,7 +89,8 @@
             $('#btnAdd').hide();
 
             $("#refresh").click(function() {
-                $('#tbkegiatan').DataTable().ajax.reload();
+                $('#tbkegiatan').DataTable().clear().destroy();
+                tbkegiatan();
             });
 
             $('#tahun').on('change', function() {
@@ -101,11 +102,16 @@
                 $('#tbkegiatan').DataTable().clear().destroy();
                 tbkegiatan();
             });
+            
+            $('#tbkegiatan').on('click', '#sub_akun', function() {
+                $('#tbkegiatan').DataTable().clear().destroy();
+                tbkegiatan($(this).data('id'));
+            });
         });
     </script>
 
     <script>
-        function tbkegiatan() {
+        function tbkegiatan(sub_akun = null) {
             $('#tbkegiatan').DataTable({
                 processing: true,
                 serverSide: true,
@@ -119,7 +125,8 @@
                     type: 'GET',
                     data: {
                         tahun: $('#tahun').val(),
-                        divisi: $('#divisi').val()
+                        divisi: $('#divisi').val(),
+                        subAkun: sub_akun
                     }
                 },
                 columns: [{
@@ -135,6 +142,9 @@
                         data: 'no_akun',
                         name: 'no_akun',
                         title: 'No. Akun',
+                        render: function(data, type, row) {
+                            return `<a href="#" id="sub_akun" data-id="${row.id_akun}">${data}</a>`;
+                        }
                     },
                     {
                         data: 'nm_akun',
@@ -146,14 +156,28 @@
                         name: 'pagu_anggaran',
                         title: 'Pagu Anggaran',
                         className: 'dt-right',
-                        render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
+                        render: function(data, type, row) {
+                            if(data == null) {
+                                data = 0;
+                            } else {
+                                data = data;
+                            }
+                            return DataTable.render.number( '.', ',', 0, 'Rp. ' ).display(data);
+                        }
                     },
                     {
                         data: 'realisasi_anggaran',
                         name: 'realisasi_anggaran',
                         title: 'Realisasi',
                         className: 'dt-right',
-                        render: DataTable.render.number( '.', ',', 0, 'Rp. ' )
+                        render: function(data, type, row) {
+                            if(data == null) {
+                                data = 0;
+                            } else {
+                                data = data;
+                            }
+                            return DataTable.render.number( '.', ',', 0, 'Rp. ' ).display(data);
+                        }
                     }
                 ],
                 footerCallback: function (row, data, start, end, display) {

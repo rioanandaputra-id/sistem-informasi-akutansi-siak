@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col">
+        <div class="col-md-3 col-6">
             <div class="small-box bg-info">
                 <div class="inner">
                     <h3>{{ $realisasiKegiatan }}</h3>
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-3 col-6">
             <div class="small-box bg-info">
                 <div class="inner">
                     <h3>{{ $spjday }}</h3>
@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-3 col-6">
             <div class="small-box bg-info">
                 <div class="inner">
                     <h3>{{ $spjmonth }}</h3>
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-3 col-6">
             <div class="small-box bg-info">
                 <div class="inner">
                     <h3>{{ $spjyears }}</h3>
@@ -61,14 +61,14 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-6 col-6">
+                        <div class="col">
                             <div class="description-block border-right">
                                 <h4>{{ number_to_currency(array_sum(array_column($pendapatan, 'rencana_pendapatan')), 0) }}</h4>
                                 <span class="description-text">RENCANA PENDAPATAN</span>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-6">
-                            <div class="description-block border-right">
+                        <div class="col">
+                            <div class="description-block">
                                 <h4>{{ number_to_currency(array_sum(array_column($pendapatan, 'realisasi_pendapatan')), 0) }}</h4>
                                 <span class="description-text">REALISASI PENDAPATAN</span>
                             </div>
@@ -77,7 +77,8 @@
                 </div>
             </div>
         </div>
-    </div><div class="row">
+    </div>
+    <div class="row">
         <div class="col">
             <div class="card card-info">
                 <div class="card-header">
@@ -85,16 +86,47 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-6 col-6">
+                        <div class="col">
                             <div class="description-block border-right">
                                 <h4>{{ number_to_currency(array_sum(array_column($pengeluaran, 'rencana_pengeluaran')), 0) }}</h4>
                                 <span class="description-text">RENCANA PENGELUARAN</span>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-6">
+                        <div class="col">
                             <div class="description-block">
                                 <h4>{{ number_to_currency(array_sum(array_column($pengeluaran, 'realisasi_pengeluaran')), 0) }}</h4>
                                 <span class="description-text">REALISASI PENGELUARAN</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">Surplus/Defisit Anggaran Tahun {{ date('Y') }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="description-block border-right">
+                                @php 
+                                    $total = array_sum(array_column($pendapatan, 'rencana_pendapatan')) - array_sum(array_column($pengeluaran, 'rencana_pengeluaran'));
+                                @endphp
+                                <h4 class="{{ ($total < 0) ? 'text-danger' : 'text-success' }}">{{ ($total < 0) ? '('.number_to_currency(abs($total), 0).')' : number_to_currency($total, 0) }}</h4>
+                                <span class="description-text">PAGU ANGGARAN</span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="description-block">
+                                @php 
+                                    $total = array_sum(array_column($pendapatan, 'realisasi_pendapatan')) - array_sum(array_column($pengeluaran, 'realisasi_pengeluaran'));
+                                @endphp
+                                <h4 class="{{ ($total < 0) ? 'text-danger' : 'text-success' }}">{{ ($total < 0) ? '('.number_to_currency(abs($total), 0).')' : number_to_currency($total, 0) }}</h4>
+                                <span class="description-text">REALISASI ANGGARAN</span>
                             </div>
                         </div>
                     </div>
