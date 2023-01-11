@@ -103,7 +103,7 @@
             </div>
         </div>
     </div>
-    @if(is_null(\Auth::user()->id_divisi))
+    @if(\Auth::user()->id_divisi == 'da138a9a-23ed-4941-932d-d1a457db0cdf')
     <div class="row">
         <div class="col">
             <div class="card card-info">
