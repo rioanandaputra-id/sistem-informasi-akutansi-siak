@@ -18,31 +18,9 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <div class="float-left">
-                                <div class="input-group">
-                                    <select class="form-control mr-2" id="tahun">
-                                        <option value="-" selected>-- Semua Tahun --</option>
-                                        @for($i=0;$i<3;$i++)
-                                        <option value="{{ date('Y')-$i }}">{{ date('Y')-$i }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="float-right text-bold">
-                                <div class="input-group">
-                                    <button id="refresh" type="button" class="btn btn-info noborder">
-                                        <i class="fas fa-sync"></i> Refresh
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
                     <div class="row">
                         <div class="col">
-                            <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
+                            <table class="table table-striped teble-bordered" id="tbdivisi" style="width: 100%">
                                 <thead class="bg-info"></thead>
                             </table>
                         </div>
@@ -68,13 +46,55 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            $("#refresh").click(function() {
-                //
-            });
+            tbdivisi();
+            $('#btnAdd').hide();
 
-            $('#tahun').on('change', function() {
-                //
+            $("#refresh").click(function() {
+                $('#tbdivisi').DataTable().ajax.reload();
             });
         });
+    </script>
+
+    <script>
+        function tbdivisi() {
+            $('#tbdivisi').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                searching: true,
+                paging: false,
+                info: true,
+                ordering: false,
+                ajax: {
+                    url: '{{ route('kepalawilayah.ManajemenKeuangan.pelaporan.Rba21.apiGetAll') }}',
+                    type: 'GET',
+                },
+                columns: [{
+                        data: 'id_divisi',
+                        name: 'id_divisi',
+                        title: '<input type="checkbox" id="ckAll" />',
+                        width: '5px',
+                        render: function(data, type, row) {
+                            return `<input type="checkbox" class="ckItem" value="${data}" />`;
+                        }
+                    },
+                    {
+                        data: 'nm_divisi',
+                        name: 'nm_divisi',
+                        title: 'Bagian',
+                    },
+                    {
+                        data: 'id_divisi',
+                        name: 'id_divisi',
+                        title: 'Export',
+                        className: 'dt-right',
+                        width: '10%',
+                        render: function(data, type, row) {
+                            return `<a href="{{ url('kepalauud/Export/Rba/export?id_divisi=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
+                        }
+                    }
+                ]
+            });
+        }
     </script>
 @endpush

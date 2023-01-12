@@ -198,8 +198,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('penatausahaan/apiGetAll', 'penatausahaanApiGetAll')->name('kepalawilayah.ManajemenKeuangan.penatausahaan.apiGetAll');
         Route::get('penatausahaan/viewGetAll', 'penatausahaanViewGetAll')->name('kepalawilayah.ManajemenKeuangan.penatausahaan.viewGetAll');
         // PELAPORAN
-        Route::get('pelaporan/apiGetAll', 'pelaporanApiGetAll')->name('kepalawilayah.ManajemenKeuangan.pelaporan.apiGetAll');
-        Route::get('pelaporan/viewGetAll', 'pelaporanViewGetAll')->name('kepalawilayah.ManajemenKeuangan.pelaporan.viewGetAll');
+        Route::get('pelaporan/Rba21/apiGetAll', 'pelaporanRba21ApiGetAll')->name('kepalawilayah.ManajemenKeuangan.pelaporan.Rba21.apiGetAll');
+        Route::get('pelaporan/Rba21/viewGetAll', 'pelaporanRba21ViewGetAll')->name('kepalawilayah.ManajemenKeuangan.pelaporan.Rba21.viewGetAll');
+        Route::get('pelaporan/Rba211/apiGetAll', 'pelaporanRba211ApiGetAll')->name('kepalawilayah.ManajemenKeuangan.pelaporan.Rba211.apiGetAll');
+        Route::get('pelaporan/Rba211/viewGetAll', 'pelaporanRba211ViewGetAll')->name('kepalawilayah.ManajemenKeuangan.pelaporan.Rba211.viewGetAll');
     });
     // =====================================KEPALA BAGIAN========================================
     Route::controller(KepalaBagianKegiatanController::class)->prefix('kepalabagian/Kegiatan')->group(function () {
