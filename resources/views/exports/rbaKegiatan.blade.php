@@ -24,8 +24,8 @@
             <td colspan="6">{{ $records->nm_misi }}</td>
         </tr>
         <tr>
-            <th>Tgl Submit:</th>
-            <td colspan="6">{{ date('Y-m-d', strtotime($records->tgl_submit)) }}</td>
+            <th>Tgl Pengajuan:</th>
+            <td colspan="6">{{ TglWaktuIndonesia($records->tgl_submit) }}</td>
         </tr>
     </thead>
     <tbody>
