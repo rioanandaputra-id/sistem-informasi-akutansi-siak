@@ -207,9 +207,9 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item {{ in_array($info['site_active'], ['PelaporanRba21','PelaporanRba211']) ? 'menu-open' : '' }}">
+                    <li class="nav-item {{ in_array($info['site_active'], ['PelaporanRba21','PelaporanRba211','PelaporanSpj21','PelaporanSpj211']) ? 'menu-open' : '' }}">
                         <a href="#"
-                            class="nav-link {{ in_array($info['site_active'], ['PelaporanRba21','PelaporanRba211']) ? 'active' : '' }}">
+                            class="nav-link {{ in_array($info['site_active'], ['PelaporanRba21','PelaporanRba211','PelaporanSpj21','PelaporanSpj211']) ? 'active' : '' }}">
                             <i class="fas fa-list nav-icon"></i>
                             <p>
                                 Pelaporan
@@ -221,7 +221,7 @@
                                 <a href="{{ route('kepalauud.ManajemenKeuangan.pelaporan.Rba21.viewGetAll') }}"
                                     class="nav-link {{ $info['site_active'] == 'PelaporanRba21' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>RBA 2.1</p>
+                                    <p>RBA & SPJ 2.1</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -229,6 +229,13 @@
                                     class="nav-link {{ $info['site_active'] == 'PelaporanRba211' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>RBA 2.1.1</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('kepalauud.ManajemenKeuangan.pelaporan.Spj211.viewGetAll') }}"
+                                    class="nav-link {{ $info['site_active'] == 'PelaporanSpj211' ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>SPJ 2.1.1</p>
                                 </a>
                             </li>
                         </ul>
@@ -379,9 +386,9 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item {{ in_array($info['site_active'], ['PelaporanRba21','PelaporanRba211','PelaporanRba211Gabungan']) ? 'menu-open' : '' }}">
+                    <li class="nav-item {{ in_array($info['site_active'], ['PelaporanRba21','PelaporanRba211','PelaporanSpj211']) ? 'menu-open' : '' }}">
                         <a href="#"
-                            class="nav-link {{ in_array($info['site_active'], ['PelaporanRba21','PelaporanRba211','PelaporanRba211Gabungan']) ? 'active' : '' }}">
+                            class="nav-link {{ in_array($info['site_active'], ['PelaporanRba21','PelaporanRba211','PelaporanSpj211']) ? 'active' : '' }}">
                             <i class="fas fa-list nav-icon"></i>
                             <p>
                                 Pelaporan
@@ -393,7 +400,7 @@
                                 <a href="{{ route('kepalabagian.ManajemenKeuangan.pelaporan.Rba21.viewGetAll') }}"
                                     class="nav-link {{ $info['site_active'] == 'PelaporanRba21' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>RBA 2.1</p>
+                                    <p>RBA & SPJ 2.1</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -403,13 +410,13 @@
                                     <p>RBA 2.1.1</p>
                                 </a>
                             </li>
-                            <!-- <li class="nav-item">
-                                <a href="{{ route('kepalabagian.ManajemenKeuangan.pelaporan.Rba211Gabungan.viewGetAll') }}"
-                                    class="nav-link {{ $info['site_active'] == 'PelaporanRba211Gabungan' ? 'active' : '' }}">
+                            <li class="nav-item">
+                                <a href="{{ route('kepalabagian.ManajemenKeuangan.pelaporan.Spj211.viewGetAll') }}"
+                                    class="nav-link {{ $info['site_active'] == 'PelaporanSpj211' ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>RBA 2.1.1 Gabungan</p>
+                                    <p>SPJ 2.1.1</p>
                                 </a>
-                            </li> -->
+                            </li>
                         </ul>
                     </li>
                 @endcan

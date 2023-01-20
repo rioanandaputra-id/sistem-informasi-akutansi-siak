@@ -368,7 +368,7 @@ class ManajemenKeuangan extends Controller
     public function pelaporanRba21ViewGetAll()
     {
         $info = [
-            'title' => 'Pelaporan RBA 2.1',
+            'title' => 'Pelaporan RBA & SPJ 2.1',
             'site_active' => 'PelaporanRba21'
         ];
         return view('pages._kepalaUud._keuangan.manajemenKeuangan.pelaporan.rba21.viewGetAll', compact('info'));
@@ -423,6 +423,63 @@ class ManajemenKeuangan extends Controller
     }
 
     public function pelaporanRba211ApiGetAll()
+    {
+        try {
+            $divisi = ($this->request->id_divisi != 'All') ? " AND dvs.id_divisi='".$this->request->id_divisi."'" : "";
+            $apiGetAll = DB::SELECT("
+                SELECT
+                    kgt.id_kegiatan,
+                    kgt.nm_kegiatan,
+                    pr.nm_program,
+                    msi.nm_misi,
+                    dvs.nm_divisi
+                FROM
+                    divisi AS dvs
+                    JOIN kegiatan_divisi AS kdiv ON kdiv.id_divisi=dvs.id_divisi AND kdiv.deleted_at IS NULL
+                    JOIN rba ON rba.id_kegiatan_divisi=kdiv.id_kegiatan_divisi AND rba.deleted_at IS NULL AND rba.tgl_submit IS NOT NULL
+                    JOIN kegiatan AS kgt ON kgt.id_kegiatan=kdiv.id_kegiatan AND kgt.deleted_at IS NULL
+                    JOIN program AS pr ON pr.id_program=kgt.id_program AND pr.deleted_at IS NULL
+                    LEFT JOIN misi AS msi ON msi.id_misi=pr.id_misi AND msi.deleted_at IS NULL
+                WHERE
+                    dvs.deleted_at IS NULL
+                    ".$divisi."
+                ORDER BY
+                    kgt.nm_kegiatan ASC
+            ");
+
+            return DaTables::of($apiGetAll)->make(true);
+
+        } catch (QueryException $e) {
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'QueryException',
+                'error' => null,
+                'response' => null
+            ];
+        } catch (Exception $e) {
+            logger($this->request->ip(), [$this->request->fullUrl(), __CLASS__, __FUNCTION__, $e->getLine(), $e->getMessage()]);
+            return [
+                'status' => false,
+                'latency' => AppLatency(),
+                'message' => 'Exception',
+                'error' => null,
+                'response' => null
+            ];
+        }
+    }
+
+    public function pelaporanSpj211ViewGetAll()
+    {
+        $info = [
+            'title' => 'Pelaporan SPJ 2.1.1',
+            'site_active' => 'PelaporanSpj211'
+        ];
+        return view('pages._kepalaUud._keuangan.manajemenKeuangan.pelaporan.spj211.viewGetAll', compact('info'));
+    }
+
+    public function pelaporanSpj211ApiGetAll()
     {
         try {
             $divisi = ($this->request->id_divisi != 'All') ? " AND dvs.id_divisi='".$this->request->id_divisi."'" : "";

@@ -1,7 +1,7 @@
 <table class="table table-borderless">
     <thead>
         <tr>
-            <th colspan="5" style="text-align:center">Dokumen RBA Kegiatan - {{ $divisi->nm_divisi }}</th>
+            <th colspan="5" style="text-align:center">Dokumen Laporan Kegiatan - {{ $divisi->nm_divisi }}</th>
         </tr>
     </thead>
 </table>

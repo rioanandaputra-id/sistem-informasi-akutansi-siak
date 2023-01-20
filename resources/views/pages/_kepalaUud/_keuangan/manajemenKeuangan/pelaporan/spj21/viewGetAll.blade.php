@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <table class="table table-striped teble-bordered" id="tbkegiatan" style="width: 100%">
+                            <table class="table table-striped teble-bordered" id="tbdivisi" style="width: 100%">
                                 <thead class="bg-info"></thead>
                             </table>
                         </div>
@@ -46,18 +46,18 @@
     <script src="{{ asset('adminlte320/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            tbkegiatan();
+            tbdivisi();
             $('#btnAdd').hide();
 
             $("#refresh").click(function() {
-                $('#tbkegiatan').DataTable().ajax.reload();
+                $('#tbdivisi').DataTable().ajax.reload();
             });
         });
     </script>
 
     <script>
-        function tbkegiatan() {
-            $('#tbkegiatan').DataTable({
+        function tbdivisi() {
+            $('#tbdivisi').DataTable({
                 processing: true,
                 serverSide: true,
                 responsive: true,
@@ -66,12 +66,12 @@
                 info: true,
                 ordering: false,
                 ajax: {
-                    url: '{{ route('kepalabagian.ManajemenKeuangan.pelaporan.Rba211.apiGetAll') }}',
+                    url: '{{ route('kepalauud.ManajemenKeuangan.pelaporan.Spj21.apiGetAll') }}',
                     type: 'GET',
                 },
                 columns: [{
-                        data: 'id_kegiatan',
-                        name: 'id_kegiatan',
+                        data: 'id_divisi',
+                        name: 'id_divisi',
                         title: '<input type="checkbox" id="ckAll" />',
                         width: '5px',
                         render: function(data, type, row) {
@@ -79,21 +79,18 @@
                         }
                     },
                     {
-                        data: 'nm_kegiatan',
-                        name: 'nm_kegiatan',
-                        title: 'Kegiatan',
-                        render: function(data, type, row) {
-                            return `${row.nm_kegiatan},<br>${row.nm_program},<br>${row.nm_misi}`;
-                        }
+                        data: 'nm_divisi',
+                        name: 'nm_divisi',
+                        title: 'Bagian',
                     },
                     {
-                        data: 'id_kegiatan',
-                        name: 'id_kegiatan',
+                        data: 'id_divisi',
+                        name: 'id_divisi',
                         title: 'Export',
                         className: 'dt-right',
                         width: '10%',
                         render: function(data, type, row) {
-                            return `<a href="{{ url('kepalauud/Export/Rba/exportKegiatan?id_kegiatan=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
+                            return `<a href="{{ url('kepalauud/Export/Rba/export?id_divisi=${data}') }}" class="btn btn-info btn-sm"><i class="fas fa-file-excel mr-2"></i>Excel</a>`;
                         }
                     }
                 ]

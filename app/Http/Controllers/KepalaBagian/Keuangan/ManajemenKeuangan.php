@@ -367,7 +367,7 @@ class ManajemenKeuangan extends Controller
     public function pelaporanRba21ViewGetAll()
     {
         $info = [
-            'title' => 'Pelaporan RBA 2.1',
+            'title' => 'Pelaporan RBA & SPJ 2.1',
             'site_active' => 'PelaporanRba21'
         ];
         return view('pages._kepalaBagian._keuangan.manajemenKeuangan.pelaporan.rba21.viewGetAll', compact('info'));
@@ -467,16 +467,16 @@ class ManajemenKeuangan extends Controller
         }
     }
 
-    public function pelaporanRba211GabunganViewGetAll()
+    public function pelaporanSpj211ViewGetAll()
     {
         $info = [
-            'title' => 'Pelaporan RBA 2.1.1 Gabungan',
-            'site_active' => 'PelaporanRba211Gabungan'
+            'title' => 'Pelaporan SPJ 2.1.1',
+            'site_active' => 'PelaporanRba211'
         ];
-        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.pelaporan.rba211Gabungan.viewGetAll', compact('info'));
+        return view('pages._kepalaBagian._keuangan.manajemenKeuangan.pelaporan.spj211.viewGetAll', compact('info'));
     }
 
-    public function pelaporanRba211GabunganApiGetAll()
+    public function pelaporanSpj211ApiGetAll()
     {
         try {
             $apiGetAll = DB::SELECT("
