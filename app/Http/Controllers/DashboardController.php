@@ -137,7 +137,7 @@ class DashboardController extends Controller
             $spjmonth = \App\Models\Spj::whereNull('deleted_at')->whereMonth('created_at', date('m'))->count();
             $spjyears = \App\Models\Spj::whereNull('deleted_at')->whereYear('created_at', date('Y'))->count();
         }
-        
+
         return view('pages.dashboard', compact('info', 'kegiatan', 'pendapatan', 'pengeluaran', 'realisasiKegiatan', 'spjday', 'spjmonth', 'spjyears'));
     }
 }

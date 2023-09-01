@@ -114,7 +114,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="description-block border-right">
-                                @php 
+                                @php
                                     $total = array_sum(array_column($pendapatan, 'rencana_pendapatan')) - array_sum(array_column($pengeluaran, 'rencana_pengeluaran'));
                                 @endphp
                                 <h4 class="{{ ($total < 0) ? 'text-danger' : 'text-success' }}">{{ ($total < 0) ? '('.number_to_currency(abs($total), 0).')' : number_to_currency($total, 0) }}</h4>
@@ -123,7 +123,7 @@
                         </div>
                         <div class="col">
                             <div class="description-block">
-                                @php 
+                                @php
                                     $total = array_sum(array_column($pendapatan, 'realisasi_pendapatan')) - array_sum(array_column($pengeluaran, 'realisasi_pengeluaran'));
                                 @endphp
                                 <h4 class="{{ ($total < 0) ? 'text-danger' : 'text-success' }}">{{ ($total < 0) ? '('.number_to_currency(abs($total), 0).')' : number_to_currency($total, 0) }}</h4>
@@ -190,14 +190,14 @@
 
         return tampilTanggal;
     }
-    
+
     $(document).ready(function() {
         let kegiatan = <?php echo json_encode($kegiatan) ?>;
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             locale: 'id',
             initialView: 'dayGridMonth',
-            events: function( fetchInfo, successCallback, failureCallback ) { 
+            events: function( fetchInfo, successCallback, failureCallback ) {
                 var events = [];
                 $.each(kegiatan, function(i, item) {
                     events.push({

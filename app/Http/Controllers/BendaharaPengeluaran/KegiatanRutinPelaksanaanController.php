@@ -157,7 +157,7 @@ class KegiatanRutinPelaksanaanController extends Controller
                     'id_bku' => guid(),
                     'id_divisi' => $lk->id_divisi,
                     'id_laksana_kegiatan' => $lk->id_laksana_kegiatan,
-                    'id_akun' => \App\Models\Akun::where('nm_akun', 'Kas Kecil')->pluck('id_akun')[0],
+                    'id_akun' => 'eedbc3b9-fff7-4599-bf28-483a8298a702',
                     'tanggal' => $lk->tgl_verif_kabag_keuangan,
                     'masuk' => $lk->total_anggaran_terpakai,
                     'keluar' => 0,

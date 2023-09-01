@@ -50,7 +50,7 @@ class SpjController extends Controller
                     kgt.id_kegiatan='".$id_kegiatan."'
                     AND kgt.deleted_at IS NULL
             ")[0];
-            
+
             $data = \DB::SELECT("
                 SELECT
                     laks.id_laksana_kegiatan,
@@ -90,6 +90,8 @@ class SpjController extends Controller
                     WHERE
                         spj.deleted_at IS NULL
                         AND spj.id_laksana_kegiatan='".$item->id_laksana_kegiatan."'
+                    GROUP BY
+                        akn.elemen, akn.sub_elemen, akn.jenis, akn.no_akun, akn.nm_akun
                     ORDER BY
                         no_akun ASC
                 ");
@@ -97,7 +99,7 @@ class SpjController extends Controller
 
             $records->detail = $data;
 
-            $filename = 'Dokumen SPJ '.strtoupper($records->nm_divisi).' - '.$records->nm_kegiatan.'.xlsx';    
+            $filename = 'Dokumen SPJ '.strtoupper($records->nm_divisi).' - '.$records->nm_kegiatan.'.xlsx';
             return Excel::download(new SpjKegiatanExcelExport($records->nm_divisi, $records), $filename);
 
         } catch (QueryException $e) {

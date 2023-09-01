@@ -224,6 +224,21 @@
                         </div>
                     </div>
                     <hr>
+                    @if($checkKdiv->jumlah>0)
+                    @if($kegiatan[0]->a_verif_wilayah == '2')
+                    <div class="row mt-4">
+                        <div class="col">
+                            <div class="row bg-danger p-2 mb-4">
+                                <div class="col">
+                                    <div class="text-center">
+                                        <b>PERIODE PELAKSANAAN KEGIATAN BELUM DIMULAI!</b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @else
                     @if($kegiatan[0]->nm_program != 'Non Program (Pendapatan)' || \Auth::user()->can('bendpenerimaan'))
                     <div class="row mt-4">
                         <div class="col">
@@ -312,6 +327,7 @@
                             </table>
                         </div>
                     </div>
+                    @endif
                     @endif
                 </div>
             </div>

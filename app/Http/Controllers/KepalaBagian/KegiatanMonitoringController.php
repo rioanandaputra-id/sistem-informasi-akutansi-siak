@@ -112,18 +112,21 @@ class KegiatanMonitoringController extends Controller
                 kgt.nm_kegiatan,
                 rba.id_rba,
                 rba.tgl_submit,
+                kdiv.a_verif_rba,
                 CASE
                     kdiv.a_verif_rba
                     WHEN '2' THEN 'Disetujui TIM RBA'
                     WHEN '3' THEN 'Ditolak TIM RBA'
                     ELSE 'Belum Diverifikasi TIM RBA'
                 END AS kdiv_a_verif_rba,
+                rba.a_verif_rba AS a_verif_kepalaudd,
                 CASE
                     rba.a_verif_rba
                     WHEN '2' THEN 'Disetujui Kepala UDD'
                     WHEN '3' THEN 'Ditolak Kepala UDD'
                     ELSE 'Belum Diverifikasi Kepala UDD'
                 END AS rba_a_verif_rba,
+                rba.a_verif_wilayah,
                 CASE
                     rba.a_verif_wilayah
                     WHEN '2' THEN 'Disetujui Kepala Pengurus Wilayah'
@@ -362,7 +365,20 @@ class KegiatanMonitoringController extends Controller
                 AND akn.no_akun > '0000'
                 AND akn.deleted_at IS NULL
         ");
-        return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan'));
+        $checkKdiv = \DB::SELECT("
+            SELECT
+                COUNT(rba.id_rba) AS jumlah
+            FROM
+                rba
+                JOIN kegiatan_divisi AS kdiv ON kdiv.id_kegiatan_divisi=rba.id_kegiatan_divisi AND kdiv.deleted_at IS NULL
+                JOIN kegiatan AS kgt ON kgt.id_kegiatan=kdiv.id_kegiatan AND kgt.deleted_at IS NULL
+                JOIN divisi AS dvs ON dvs.id_divisi=kdiv.id_divisi AND dvs.deleted_at IS NULL
+                LEFT JOIN program AS prog ON prog.id_program=kgt.id_program AND prog.deleted_at IS NULL
+            WHERE
+                rba.a_verif_wilayah = '1'
+        ")[0];
+
+        return view('pages._kepalaBagian.kegiatanMonitoring.viewDetail', compact('info', 'kegiatan', 'detailRba', 'akun', 'laksKegiatan', 'checkKdiv'));
     }
 
     public function apiGetAkun()
@@ -375,7 +391,7 @@ class KegiatanMonitoringController extends Controller
             ->where('no_akun','>','0000')
             ->orderBy(DB::raw('LENGTH(keterangan), keterangan'))
             ->get();
-        $filename = 'Akun Persediaan.xlsx';    
+        $filename = 'Akun Persediaan.xlsx';
         return Excel::download(new DetailRbaTemplate($akun), $filename);
     }
 
@@ -1039,7 +1055,7 @@ class KegiatanMonitoringController extends Controller
                     'error' => $validator->errors(),
                     'response' => null
                 ];
-            }            
+            }
 
             $id_detail_laksana_kegiatan = guid();
             $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;

@@ -14,7 +14,7 @@ class SpjKegiatanExcelExport implements FromView
         $this->divisi = $divisi;
         $this->records = $records;
     }
-    
+
     public function view(): View
     {
         $divisi = $this->divisi;

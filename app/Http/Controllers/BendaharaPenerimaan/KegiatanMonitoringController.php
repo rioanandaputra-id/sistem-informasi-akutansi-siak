@@ -746,7 +746,7 @@ class KegiatanMonitoringController extends Controller
                     'error' => $validator->errors(),
                     'response' => null
                 ];
-            }            
+            }
 
             $id_detail_laksana_kegiatan = guid();
             $id_laksana_kegiatan = $this->request->id_laksana_kegiatan;
@@ -756,18 +756,18 @@ class KegiatanMonitoringController extends Controller
             $id_updater = Auth::user()->id_user;
 
             //CHECK
-            $rbaCheck = $this->mDetailRba->where('id_detail_rba', $id_detail_rba)->sum('total');
-            $laksKegCheck = $this->mDetailLaksanaKegiatan->where('id_detail_rba', $id_detail_rba)->sum('total');
-            $checkSum = $rbaCheck - $laksKegCheck;
-            if($total > $checkSum) {
-                return [
-                    'status' => false,
-                    'latency' => AppLatency(),
-                    'message' => 'BadRequest',
-                    'error' => $validator->errors(),
-                    'response' => null
-                ];
-            }
+            // $rbaCheck = $this->mDetailRba->where('id_detail_rba', $id_detail_rba)->sum('total');
+            // $laksKegCheck = $this->mDetailLaksanaKegiatan->where('id_detail_rba', $id_detail_rba)->sum('total');
+            // $checkSum = $rbaCheck - $laksKegCheck;
+            // if($total > $checkSum) {
+            //     return [
+            //         'status' => false,
+            //         'latency' => AppLatency(),
+            //         'message' => 'BadRequest',
+            //         'error' => $validator->errors(),
+            //         'response' => null
+            //     ];
+            // }
 
             $this->mDetailLaksanaKegiatan->create([
                 'id_detail_laksana_kegiatan' => $id_detail_laksana_kegiatan,

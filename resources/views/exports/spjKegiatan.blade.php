@@ -58,7 +58,7 @@
         @endforeach
         <tr>
             <th colspan="2">TOTAL</th>
-            <th>{{ array_sum(array_column($values, 'total_realisasi')) }}</th>
+            <th>{{ array_sum(array_column($item->spj, 'total_realisasi')) }}</th>
         </tr>
         @endforeach
         @else

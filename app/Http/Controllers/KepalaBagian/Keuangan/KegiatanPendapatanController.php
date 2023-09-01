@@ -203,7 +203,7 @@ class KegiatanPendapatanController extends Controller
                 'updated_at' => $created_at,
                 'id_updater' => $id_updater,
             ]);
-            
+
             DB::commit();
             return back()->with('success', 'Data Berhasil Diubah!');
         } catch (QueryException $e) {

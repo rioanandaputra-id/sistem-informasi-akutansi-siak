@@ -67,10 +67,7 @@
                                             <td>:</td>
                                             <td>{{ $kgt->nm_kegiatan }}</td>
                                         </tr>
-                                    </tbody>
-                                </table>
-                                <table class="mb-3">
-                                    <tbody>
+                                        <tr><td colspan="3">&nbsp;</td></tr>
                                         <tr>
                                             <th colspan="3">Info Pelaksanaan Kegiatan</th>
                                         </tr>
@@ -106,12 +103,19 @@
                                             <td>:</td>
                                             <td>{{ $kgt->catatan ?? '-' }}</td>
                                         </tr>
+                                        <tr><td colspan="3">&nbsp;</td></tr>
+                                        <tr class="bg-purple">
+                                            <td>Total Anggaran (RBA)</td>
+                                            <td>:</td>
+                                            <td>{{ number_to_currency_without_rp($kgt->total_anggaran_tersedia) }}</td>
+                                        </tr>
+                                        <tr class="bg-info">
+                                            <td>Total Anggaran (Realisasi Sementara)</td>
+                                            <td>:</td>
+                                            <td>{{ number_to_currency_without_rp($kgt->total_anggaran_terpakai) }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
-                                <div class="bg-purple mb-3">
-                                    <strong>Total Anggaran Tersisa <span style="margin-left: 40px;">:</span>
-                                        {{ number_to_currency_without_rp($kgt->total_anggaran_tersedia - $kgt->total_anggaran_terpakai) }}</strong>
-                                </div>
                             @endforeach
                             <div class="row bg-success p-2 mb-3">
                                 <div class="col">
